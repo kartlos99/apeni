@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">BeerApeni</string>
+    <string name="shekveTebi">შეკვეთები</string>
+    <string name="mitana">მიტანა</string>
+    <string name="obj_realizacia">ობიექტების რეალიზაცია</string>
+    <string name="day_realizacia">დღიური რეალიზაცია</string>
+    <string name="ludsaxarshi">ლუდსახარში აფენი</string>
 </resources>
