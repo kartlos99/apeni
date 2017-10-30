@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_marginStart="6dp"
+        android:id="@+id/t_obieqti_orderlist"
+        android:layout_weight="40"
+        android:textColor="@color/colorForText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/t_ludi_orderlist"
+        android:layout_weight="20"
+        android:textColor="@color/colorForText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/t_k30wont_orderlist"
+        android:layout_weight="9"
+        android:textColor="@color/colorForText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/t_k50wont_orderlist"
+        android:layout_weight="9"
+        android:textColor="@color/colorForText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/t_k30in_orderlist"
+        android:layout_weight="9"
+        android:textColor="@color/colorForText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/t_k50in_orderlist"
+        android:layout_weight="9"
+        android:textColor="@color/colorForText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

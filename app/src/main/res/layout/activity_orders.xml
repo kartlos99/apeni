@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -21,7 +22,7 @@
         android:layout_marginEnd="8dp" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/t_tarigi"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_tarigi"
@@ -29,11 +30,14 @@
         app:layout_constraintTop_toBottomOf="@+id/btn_addOrder"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="8dp" />
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_setdate"
+        android:layout_marginBottom="8dp" />
 
     <Button
         android:id="@+id/btn_setdate"
-        android:text="--/--/--"
+        android:text="__-__-__"
+        android:drawableEnd="@drawable/ic_calendar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
