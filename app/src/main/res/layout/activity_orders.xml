@@ -26,17 +26,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/text_tarigi"
+
+        android:textSize="24sp"
         android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@+id/btn_addOrder"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginStart="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/btn_setdate"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        app:layout_constraintRight_toLeftOf="@+id/btn_setdate"
+        android:layout_marginRight="8dp"
+        app:layout_constraintVertical_bias="0.533" />
 
     <Button
         android:id="@+id/btn_setdate"
-        android:text="__-__-__"
+        android:text="თარიღი  "
         android:drawableEnd="@drawable/ic_calendar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,7 +55,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:text="ობიექტი          ლუდი       მოთხოვნა  მიწოდება"
         app:layout_constraintTop_toBottomOf="@+id/btn_setdate"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
