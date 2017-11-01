@@ -8,10 +8,19 @@ import java.io.Serializable;
 
 public class Obieqti implements Serializable {
     private String dasaxeleba, adress, tel, comment;
+    private Integer id;
 
     public Obieqti(String dasaxeleba) {
         this.dasaxeleba = dasaxeleba;
 
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getDasaxeleba() {

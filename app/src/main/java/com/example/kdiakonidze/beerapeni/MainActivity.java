@@ -88,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             axaliObieqti.setAdress(response.getJSONObject(i).getString("adress"));
                             axaliObieqti.setTel(response.getJSONObject(i).getString("tel"));
                             axaliObieqti.setComment(response.getJSONObject(i).getString("comment"));
+                            axaliObieqti.setId(response.getJSONObject(i).getInt("id"));
 
                             Constantebi.OBIEQTEBI.add(axaliObieqti);
 
