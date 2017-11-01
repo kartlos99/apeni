@@ -2,6 +2,7 @@ package com.example.kdiakonidze.beerapeni;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.icu.util.TimeZone;
@@ -40,7 +41,7 @@ import java.util.Date;
 public class OrdersActivity extends AppCompatActivity {
 
     String archeuli_dge;
-    Button btn_setDate;
+    Button btn_setDate, btn_addOrder;
     TextView t_Tarigi;
     ListView listView_shekvetebi;
     ProgressDialog progressDialog;
@@ -79,8 +80,9 @@ public class OrdersActivity extends AppCompatActivity {
         listView_shekvetebi = (ListView) findViewById(R.id.list_shekvetebi);
         t_Tarigi = (TextView) findViewById(R.id.t_tarigi);
         btn_setDate = (Button) findViewById(R.id.btn_setdate);
+        btn_addOrder = (Button) findViewById(R.id.btn_addOrder);
 
-        shekvetebiArrayList = new ArrayList<Shekvetebi>();
+        shekvetebiArrayList = new ArrayList<>();
 
         calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR,4);
@@ -109,6 +111,13 @@ public class OrdersActivity extends AppCompatActivity {
             }
         });
 
+        btn_addOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), ObjListActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
 

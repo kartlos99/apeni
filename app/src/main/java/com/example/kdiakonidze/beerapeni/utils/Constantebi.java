@@ -1,5 +1,7 @@
 package com.example.kdiakonidze.beerapeni.utils;
 
+import com.example.kdiakonidze.beerapeni.models.Obieqti;
+
 import java.util.ArrayList;
 
 /**
@@ -13,5 +15,6 @@ public class Constantebi {
     public static String URL_INS_LUDISSHETANA = "http://apeni.ge/andr_app_links/insert_ludis_shetana.php";
 
     public static ArrayList<String> ludiList = new ArrayList<>();
+    public static ArrayList<Obieqti> OBIEQTEBI = new ArrayList<>();
 
 }

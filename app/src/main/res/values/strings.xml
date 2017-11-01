@@ -7,4 +7,10 @@
     <string name="ludsaxarshi">ლუდსახარში აფენი</string>
     <string name="text_tarigi">თარიღი</string>
     <string name="shekvetis_damateba">შეკვეთის დამატება</string>
+    <string name="_30litri">30ლ</string>
+    <string name="minusi">-</string>
+    <string name="pliusi">+</string>
+    <string name="_50litri">50ლ</string>
+    <string name="sxva_ludis_damateba">სხვა ლუდის დამატება</string>
+    <string name="dadastureba">შეყვანა</string>
 </resources>

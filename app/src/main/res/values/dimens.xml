@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="cardCornerRadius">8dp</dimen>
+    <dimen name="lowElevation">4dp</dimen>
+    <dimen name="plius_minus_TextSize">18sp</dimen>
+    <dimen name="miniBtnSize">44dp</dimen>
+    <dimen name="miniBtnWideSize">50dp</dimen>
+</resources>

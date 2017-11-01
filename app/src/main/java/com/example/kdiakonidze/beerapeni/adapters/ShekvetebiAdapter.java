@@ -21,13 +21,12 @@ import java.util.zip.Inflater;
 
 public class ShekvetebiAdapter extends BaseAdapter{
     private ArrayList<Shekvetebi> shekvetebiArrayList;
-    private Context context;
-    LayoutInflater inflater;
-    ViewHolder viewHolder;
+    private LayoutInflater inflater;
+    private ViewHolder viewHolder;
 
     public ShekvetebiAdapter(Context context, ArrayList<Shekvetebi> shekvetebi) {
         shekvetebiArrayList = shekvetebi;
-        this.context = context;
+
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
