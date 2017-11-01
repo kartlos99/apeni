@@ -1,10 +1,12 @@
 package com.example.kdiakonidze.beerapeni.models;
 
+import java.io.Serializable;
+
 /**
  * Created by k.diakonidze on 10/30/2017.
  */
 
-public class Shekvetebi {
+public class Shekvetebi implements Serializable {
     String obieqti, ludi, tarigi;
     int k30in, k50in, k30wont, k50wont;
 

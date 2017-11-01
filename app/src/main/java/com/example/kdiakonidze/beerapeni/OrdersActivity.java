@@ -64,6 +64,7 @@ public class OrdersActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState){
 
         outState.putString("tarigi", archeuli_dge);
+        outState.putSerializable("order_list",shekvetebiArrayList);
 
         super.onSaveInstanceState(outState);
     }
@@ -79,17 +80,23 @@ public class OrdersActivity extends AppCompatActivity {
         t_Tarigi = (TextView) findViewById(R.id.t_tarigi);
         btn_setDate = (Button) findViewById(R.id.btn_setdate);
 
+        shekvetebiArrayList = new ArrayList<Shekvetebi>();
+
         calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR,4);
 
         if(savedInstanceState!=null){
             archeuli_dge = savedInstanceState.getString("tarigi");
-            Toast.makeText(this,archeuli_dge, Toast.LENGTH_SHORT).show();
+            shekvetebiArrayList.clear();
+            shekvetebiArrayList = (ArrayList<Shekvetebi>) savedInstanceState.getSerializable("order_list");
+            shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(),shekvetebiArrayList);
+            listView_shekvetebi.setAdapter(shekvetebiAdapter);
         }else {
             archeuli_dge = dateFormat.format(calendar.getTime());
+            shekvetebis_chamotvirtva(archeuli_dge);
         }
+
         btn_setDate.setText(archeuli_dge);
-        shekvetebis_chamotvirtva(archeuli_dge);
 
         btn_setDate.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -109,7 +116,7 @@ public class OrdersActivity extends AppCompatActivity {
 
     private void shekvetebis_chamotvirtva(String currentDay) {
         progressDialog = ProgressDialog.show(this,"იტვირთება!", "loading!");
-        shekvetebiArrayList = new ArrayList<Shekvetebi>();
+
         String url = Constantebi.URL_GET_ORDERLIST +"?tarigi="+currentDay;
 
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -119,8 +126,8 @@ public class OrdersActivity extends AppCompatActivity {
             public void onResponse(JSONArray response) {
                 // aq modis obieqtebis chamonatvali
 
+                shekvetebiArrayList.clear();
                 if(response.length() > 0){
-                    shekvetebiArrayList.clear();
                     for (int i=0; i<response.length(); i++){
                         try {
                             Shekvetebi shekveta= new Shekvetebi(
