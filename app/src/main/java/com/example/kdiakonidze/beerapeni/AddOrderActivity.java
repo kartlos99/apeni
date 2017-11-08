@@ -28,7 +28,7 @@ public class AddOrderActivity extends AppCompatActivity {
     EditText eK30Count, eK50Count;
     Obieqti currObieqti;
     Integer beertype = 0;
-    Button btn_newOrderDone, btnBeerLeft, btnBeerRight;
+    Button btn_newOrderDone, btnBeerLeft, btnBeerRight, btnK30dec, btnK30inc, btnK50dec, btnK50inc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +48,41 @@ public class AddOrderActivity extends AppCompatActivity {
         btnBeerLeft = (Button) findViewById(R.id.btn_beerleft);
         btnBeerRight = (Button) findViewById(R.id.btn_beerright);
         t_beerType = (TextView) findViewById(R.id.t_ludisDasaxeleba);
+        t_beerType.setText(Constantebi.ludiList.get(beertype));
 
+        btnK30dec = (Button) findViewById(R.id.btn_k30_dec);
+        btnK30inc = (Button) findViewById(R.id.btn_k30_inc);
+        btnK50dec = (Button) findViewById(R.id.btn_k50_dec);
+        btnK50inc = (Button) findViewById(R.id.btn_k50_inc);
+
+
+        btnK30dec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                eK30Count.setText(pliusMinusText(eK30Count.getText().toString(),false));
+            }
+        });
+
+        btnK30inc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                eK30Count.setText(pliusMinusText(eK30Count.getText().toString(),true));
+            }
+        });
+
+        btnK50dec.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                eK50Count.setText(pliusMinusText(eK50Count.getText().toString(),false));
+            }
+        });
+
+        btnK50inc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                eK50Count.setText(pliusMinusText(eK50Count.getText().toString(),true));
+            }
+        });
 
         btnBeerLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,6 +114,23 @@ public class AddOrderActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private String pliusMinusText(String stringNaomber, boolean oper) {
+        // oper   (true = +) (false = -)
+        if (stringNaomber.equals("")){
+            stringNaomber="0";
+        }
+        int ii = Integer.valueOf(stringNaomber);
+
+        if(oper){
+            ii++;
+        }else{
+            if (ii > 0){
+                ii--;
+            }
+        }
+        return String.valueOf(ii);
     }
 
     private void sendDataToDB(String url) {

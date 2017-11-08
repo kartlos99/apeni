@@ -115,6 +115,7 @@ public class OrdersActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ObjListActivity.class);
+                intent.putExtra("mdebareoba",Constantebi.MDEBAREOBA_SHEKVETA);
                 startActivity(intent);
             }
         });

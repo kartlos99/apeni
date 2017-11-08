@@ -18,4 +18,7 @@ public class Constantebi {
     public static ArrayList<String> ludiList = new ArrayList<>();
     public static ArrayList<Obieqti> OBIEQTEBI = new ArrayList<>();
 
+    public static Integer MDEBAREOBA_SHEKVETA = 1;
+    public static Integer MDEBAREOBA_MITANA = 2;
+
 }

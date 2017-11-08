@@ -54,7 +54,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(addOrderPage);
                 break;
             case R.id.btn_mitana:
-                Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), ObjListActivity.class);
+                intent.putExtra("mdebareoba",Constantebi.MDEBAREOBA_MITANA);
+                startActivity(intent);
                 break;
             case R.id.btn_realiz_dge:
                 Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
