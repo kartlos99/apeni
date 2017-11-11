@@ -14,6 +14,8 @@ public class Constantebi {
     public static String URL_GET_LUDILIST = "http://apeni.ge/andr_app_links/get_ludi_list.php";
     public static String URL_INS_SHEKVETA = "http://apeni.ge/andr_app_links/insert_shekvetebi.php";
     public static String URL_INS_LUDISSHETANA = "http://apeni.ge/andr_app_links/insert_ludis_shetana.php";
+    public static String URL_INS_TAKEMONEY = "http://apeni.ge/andr_app_links/insert_moneyoutput.php";
+    public static String URL_INS_TAKEKASRI = "http://apeni.ge/andr_app_links/insert_kasrioutput.php";
 
     public static ArrayList<String> ludiList = new ArrayList<>();
     public static ArrayList<Obieqti> OBIEQTEBI = new ArrayList<>();
