@@ -5,4 +5,5 @@
     <dimen name="plius_minus_TextSize">18sp</dimen>
     <dimen name="miniBtnSize">44dp</dimen>
     <dimen name="miniBtnWideSize">50dp</dimen>
+    <dimen name="textsize_3">18sp</dimen>
 </resources>

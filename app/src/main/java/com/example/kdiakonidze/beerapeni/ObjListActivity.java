@@ -20,8 +20,18 @@ public class ObjListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_obj_list);
 
-        Intent i = getIntent();
-        mdebareoba = i.getIntExtra("mdebareoba", 0);
+        Intent passed_i = getIntent();
+        mdebareoba = passed_i.getIntExtra("mdebareoba", 0);
+
+        for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
+            int objid = Constantebi.OBIEQTEBI.get(i).getId();
+
+            for (int j = 0; j < Constantebi.FASEBI.size(); j++) {
+                if (objid == Constantebi.FASEBI.get(j).getObj_id()) {
+                    Constantebi.OBIEQTEBI.get(i).setFasebi(Constantebi.FASEBI.get(j).getFasebi());
+                }
+            }
+        }
 
         ObjListAdapter objListAdapter = new ObjListAdapter(this, Constantebi.OBIEQTEBI);
 
@@ -38,7 +48,7 @@ public class ObjListActivity extends AppCompatActivity {
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
-                if(mdebareoba.equals(Constantebi.MDEBAREOBA_MITANA)){
+                if (mdebareoba.equals(Constantebi.MDEBAREOBA_MITANA)) {
                     Intent intent = new Intent(getApplicationContext(), AddDeliveryActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("obieqti", Constantebi.OBIEQTEBI.get(i));

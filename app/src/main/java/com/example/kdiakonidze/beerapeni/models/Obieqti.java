@@ -1,6 +1,7 @@
 package com.example.kdiakonidze.beerapeni.models;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  * Created by k.diakonidze on 11/1/2017.
@@ -9,6 +10,7 @@ import java.io.Serializable;
 public class Obieqti implements Serializable {
     private String dasaxeleba, adress, tel, comment;
     private Integer id;
+    private ArrayList<Double> fasebi = new ArrayList<>();
 
     public Obieqti(String dasaxeleba) {
         this.dasaxeleba = dasaxeleba;
@@ -17,6 +19,14 @@ public class Obieqti implements Serializable {
 
     public Integer getId() {
         return id;
+    }
+
+    public ArrayList<Double> getFasebi() {
+        return fasebi;
+    }
+
+    public void setFasebi(ArrayList<Double> fasebi) {
+        this.fasebi = fasebi;
     }
 
     public void setId(Integer id) {

@@ -1,6 +1,7 @@
 package com.example.kdiakonidze.beerapeni.utils;
 
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
+import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
 
 import java.util.ArrayList;
 
@@ -16,9 +17,12 @@ public class Constantebi {
     public static String URL_INS_LUDISSHETANA = "http://apeni.ge/andr_app_links/insert_ludis_shetana.php";
     public static String URL_INS_TAKEMONEY = "http://apeni.ge/andr_app_links/insert_moneyoutput.php";
     public static String URL_INS_TAKEKASRI = "http://apeni.ge/andr_app_links/insert_kasrioutput.php";
+    public static String URL_GET_DAVALIANEBA = "http://apeni.ge/andr_app_links/get_davalianeba.php";
+    public static String URL_GET_FASEBI = "http://apeni.ge/andr_app_links/get_fasebi.php";
 
     public static ArrayList<String> ludiList = new ArrayList<>();
     public static ArrayList<Obieqti> OBIEQTEBI = new ArrayList<>();
+    public static ArrayList<PeerObjPrice> FASEBI = new ArrayList<>();
 
     public static Integer MDEBAREOBA_SHEKVETA = 1;
     public static Integer MDEBAREOBA_MITANA = 2;

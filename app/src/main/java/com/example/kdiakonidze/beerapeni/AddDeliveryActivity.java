@@ -15,17 +15,21 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class AddDeliveryActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView t_deliveryInfo, t_beerType;
+    TextView t_deliveryInfo, t_beerType, t_davalanebaM, t_davalanebaK;
     EditText eK30Count, eK50Count, eK30Count_Kout, eK50Count_Kout, eTakeMoney;
     Obieqti currObieqti;
     Integer beertype = 0;
@@ -53,7 +57,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         btnK50dec_Kout.setOnClickListener(this);
         btnK50inc_Kout.setOnClickListener(this);
 
-        t_beerType.setText(Constantebi.ludiList.get(beertype));
+        t_beerType.setText(Constantebi.ludiList.get(beertype)+"\n" +currObieqti.getFasebi().get(beertype));
 
         btnBeerLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +66,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 if (beertype < 0) {
                     beertype = beertype + Constantebi.ludiList.size();
                 }
-                t_beerType.setText(Constantebi.ludiList.get(beertype));
+                t_beerType.setText(Constantebi.ludiList.get(beertype)+"\n" +currObieqti.getFasebi().get(beertype));
             }
         });
 
@@ -73,7 +77,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 if (beertype == Constantebi.ludiList.size()) {
                     beertype = beertype - Constantebi.ludiList.size();
                 }
-                t_beerType.setText(Constantebi.ludiList.get(beertype));
+                t_beerType.setText(Constantebi.ludiList.get(beertype)+"\n" +currObieqti.getFasebi().get(beertype));
             }
         });
 
@@ -95,8 +99,52 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
+        get_davalianeba();
 
+    }
 
+    private void get_davalianeba() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        String url = Constantebi.URL_GET_DAVALIANEBA;
+
+        JsonArrayRequest request_davalianeba = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                // aq modis davalianebis chamonaTvali yvela obieqtistvis
+
+                if(response.length() > 0){
+                    Integer davalianebaM = 0, davalianebaK = 0;
+
+                    for (int i=0; i<response.length(); i++){
+                        try {
+
+                            if(response.getJSONObject(i).getInt("obj_id") == currObieqti.getId()){
+                                davalianebaM = response.getJSONObject(i).getInt("pr") - response.getJSONObject(i).getInt("pay");
+                                davalianebaK = response.getJSONObject(i).getInt("k30in") - response.getJSONObject(i).getInt("k30out")
+                                        + response.getJSONObject(i).getInt("k50in") - response.getJSONObject(i).getInt("k50out");
+                            }
+
+                            t_davalanebaM.setText("დავალიანება\n"+davalianebaM);
+                            t_davalanebaK.setText("კასრი\n"+davalianebaK);
+
+                        }catch (JSONException excep){
+                            excep.printStackTrace();
+                        }
+                    }
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        queue.add(request_davalianeba);
     }
 
     private void initial_findviews() {
@@ -121,6 +169,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
 
         t_beerType = (TextView) findViewById(R.id.t_ludisDasaxeleba);
         t_deliveryInfo = (TextView) findViewById(R.id.t_DeliveryInfo);
+        t_davalanebaM = (TextView) findViewById(R.id.t_davalianebaM);
+        t_davalanebaK = (TextView) findViewById(R.id.t_davalianebaK);
     }
 
     private String pliusMinusText(String stringNaomber, boolean oper) {
@@ -197,7 +247,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 if (op_type == 1) {
                     params.put("beer_type", String.valueOf(beertype + 1));
                     params.put("litraji", "0"); // serverze vangarishob chawerisas
-                    params.put("ert_fasi", "111");// chasasworebelia
+                    params.put("ert_fasi", currObieqti.getFasebi().get(beertype).toString());// chasasworebelia
                     params.put("k30", eK30Count.getText().toString());
                     params.put("k50", eK50Count.getText().toString());
                 }

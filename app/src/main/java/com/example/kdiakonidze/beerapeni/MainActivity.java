@@ -15,6 +15,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
+import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 
 import org.json.JSONArray;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
 
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_shekvetebi:
                 Intent addOrderPage = new Intent();
                 addOrderPage.setClass(getApplicationContext(), OrdersActivity.class);
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_mitana:
                 Intent intent = new Intent(getApplicationContext(), ObjListActivity.class);
-                intent.putExtra("mdebareoba",Constantebi.MDEBAREOBA_MITANA);
+                intent.putExtra("mdebareoba", Constantebi.MDEBAREOBA_MITANA);
                 startActivity(intent);
                 break;
             case R.id.btn_realiz_dge:
@@ -69,10 +70,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void get_BaseUnits(){
+    private void get_BaseUnits() {
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        progressDialog = ProgressDialog.show(this,"იტვირთება!", "loading!");
+        progressDialog = ProgressDialog.show(this, "იტვირთება!", "loading!");
 
         String url = Constantebi.URL_GET_OBIEQTS;
 
@@ -82,9 +83,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 // aq modis obieqtebis chamonatvali
                 Toast.makeText(MainActivity.this, "wamoigo", Toast.LENGTH_LONG).show();
                 Constantebi.OBIEQTEBI.clear();
-                if(response.length() > 0){
+                if (response.length() > 0) {
 
-                    for (int i=0; i<response.length(); i++){
+                    for (int i = 0; i < response.length(); i++) {
                         try {
                             Obieqti axaliObieqti = new Obieqti(response.getJSONObject(i).getString("dasaxeleba"));
                             axaliObieqti.setAdress(response.getJSONObject(i).getString("adress"));
@@ -94,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                             Constantebi.OBIEQTEBI.add(axaliObieqti);
 
-                        }catch (JSONException excep){
+                        } catch (JSONException excep) {
                             excep.printStackTrace();
                         }
                     }
@@ -117,15 +118,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(JSONArray response) {
                 Constantebi.ludiList.clear();
-                if(response.length()>0){
-                    for (int i=0; i<response.length(); i++){
+                if (response.length() > 0) {
+                    for (int i = 0; i < response.length(); i++) {
                         try {
                             Constantebi.ludiList.add(response.getJSONObject(i).getString("dasaxeleba"));
-                        }catch (JSONException excep){
+                        } catch (JSONException excep) {
                             excep.printStackTrace();
                         }
                     }
-                }else{
+                } else {
                     Toast.makeText(MainActivity.this, "ლუდის სახეოების მონაცემებია შესაყვანი!", Toast.LENGTH_LONG).show();
                     Constantebi.ludiList.add("N.A.");
                 }
@@ -137,6 +138,47 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        // ludis fasebi titoeuli obieqtistvis
+        JsonArrayRequest request_fasebi = new JsonArrayRequest(Constantebi.URL_GET_FASEBI, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                Constantebi.FASEBI.clear();
+                Integer objid = 0;
+                if (response.length() > 0) {
+                    try {
+                        objid = response.getJSONObject(0).getInt("obj_id");
+
+                        PeerObjPrice objPrice = new PeerObjPrice(objid);
+
+                        for (int i = 0; i < response.length(); i++) {
+                            if(objid == response.getJSONObject(i).getInt("obj_id")){
+                                objPrice.getFasebi().add(response.getJSONObject(i).getDouble("fasi"));
+                            }else{
+                                Constantebi.FASEBI.add(objPrice);
+
+                                objid = response.getJSONObject(i).getInt("obj_id");
+                                objPrice = new PeerObjPrice(objid);
+                                objPrice.getFasebi().add(response.getJSONObject(i).getDouble("fasi"));
+                            }
+                        }
+                        Constantebi.FASEBI.add(objPrice);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    Toast.makeText(MainActivity.this, "ლუდის სახეოების მონაცემებია შესაყვანი!", Toast.LENGTH_LONG).show();
+                    Constantebi.ludiList.add("N.A.");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        queue.add(request_fasebi);
         queue.add(requestObieqtebi);
         queue.add(requestLudiList);
     }
