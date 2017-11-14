@@ -22,7 +22,8 @@
         <activity android:name=".OrdersActivity" />
         <activity android:name=".ObjListActivity" />
         <activity android:name=".AddOrderActivity" />
-        <activity android:name=".AddDeliveryActivity"></activity>
+        <activity android:name=".AddDeliveryActivity" />
+        <activity android:name=".DaySaleActivity"></activity>
     </application>
 
 </manifest>

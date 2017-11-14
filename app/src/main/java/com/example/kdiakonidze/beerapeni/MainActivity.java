@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.btn_realiz_dge:
-                Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
+                Intent salesIntent = new Intent(getApplicationContext(), DaySaleActivity.class);
+                startActivity(salesIntent);
                 break;
             case R.id.btn_realiz_obj:
                 Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
