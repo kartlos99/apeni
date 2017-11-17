@@ -23,7 +23,8 @@
         <activity android:name=".ObjListActivity" />
         <activity android:name=".AddOrderActivity" />
         <activity android:name=".AddDeliveryActivity" />
-        <activity android:name=".DaySaleActivity"></activity>
+        <activity android:name=".DaySaleActivity" />
+        <activity android:name=".AmonaweriActivity"></activity>
     </application>
 
 </manifest>

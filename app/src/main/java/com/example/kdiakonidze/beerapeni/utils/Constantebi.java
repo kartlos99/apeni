@@ -20,6 +20,8 @@ public class Constantebi {
     public static String URL_GET_DAVALIANEBA = "http://apeni.ge/andr_app_links/get_davalianeba.php";
     public static String URL_GET_FASEBI = "http://apeni.ge/andr_app_links/get_fasebi.php";
     public static String URL_GET_SALEDAY = "http://apeni.ge/andr_app_links/view_sale_day.php";
+    public static String URL_GET_AMONAWERI = "http://apeni.ge/andr_app_links/get_amonaweri_m.php";
+    public static String URL_GET_AMONAWERI_K = "http://apeni.ge/andr_app_links/get_amonaweri_k.php";
 
     public static ArrayList<String> ludiList = new ArrayList<>();
     public static ArrayList<Obieqti> OBIEQTEBI = new ArrayList<>();
@@ -27,5 +29,6 @@ public class Constantebi {
 
     public static Integer MDEBAREOBA_SHEKVETA = 1;
     public static Integer MDEBAREOBA_MITANA = 2;
+    public static Integer MDEBAREOBA_AMONAWERI = 3;
 
 }

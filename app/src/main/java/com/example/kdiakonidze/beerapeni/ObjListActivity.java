@@ -55,6 +55,13 @@ public class ObjListActivity extends AppCompatActivity {
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
+                if (mdebareoba.equals(Constantebi.MDEBAREOBA_AMONAWERI)) {
+                    Intent intent = new Intent(getApplicationContext(), AmonaweriActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("obieqti", Constantebi.OBIEQTEBI.get(i));
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
             }
         });
     }

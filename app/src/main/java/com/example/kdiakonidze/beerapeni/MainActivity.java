@@ -64,7 +64,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(salesIntent);
                 break;
             case R.id.btn_realiz_obj:
-                Toast.makeText(this, "2", Toast.LENGTH_SHORT).show();
+                Intent amonaweriIintent = new Intent(getApplicationContext(), ObjListActivity.class);
+                amonaweriIintent.putExtra("mdebareoba", Constantebi.MDEBAREOBA_AMONAWERI);
+                startActivity(amonaweriIintent);
                 break;
             default:
                 Toast.makeText(this, "uups", Toast.LENGTH_SHORT).show();
