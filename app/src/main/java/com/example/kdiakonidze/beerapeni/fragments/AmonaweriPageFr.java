@@ -44,7 +44,7 @@ public class AmonaweriPageFr extends Fragment {
     private Calendar calendar;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private ArrayList<Amonaweri> amonaweriArrayList;
-    private String archeuli_dge;
+    private String gasagzavni_tarigi;
     private int location = -1, id = -1;
 
 
@@ -83,9 +83,8 @@ public class AmonaweriPageFr extends Fragment {
         amonaweriArrayList = new ArrayList<>();
 
         calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR,4);
-        archeuli_dge = dateFormat.format(calendar.getTime());
-
+        calendar.add(Calendar.HOUR,24+4);
+        gasagzavni_tarigi = dateFormat.format(calendar.getTime()); // anu es dge rom bolomde chaitvalos
 
     }
 
@@ -93,10 +92,12 @@ public class AmonaweriPageFr extends Fragment {
     public void onResume() {
         super.onResume();
 
-        setNewData(archeuli_dge, id);
+        setNewData(gasagzavni_tarigi, id);
     }
 
     public void setNewData(String tarigi, int objID) {
+        // tarigi aris shemdegi dgis 00:00 saati
+        gasagzavni_tarigi = tarigi;
         progressDialog = ProgressDialog.show(getContext(), "იტვირთება!", "დაელოდეთ!");
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url="";

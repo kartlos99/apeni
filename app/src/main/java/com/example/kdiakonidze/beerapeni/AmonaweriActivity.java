@@ -42,10 +42,10 @@ public class AmonaweriActivity extends AppCompatActivity {
 
     private Calendar calendar;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private String archeuli_dge;
+    private String archeuli_dge, gasagzavni_tarigi;
     private Button btn_setDate;
     private Obieqti currObieqti;
-    private TextView t_objInfo, t_davalianebaM, t_davalianebaK;
+    private TextView t_objInfo;
     private ViewPager viewPager;
     private TabLayout tabLayout;
     FragmentManager fragmentManager;
@@ -59,9 +59,13 @@ public class AmonaweriActivity extends AppCompatActivity {
             archeuli_dge = dateFormat.format(calendar.getTime());
             btn_setDate.setText(archeuli_dge);
 
-            AmonaweriPageFr fragmentM = (AmonaweriPageFr) pagerAdapter.getFragmentM();
+            calendar.add(Calendar.HOUR,24);
+            gasagzavni_tarigi = dateFormat.format(calendar.getTime());
 
-            fragmentM.setNewData(archeuli_dge, currObieqti.getId());
+            AmonaweriPageFr fragmentM = (AmonaweriPageFr) pagerAdapter.getFragmentM();
+            AmonaweriPageFr fragmentK = (AmonaweriPageFr) pagerAdapter.getFragmentK();
+            fragmentM.setNewData(gasagzavni_tarigi, currObieqti.getId());
+            fragmentK.setNewData(gasagzavni_tarigi, currObieqti.getId());
 
             t_objInfo.setText(currObieqti.getDasaxeleba()+"\nთარიღი "+archeuli_dge);
         }
