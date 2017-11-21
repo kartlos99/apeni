@@ -7,4 +7,5 @@
     <dimen name="miniBtnWideSize">50dp</dimen>
     <dimen name="textsize_3">18sp</dimen>
     <dimen name="textsize_4">24sp</dimen>
+    <dimen name="header_hiegth">172dp</dimen>
 </resources>

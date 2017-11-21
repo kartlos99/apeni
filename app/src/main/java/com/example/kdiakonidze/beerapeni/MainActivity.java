@@ -3,8 +3,14 @@ package com.example.kdiakonidze.beerapeni;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -23,13 +29,21 @@ import org.json.JSONException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btn_shekvetebi, btn_mitana, btn_dayRealiz, btn_objRealiz;
-    ProgressDialog progressDialog;
+    private Button btn_shekvetebi, btn_mitana, btn_dayRealiz, btn_objRealiz;
+    private ProgressDialog progressDialog;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
+    private ActionBarDrawerToggle toggle;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
+        navigationView = (NavigationView) findViewById(R.id.navig_view);
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
 
         btn_shekvetebi = (Button) findViewById(R.id.btn_shekvetebi);
         btn_mitana = (Button) findViewById(R.id.btn_mitana);
@@ -41,9 +55,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_dayRealiz.setOnClickListener(MainActivity.this);
         btn_objRealiz.setOnClickListener(MainActivity.this);
 
+        setSupportActionBar(toolbar);
+        toolbar.setTitle(R.string.app_name);
+
+        toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                drawerLayout.closeDrawers();
+
+                switch (item.getItemId()) {
+                    case R.id.m_addobj:
+                        Toast.makeText(getApplicationContext(), "aris", Toast.LENGTH_SHORT).show();
+                        return true;
+
+                    case R.id.m_adduser:
+
+                        return true;
+
+                    case R.id.m_addbeer:
+
+                        return true;
+                }
+
+
+                return false;
+            }
+        });
+
         get_BaseUnits();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(toggle.onOptionsItemSelected(item)){
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public void onClick(View view) {

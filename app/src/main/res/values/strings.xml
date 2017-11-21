@@ -17,4 +17,9 @@
     <string name="gadaxdili_tanxa">გადახდილი თანხა</string>
     <string name="default_0">0</string>
     <string name="gayidvebi">გაყიდვები</string>
+    <string name="add_object">ობიექტის დამატება</string>
+    <string name="add_user">მომხმარებლის დამატება</string>
+    <string name="add_beer">ლუდის დამატება</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
 </resources>
