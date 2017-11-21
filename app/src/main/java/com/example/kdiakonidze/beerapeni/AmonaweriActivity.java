@@ -42,7 +42,7 @@ public class AmonaweriActivity extends AppCompatActivity {
 
     private Calendar calendar;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private String archeuli_dge, gasagzavni_tarigi;
+    private String archeuli_dge, gasagzavni_tarigi, title_0 = "დავალიანება", title_1 = "კასრი";
     private Button btn_setDate;
     private Obieqti currObieqti;
     private TextView t_objInfo;
@@ -55,11 +55,11 @@ public class AmonaweriActivity extends AppCompatActivity {
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            calendar.set(year,month,day);
+            calendar.set(year, month, day);
             archeuli_dge = dateFormat.format(calendar.getTime());
             btn_setDate.setText(archeuli_dge);
 
-            calendar.add(Calendar.HOUR,24);
+            calendar.add(Calendar.HOUR, 24);
             gasagzavni_tarigi = dateFormat.format(calendar.getTime());
 
             AmonaweriPageFr fragmentM = (AmonaweriPageFr) pagerAdapter.getFragmentM();
@@ -67,9 +67,17 @@ public class AmonaweriActivity extends AppCompatActivity {
             fragmentM.setNewData(gasagzavni_tarigi, currObieqti.getId());
             fragmentK.setNewData(gasagzavni_tarigi, currObieqti.getId());
 
-            t_objInfo.setText(currObieqti.getDasaxeleba()+"\nთარიღი "+archeuli_dge);
+            t_objInfo.setText(currObieqti.getDasaxeleba() + "\nთარიღი " + archeuli_dge);
         }
     };
+
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString("tarigi", archeuli_dge);
+        outState.putString("vali_m", title_0);
+        outState.putString("vali_k", title_1);
+
+        super.onSaveInstanceState(outState);
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -84,14 +92,21 @@ public class AmonaweriActivity extends AppCompatActivity {
 
 
         calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR,4);
-        archeuli_dge = dateFormat.format(calendar.getTime());
+        calendar.add(Calendar.HOUR, 4);
 
         Intent i = getIntent();
         Bundle importedBundle = i.getExtras();
         currObieqti = (Obieqti) importedBundle.getSerializable("obieqti");
 
-        t_objInfo.setText(currObieqti.getDasaxeleba()+"\nთარიღი "+archeuli_dge);
+        if (savedInstanceState != null) {
+            archeuli_dge = savedInstanceState.getString("tarigi");
+            title_0 = savedInstanceState.getString("vali_m");
+            title_1 = savedInstanceState.getString("vali_k");
+        } else {
+            archeuli_dge = dateFormat.format(calendar.getTime());
+        }
+
+        t_objInfo.setText(currObieqti.getDasaxeleba() + "\nთარიღი " + archeuli_dge);
 
         btn_setDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,6 +124,9 @@ public class AmonaweriActivity extends AppCompatActivity {
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
+        tabLayout.getTabAt(0).setText(title_0);
+        tabLayout.getTabAt(1).setText(title_1);
+
         get_davalianeba();
     }
 
@@ -122,26 +140,23 @@ public class AmonaweriActivity extends AppCompatActivity {
             public void onResponse(JSONArray response) {
                 // aq modis davalianebis chamonaTvali yvela obieqtistvis
 
-                if(response.length() > 0){
+                if (response.length() > 0) {
                     Integer davalianebaM = 0, davalianebaK = 0;
 
-                    for (int i=0; i<response.length(); i++){
+                    for (int i = 0; i < response.length(); i++) {
                         try {
 
-                            if(response.getJSONObject(i).getInt("obj_id") == currObieqti.getId()) {
+                            if (response.getJSONObject(i).getInt("obj_id") == currObieqti.getId()) {
                                 davalianebaM = response.getJSONObject(i).getInt("pr") - response.getJSONObject(i).getInt("pay");
                                 davalianebaK = response.getJSONObject(i).getInt("k30in") - response.getJSONObject(i).getInt("k30out")
                                         + response.getJSONObject(i).getInt("k50in") - response.getJSONObject(i).getInt("k50out");
 
-
-                                String titles[] = {"", ""};
-                                titles[0] = "დავალიანება\n" + davalianebaM;
-                                titles[1] = "კასრი\n" + davalianebaK;
-                                pagerAdapter.setTitles(titles);
-                                tabLayout.getTabAt(0).setText("დავალიანება\n" + davalianebaM);
-                                tabLayout.getTabAt(1).setText("კასრი\n" + davalianebaK);
+                                title_0 = "დავალიანება\n" + davalianebaM;
+                                title_1 = "კასრი\n" + davalianebaK;
+                                tabLayout.getTabAt(0).setText(title_0);
+                                tabLayout.getTabAt(1).setText(title_1);
                             }
-                        }catch (JSONException excep){
+                        } catch (JSONException excep) {
                             excep.printStackTrace();
                         }
                     }

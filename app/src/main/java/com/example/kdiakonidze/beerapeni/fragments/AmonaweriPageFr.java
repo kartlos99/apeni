@@ -46,6 +46,7 @@ public class AmonaweriPageFr extends Fragment {
     private ArrayList<Amonaweri> amonaweriArrayList;
     private String gasagzavni_tarigi;
     private int location = -1, id = -1;
+    Boolean chamosatvirtia = true;
 
 
     @Nullable
@@ -62,11 +63,37 @@ public class AmonaweriPageFr extends Fragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        outState.putString("tarigi", gasagzavni_tarigi);
+        outState.putSerializable("amonaweri", amonaweriArrayList);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        amonaweriArrayList = new ArrayList<>();
+        calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR,24+4); // anu es dge rom bolomde chaitvalos
+
         location = getArguments().getInt("location"); // romel gverdze vart
         id = getArguments().getInt("id");
+
+        if (savedInstanceState != null) {
+            gasagzavni_tarigi = savedInstanceState.getString("tarigi");
+            amonaweriArrayList.clear();
+            amonaweriArrayList = (ArrayList<Amonaweri>) savedInstanceState.getSerializable("amonaweri");
+            AmonaweriAdapter adapter = new AmonaweriAdapter(getContext(), amonaweriArrayList, location);
+            amonaweriList.setAdapter(adapter);
+
+            chamosatvirtia = false;
+        } else {
+            gasagzavni_tarigi = dateFormat.format(calendar.getTime());
+            chamosatvirtia = true;
+        }
 
         t_tarigi.setText("თარიღი");
         if (location == 0) {
@@ -80,19 +107,14 @@ public class AmonaweriPageFr extends Fragment {
             t_balance.setText("ნაშთი");
         }
 
-        amonaweriArrayList = new ArrayList<>();
-
-        calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR,24+4);
-        gasagzavni_tarigi = dateFormat.format(calendar.getTime()); // anu es dge rom bolomde chaitvalos
-
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        setNewData(gasagzavni_tarigi, id);
+        if(chamosatvirtia) {
+            setNewData(gasagzavni_tarigi, id);
+        }
     }
 
     public void setNewData(String tarigi, int objID) {

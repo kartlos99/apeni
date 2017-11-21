@@ -48,13 +48,14 @@ public class OrdersActivity extends AppCompatActivity {
     ArrayList<Shekvetebi> shekvetebiArrayList;
     ShekvetebiAdapter shekvetebiAdapter;
     Calendar calendar;
+    Boolean chamosatvirtia = true;
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 
     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            calendar.set(year,month,day);
+            calendar.set(year, month, day);
             archeuli_dge = dateFormat.format(calendar.getTime());
             btn_setDate.setText(archeuli_dge);
             shekvetebis_chamotvirtva(archeuli_dge);
@@ -62,11 +63,9 @@ public class OrdersActivity extends AppCompatActivity {
     };
 
     @Override
-    public void onSaveInstanceState(Bundle outState){
-
+    public void onSaveInstanceState(Bundle outState) {
         outState.putString("tarigi", archeuli_dge);
-        outState.putSerializable("order_list",shekvetebiArrayList);
-
+        outState.putSerializable("order_list", shekvetebiArrayList);
         super.onSaveInstanceState(outState);
     }
 
@@ -85,17 +84,18 @@ public class OrdersActivity extends AppCompatActivity {
         shekvetebiArrayList = new ArrayList<>();
 
         calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR,4);
+        calendar.add(Calendar.HOUR, 4);
 
-        if(savedInstanceState!=null){
+        if (savedInstanceState != null) {
             archeuli_dge = savedInstanceState.getString("tarigi");
             shekvetebiArrayList.clear();
             shekvetebiArrayList = (ArrayList<Shekvetebi>) savedInstanceState.getSerializable("order_list");
-            shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(),shekvetebiArrayList);
+            shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(), shekvetebiArrayList);
             listView_shekvetebi.setAdapter(shekvetebiAdapter);
-        }else {
+            chamosatvirtia = false;
+        } else {
             archeuli_dge = dateFormat.format(calendar.getTime());
-            shekvetebis_chamotvirtva(archeuli_dge);
+            chamosatvirtia = true;
         }
 
         btn_setDate.setText(archeuli_dge);
@@ -115,32 +115,44 @@ public class OrdersActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ObjListActivity.class);
-                intent.putExtra("mdebareoba",Constantebi.MDEBAREOBA_SHEKVETA);
+                intent.putExtra("mdebareoba", Constantebi.MDEBAREOBA_SHEKVETA);
                 startActivity(intent);
             }
         });
 
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        chamosatvirtia = true;
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (chamosatvirtia) {
+            shekvetebis_chamotvirtva(archeuli_dge);
+        }
     }
 
     private void shekvetebis_chamotvirtva(String currentDay) {
-        progressDialog = ProgressDialog.show(this,"იტვირთება!", "loading!");
+        progressDialog = ProgressDialog.show(this, "იტვირთება!", "loading!");
 
-        String url = Constantebi.URL_GET_ORDERLIST +"?tarigi="+currentDay;
+        String url = Constantebi.URL_GET_ORDERLIST + "?tarigi=" + currentDay;
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        JsonArrayRequest requestObieqtebi = new JsonArrayRequest( url, new Response.Listener<JSONArray>() {
+        JsonArrayRequest requestObieqtebi = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 // aq modis obieqtebis chamonatvali
 
                 shekvetebiArrayList.clear();
-                if(response.length() > 0){
-                    for (int i=0; i<response.length(); i++){
+                if (response.length() > 0) {
+                    for (int i = 0; i < response.length(); i++) {
                         try {
-                            Shekvetebi shekveta= new Shekvetebi(
+                            Shekvetebi shekveta = new Shekvetebi(
                                     response.getJSONObject(i).getString("obieqti"),
                                     response.getJSONObject(i).getString("dasaxeleba"),
                                     response.getJSONObject(i).getInt("in_30"),
@@ -151,13 +163,13 @@ public class OrdersActivity extends AppCompatActivity {
 
                             shekvetebiArrayList.add(shekveta);
 
-                        }catch (JSONException excep){
+                        } catch (JSONException excep) {
                             excep.printStackTrace();
                         }
                     }
                 }
 
-                shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(),shekvetebiArrayList);
+                shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(), shekvetebiArrayList);
                 listView_shekvetebi.setAdapter(shekvetebiAdapter);
 
                 progressDialog.dismiss();
