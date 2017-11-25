@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.kdiakonidze.beerapeni.models.BeerModel;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.app_name);
 
-        toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -72,6 +73,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 switch (item.getItemId()) {
                     case R.id.m_addobj:
                         Toast.makeText(getApplicationContext(), "aris", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), AddEditObject.class);
+                        startActivity(intent);
                         return true;
 
                     case R.id.m_adduser:
@@ -81,6 +84,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case R.id.m_addbeer:
 
                         return true;
+                    case R.id.m_logout:
+                        Constantebi.loged_in = false;
+                        Intent loginpage = new Intent(getApplicationContext(), LoginActivity.class);
+//                        loginpage.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                        startActivity(loginpage);
+                        return true;
                 }
 
 
@@ -89,11 +98,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         get_BaseUnits();
+
+    }
+
+    @Override
+    protected void onStart() {
+        if (!Constantebi.loged_in) {
+            Intent loginpage = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(loginpage);
+        }
+        super.onStart();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(toggle.onOptionsItemSelected(item)){
+        if (toggle.onOptionsItemSelected(item)) {
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -106,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_shekvetebi:
                 Intent addOrderPage = new Intent();
                 addOrderPage.setClass(getApplicationContext(), OrdersActivity.class);
+//                addOrderPage.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(addOrderPage);
                 break;
             case R.id.btn_mitana:
@@ -178,14 +198,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (response.length() > 0) {
                     for (int i = 0; i < response.length(); i++) {
                         try {
-                            Constantebi.ludiList.add(response.getJSONObject(i).getString("dasaxeleba"));
+                            BeerModel newBeer = new BeerModel();
+                            newBeer.setId(response.getJSONObject(i).getInt("id"));
+                            newBeer.setDasaxeleba(response.getJSONObject(i).getString("dasaxeleba"));
+                            newBeer.setFasi(response.getJSONObject(i).getDouble("fasi"));
+
+                            Constantebi.ludiList.add(newBeer);
+
                         } catch (JSONException excep) {
                             excep.printStackTrace();
                         }
                     }
                 } else {
                     Toast.makeText(MainActivity.this, "ლუდის სახეოების მონაცემებია შესაყვანი!", Toast.LENGTH_LONG).show();
-                    Constantebi.ludiList.add("N.A.");
                 }
             }
         }, new Response.ErrorListener() {
@@ -208,9 +233,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         PeerObjPrice objPrice = new PeerObjPrice(objid);
 
                         for (int i = 0; i < response.length(); i++) {
-                            if(objid == response.getJSONObject(i).getInt("obj_id")){
+                            if (objid == response.getJSONObject(i).getInt("obj_id")) {
                                 objPrice.getFasebi().add(response.getJSONObject(i).getDouble("fasi"));
-                            }else{
+                            } else {
                                 Constantebi.FASEBI.add(objPrice);
 
                                 objid = response.getJSONObject(i).getInt("obj_id");
@@ -225,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 } else {
                     Toast.makeText(MainActivity.this, "ლუდის სახეოების მონაცემებია შესაყვანი!", Toast.LENGTH_LONG).show();
-                    Constantebi.ludiList.add("N.A.");
+
                 }
             }
         }, new Response.ErrorListener() {

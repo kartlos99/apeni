@@ -24,7 +24,9 @@
         <activity android:name=".AddOrderActivity" />
         <activity android:name=".AddDeliveryActivity" />
         <activity android:name=".DaySaleActivity" />
-        <activity android:name=".AmonaweriActivity"></activity>
+        <activity android:name=".AmonaweriActivity" />
+        <activity android:name=".AddEditObject" />
+        <activity android:name=".LoginActivity"></activity>
     </application>
 
 </manifest>

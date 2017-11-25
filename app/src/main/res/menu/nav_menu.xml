@@ -20,5 +20,11 @@
             android:icon="@drawable/beer_icon"
             android:title="@string/add_beer" />
 
+        <item
+            android:id="@+id/m_logout"
+            android:checked="false"
+            android:icon="@drawable/beer_icon"
+            android:title="@string/logout" />
+
     </group>
 </menu>

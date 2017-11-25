@@ -57,7 +57,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         btnK50dec_Kout.setOnClickListener(this);
         btnK50inc_Kout.setOnClickListener(this);
 
-        t_beerType.setText(Constantebi.ludiList.get(beertype)+"\n" +currObieqti.getFasebi().get(beertype));
+        t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba()+"\n" +currObieqti.getFasebi().get(beertype));
 
         btnBeerLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +66,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 if (beertype < 0) {
                     beertype = beertype + Constantebi.ludiList.size();
                 }
-                t_beerType.setText(Constantebi.ludiList.get(beertype)+"\n" +currObieqti.getFasebi().get(beertype));
+                t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba()+"\n" +currObieqti.getFasebi().get(beertype));
             }
         });
 
@@ -77,7 +77,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 if (beertype == Constantebi.ludiList.size()) {
                     beertype = beertype - Constantebi.ludiList.size();
                 }
-                t_beerType.setText(Constantebi.ludiList.get(beertype)+"\n" +currObieqti.getFasebi().get(beertype));
+                t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba()+"\n" +currObieqti.getFasebi().get(beertype));
             }
         });
 

@@ -48,7 +48,7 @@ public class AddOrderActivity extends AppCompatActivity {
         btnBeerLeft = (Button) findViewById(R.id.btn_beerleft);
         btnBeerRight = (Button) findViewById(R.id.btn_beerright);
         t_beerType = (TextView) findViewById(R.id.t_ludisDasaxeleba);
-        t_beerType.setText(Constantebi.ludiList.get(beertype));
+        t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba());
 
         btnK30dec = (Button) findViewById(R.id.btn_k30_dec);
         btnK30inc = (Button) findViewById(R.id.btn_k30_inc);
@@ -91,7 +91,7 @@ public class AddOrderActivity extends AppCompatActivity {
                 if (beertype < 0) {
                     beertype = beertype + Constantebi.ludiList.size();
                 }
-                t_beerType.setText(Constantebi.ludiList.get(beertype));
+                t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba());
             }
         });
 
@@ -102,7 +102,7 @@ public class AddOrderActivity extends AppCompatActivity {
                 if (beertype == Constantebi.ludiList.size()) {
                     beertype = beertype - Constantebi.ludiList.size();
                 }
-                t_beerType.setText(Constantebi.ludiList.get(beertype));
+                t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba());
             }
         });
 

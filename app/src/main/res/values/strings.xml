@@ -22,4 +22,9 @@
     <string name="add_beer">ლუდის დამატება</string>
     <string name="open">Open</string>
     <string name="close">Close</string>
+    <string name="logout">Log Out</string>
+    <string name="dasaxeleba">დასახელება</string>
+    <string name="username">მომხმარებელი</string>
+    <string name="password">პაროლი</string>
+    <string name="login">შესვლა</string>
 </resources>
