@@ -26,7 +26,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AddEditObject extends AppCompatActivity {
-    TextInputLayout e_name;
+    TextInputLayout e_name, e_adress, e_tel, e_comment;
+    String fasebi = "", id_ebi;
     LinearLayout linearLayout_fasebi;
 
     @Override
@@ -35,12 +36,15 @@ public class AddEditObject extends AppCompatActivity {
         setContentView(R.layout.activity_add_edit_object);
 
         e_name = (TextInputLayout) findViewById(R.id.e_addobj_name);
+        e_adress = (TextInputLayout) findViewById(R.id.e_addobj_adress);
+        e_tel = (TextInputLayout) findViewById(R.id.e_addobj_tel);
+        e_comment = (TextInputLayout) findViewById(R.id.e_addobj_comment);
         linearLayout_fasebi = (LinearLayout) findViewById(R.id.linear_addobj_prices);
         Button btn_done = (Button) findViewById(R.id.btn_addobj_done);
 
 
-//        for (int i = 0; i < Constantebi.ludiList.size(); i++) {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < Constantebi.ludiList.size(); i++) {
+
             LinearLayout h_Layout = new LinearLayout(this);
             h_Layout.setOrientation(LinearLayout.HORIZONTAL);
             h_Layout.setGravity(Gravity.RIGHT);
@@ -49,12 +53,12 @@ public class AddEditObject extends AppCompatActivity {
             editText.setGravity(Gravity.CENTER);
             editText.setWidth(350);
 //            editText.setText("haimee_"+i);
-            editText.setHint("pr.");
+            editText.setHint(Constantebi.ludiList.get(i).getFasi().toString());
             editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
 
             TextView textView = new TextView(this);
             textView.setId(100 + i);
-            textView.setText("names");
+            textView.setText(Constantebi.ludiList.get(i).getDasaxeleba());
 
             h_Layout.addView(textView, 0);
             h_Layout.addView(editText, 1);
@@ -64,7 +68,8 @@ public class AddEditObject extends AppCompatActivity {
         btn_done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String fasebi = "";
+                fasebi = "";
+                id_ebi = "";
 
                 for (int i = 0; i < linearLayout_fasebi.getChildCount(); i++) {
                     View element = linearLayout_fasebi.getChildAt(i);
@@ -72,12 +77,21 @@ public class AddEditObject extends AppCompatActivity {
                     View element2 = h_row.getChildAt(1);
                     if (element2 instanceof EditText) {
                         EditText editText = (EditText) element2;
-                        fasebi = fasebi + editText.getText().toString() + "|";
+                        if(editText.getText().toString().equals("")){
+                            fasebi += editText.getHint().toString();
+                        }else{
+                            fasebi += editText.getText().toString();
+                        }
+                        id_ebi += Constantebi.ludiList.get(i).getId();
+                        if (i < linearLayout_fasebi.getChildCount()-1) {
+                            fasebi += "|";
+                            id_ebi += "|";
+                        }
                     }
                 }
 
                 Toast.makeText(getApplicationContext(), fasebi, Toast.LENGTH_SHORT).show();
-//                sendToDB();
+                sendToDB();
             }
         });
 
@@ -86,7 +100,7 @@ public class AddEditObject extends AppCompatActivity {
 
     private void sendToDB() {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
-        String url = Constantebi.URL_INS_LUDISSHETANA;
+        String url = Constantebi.URL_INS_AXALI_OBIEQTI;
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -103,11 +117,12 @@ public class AddEditObject extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
 
-//                params.put("obieqtis_id", String.valueOf(currObieqti.getId()));
-//                params.put("k30", eK30Count.getText().toString());
-//                params.put("k50", eK50Count.getText().toString());
-//                params.put("beer_type", String.valueOf(beertype + 1));
-                params.put("comment", "comentaris grafaa dasamatebeli");
+                params.put("name", e_name.getEditText().getText().toString());
+                params.put("adress", e_adress.getEditText().getText().toString());
+                params.put("tel", e_tel.getEditText().getText().toString());
+                params.put("comment", e_comment.getEditText().getText().toString());
+                params.put("fasebi", fasebi);
+                params.put("id_ebi", id_ebi);
 
                 params.toString();
                 return params;

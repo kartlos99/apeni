@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ActionBarDrawerToggle toggle;
     private Toolbar toolbar;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,10 +61,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.app_name);
 
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close){
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                TextView t_name = (TextView) findViewById(R.id.t_nav_name);
+                TextView t_username = (TextView) findViewById(R.id.t_nav_username);
+
+                t_name.setText(Constantebi.USER_NAME);
+                if(Constantebi.USER_TYPE.equals("2")){
+                    t_username.setText(Constantebi.USER_USERNAME + " (admin)");
+                }else{
+                    t_username.setText(Constantebi.USER_USERNAME + " (user)");
+                }
+            }
+        };
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -106,6 +125,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!Constantebi.loged_in) {
             Intent loginpage = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(loginpage);
+        } else {
+
+
+
         }
         super.onStart();
     }
