@@ -43,11 +43,10 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                btn_login.setEnabled(false);
                 avtorizacia();
-
-
-//                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                startActivity(intent);
+//                Constantebi.loged_in = true;
+//                onBackPressed();
             }
         });
     }
@@ -66,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                btn_login.setEnabled(true);
                 String name = "";
 
                 if (response.equals("uaryofa")) {
@@ -89,6 +89,7 @@ public class LoginActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                btn_login.setEnabled(true);
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }) {

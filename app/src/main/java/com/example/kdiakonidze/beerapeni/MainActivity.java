@@ -209,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "eror no obieqtebi", Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
             }
         });
@@ -240,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "ludi sadaaa!", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -280,6 +282,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "error fasebi", Toast.LENGTH_LONG).show();
             }
         });
 

@@ -84,6 +84,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         btn_Done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                btn_Done.setEnabled(false);
                 if (!(eK30Count.getText().toString().equals("") && eK50Count.getText().toString().equals(""))){
                     sendDataToDB(Constantebi.URL_INS_LUDISSHETANA, 1);
                 }
@@ -241,7 +242,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 Map<String, String> params = new HashMap<>();
 
                 params.put("obieqtis_id", currObieqti.getId().toString());
-                params.put("distributor_id", "1");
+                params.put("distributor_id", Constantebi.USER_ID);
                 params.put("comment", "no comment");
 
                 if (op_type == 1) {

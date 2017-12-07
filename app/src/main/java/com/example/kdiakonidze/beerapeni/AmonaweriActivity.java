@@ -1,19 +1,26 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -48,6 +55,7 @@ public class AmonaweriActivity extends AppCompatActivity {
     private TextView t_objInfo;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+    private Toolbar toolbar;
     FragmentManager fragmentManager;
     MyPagesAdapter pagerAdapter;
 
@@ -89,6 +97,16 @@ public class AmonaweriActivity extends AppCompatActivity {
         btn_setDate = (Button) findViewById(R.id.btn_p4_tarigi);
         viewPager = (ViewPager) findViewById(R.id.viewpager_amonaweri);
         tabLayout = (TabLayout) findViewById(R.id.tabs_amonaweri);
+        toolbar = (Toolbar) findViewById(R.id.tool_bar_amonaw);
+
+
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_LONG).show();
+                return false;
+            }
+        });
 
 
         calendar = Calendar.getInstance();
@@ -97,6 +115,11 @@ public class AmonaweriActivity extends AppCompatActivity {
         Intent i = getIntent();
         Bundle importedBundle = i.getExtras();
         currObieqti = (Obieqti) importedBundle.getSerializable("obieqti");
+        toolbar.setTitle(currObieqti.getDasaxeleba());
+
+        toolbar.inflateMenu(R.menu.nav_menu);
+        setSupportActionBar(toolbar);
+
 
         if (savedInstanceState != null) {
             archeuli_dge = savedInstanceState.getString("tarigi");
@@ -128,6 +151,38 @@ public class AmonaweriActivity extends AppCompatActivity {
         tabLayout.getTabAt(1).setText(title_1);
 
         get_davalianeba();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.detail_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.menu_call) {
+            Toast.makeText(this, currObieqti.getTel(), Toast.LENGTH_LONG).show();
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:"+currObieqti.getTel()));
+
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return true;
+            }
+            startActivity(callIntent);
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void get_davalianeba() {

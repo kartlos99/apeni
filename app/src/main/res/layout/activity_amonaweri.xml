@@ -8,6 +8,10 @@
     tools:layout_editor_absoluteY="81dp"
     tools:layout_editor_absoluteX="0dp">
 
+    <include
+        android:id="@+id/tool_bar_amonaw"
+        layout="@layout/tool_bar"/>
+
     <TextView
         android:id="@+id/t_p4_objInfo"
         android:layout_width="0dp"
@@ -30,7 +34,7 @@
         android:drawableEnd="@drawable/ic_calendar"
         android:layout_marginRight="8dp"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tool_bar_amonaw"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp" />
 
