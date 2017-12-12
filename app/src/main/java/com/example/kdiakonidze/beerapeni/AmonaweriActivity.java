@@ -167,7 +167,7 @@ public class AmonaweriActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.menu_call) {
             Toast.makeText(this, currObieqti.getTel(), Toast.LENGTH_LONG).show();
             Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:"+currObieqti.getTel()));
+            callIntent.setData(Uri.parse("tel:" + currObieqti.getTel()));
 
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                 // TODO: Consider calling
@@ -180,6 +180,13 @@ public class AmonaweriActivity extends AppCompatActivity {
                 return true;
             }
             startActivity(callIntent);
+        }
+
+        if (item.getItemId() == R.id.m_edit_obj) {
+            Intent intent_editObj = new Intent(getApplicationContext(), AddEditObject.class);
+            intent_editObj.putExtra(Constantebi.REASON, Constantebi.EDIT);
+            intent_editObj.putExtra("obj", currObieqti);
+            startActivity(intent_editObj);
         }
 
         return super.onOptionsItemSelected(item);

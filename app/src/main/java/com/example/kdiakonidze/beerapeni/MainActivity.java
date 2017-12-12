@@ -91,8 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 switch (item.getItemId()) {
                     case R.id.m_addobj:
-                        Toast.makeText(getApplicationContext(), "aris", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), AddEditObject.class);
+                        intent.putExtra(Constantebi.REASON, Constantebi.CREATE);
                         startActivity(intent);
                         return true;
 
@@ -103,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case R.id.m_addbeer:
 
                         return true;
+                    
                     case R.id.m_logout:
                         Constantebi.loged_in = false;
                         Intent loginpage = new Intent(getApplicationContext(), LoginActivity.class);

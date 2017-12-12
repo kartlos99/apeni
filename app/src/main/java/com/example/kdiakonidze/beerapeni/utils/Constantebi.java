@@ -31,6 +31,10 @@ public class Constantebi {
     public static String USER_TYPE = "";
     public static String USER_ID = "";
 
+    public static String REASON = "mizezi";
+    public static String CREATE = "axali obieqti";
+    public static String EDIT = "redaqtireba";
+
     public static ArrayList<BeerModel> ludiList = new ArrayList<>();
     public static ArrayList<Obieqti> OBIEQTEBI = new ArrayList<>();
     public static ArrayList<PeerObjPrice> FASEBI = new ArrayList<>();

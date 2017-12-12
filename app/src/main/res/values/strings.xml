@@ -29,4 +29,5 @@
     <string name="login">შესვლა</string>
     <string name="ludis_fasebi">ლუდის ფასები კონკრეტული ობიექტისთვის</string>
     <string name="call">call</string>
+    <string name="m_edit">რედაქტირება</string>
 </resources>

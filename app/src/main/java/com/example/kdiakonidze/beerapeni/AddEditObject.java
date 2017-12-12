@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 
 import java.util.HashMap;
@@ -29,6 +30,8 @@ public class AddEditObject extends AppCompatActivity {
     TextInputLayout e_name, e_adress, e_tel, e_comment;
     String fasebi = "", id_ebi;
     LinearLayout linearLayout_fasebi;
+    private Obieqti editedObieqti;
+    private String reason;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +45,19 @@ public class AddEditObject extends AppCompatActivity {
         linearLayout_fasebi = (LinearLayout) findViewById(R.id.linear_addobj_prices);
         Button btn_done = (Button) findViewById(R.id.btn_addobj_done);
 
+        reason = getIntent().getStringExtra(Constantebi.REASON);
+        if (reason.equals(Constantebi.EDIT)) {
+            editedObieqti = (Obieqti) getIntent().getSerializableExtra("obj");
+            if (editedObieqti != null) {
+                e_name.getEditText().setText(editedObieqti.getDasaxeleba());
+                e_adress.getEditText().setText(editedObieqti.getAdress());
+                e_tel.getEditText().setText(editedObieqti.getTel());
+                e_comment.getEditText().setText(editedObieqti.getComment());
+            }
+        }
+
 
         for (int i = 0; i < Constantebi.ludiList.size(); i++) {
-
             LinearLayout h_Layout = new LinearLayout(this);
             h_Layout.setOrientation(LinearLayout.HORIZONTAL);
             h_Layout.setGravity(Gravity.RIGHT);
@@ -52,14 +65,15 @@ public class AddEditObject extends AppCompatActivity {
             editText.setId(i);
             editText.setGravity(Gravity.CENTER);
             editText.setWidth(350);
-//            editText.setText("haimee_"+i);
             editText.setHint(Constantebi.ludiList.get(i).getFasi().toString());
             editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
-
             TextView textView = new TextView(this);
             textView.setId(100 + i);
             textView.setText(Constantebi.ludiList.get(i).getDasaxeleba());
 
+            if (reason.equals(Constantebi.EDIT)) {
+                editText.setText(editedObieqti.getFasebi().get(i).toString());
+            }
             h_Layout.addView(textView, 0);
             h_Layout.addView(editText, 1);
             linearLayout_fasebi.addView(h_Layout, i);
@@ -77,13 +91,13 @@ public class AddEditObject extends AppCompatActivity {
                     View element2 = h_row.getChildAt(1);
                     if (element2 instanceof EditText) {
                         EditText editText = (EditText) element2;
-                        if(editText.getText().toString().equals("")){
+                        if (editText.getText().toString().equals("")) {
                             fasebi += editText.getHint().toString();
-                        }else{
+                        } else {
                             fasebi += editText.getText().toString();
                         }
                         id_ebi += Constantebi.ludiList.get(i).getId();
-                        if (i < linearLayout_fasebi.getChildCount()-1) {
+                        if (i < linearLayout_fasebi.getChildCount() - 1) {
                             fasebi += "|";
                             id_ebi += "|";
                         }
@@ -91,14 +105,14 @@ public class AddEditObject extends AppCompatActivity {
                 }
 
                 Toast.makeText(getApplicationContext(), fasebi, Toast.LENGTH_SHORT).show();
-                sendToDB();
+                sendToDB(reason);
             }
         });
 
 
     }
 
-    private void sendToDB() {
+    private void sendToDB(final String moqmedeba) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         String url = Constantebi.URL_INS_AXALI_OBIEQTI;
 
@@ -116,6 +130,11 @@ public class AddEditObject extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
+
+                if (moqmedeba.equals(Constantebi.EDIT)) {
+                    params.put("obj_id", editedObieqti.getId().toString());
+                }
+                params.put("moqmedeba", moqmedeba);
 
                 params.put("name", e_name.getEditText().getText().toString());
                 params.put("adress", e_adress.getEditText().getText().toString());
