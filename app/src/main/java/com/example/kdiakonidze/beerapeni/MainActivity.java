@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case R.id.m_addbeer:
 
                         return true;
-                    
+
                     case R.id.m_logout:
                         Constantebi.loged_in = false;
                         Intent loginpage = new Intent(getApplicationContext(), LoginActivity.class);
@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_mitana:
                 Intent intent = new Intent(getApplicationContext(), ObjListActivity.class);
                 intent.putExtra("mdebareoba", Constantebi.MDEBAREOBA_MITANA);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
                 break;
             case R.id.btn_realiz_dge:
@@ -173,12 +174,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void get_BaseUnits() {
         RequestQueue queue = Volley.newRequestQueue(this);
-
         progressDialog = ProgressDialog.show(this, "იტვირთება!", "loading!");
 
-        String url = Constantebi.URL_GET_OBIEQTS;
-
-        JsonArrayRequest requestObieqtebi = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+        JsonArrayRequest requestObieqtebi = new JsonArrayRequest(Constantebi.URL_GET_OBIEQTS, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 // aq modis obieqtebis chamonatvali
@@ -189,10 +187,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     for (int i = 0; i < response.length(); i++) {
                         try {
                             Obieqti axaliObieqti = new Obieqti(response.getJSONObject(i).getString("dasaxeleba"));
+                            axaliObieqti.setId(response.getJSONObject(i).getInt("id"));
                             axaliObieqti.setAdress(response.getJSONObject(i).getString("adress"));
                             axaliObieqti.setTel(response.getJSONObject(i).getString("tel"));
                             axaliObieqti.setComment(response.getJSONObject(i).getString("comment"));
-                            axaliObieqti.setId(response.getJSONObject(i).getInt("id"));
+                            axaliObieqti.setSk(response.getJSONObject(i).getString("sk"));
+                            axaliObieqti.setSakpiri(response.getJSONObject(i).getString("sakpiri"));
 
                             Constantebi.OBIEQTEBI.add(axaliObieqti);
 

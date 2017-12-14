@@ -30,4 +30,10 @@
     <string name="ludis_fasebi">ლუდის ფასები კონკრეტული ობიექტისთვის</string>
     <string name="call">call</string>
     <string name="m_edit">რედაქტირება</string>
+    <string name="sak_piri">საკონტაქტო პირი</string>
+    <string name="sk">ს/კ</string>
+    <string name="info">ინფო</string>
+    <string name="remove">სიიდან ამოღება</string>
+    <string name="comment">კომენტარი</string>
+    <string name="ludis_shetana">ლუდის შეტანა</string>
 </resources>

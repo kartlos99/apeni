@@ -141,6 +141,7 @@ public class AddOrderActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                onBackPressed();
             }
         }, new Response.ErrorListener() {
             @Override

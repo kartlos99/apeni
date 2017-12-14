@@ -4,6 +4,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
@@ -27,23 +28,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AddEditObject extends AppCompatActivity {
-    TextInputLayout e_name, e_adress, e_tel, e_comment;
+    TextInputLayout e_name, e_adress, e_tel, e_comment, e_sk, e_sakpiri;
     String fasebi = "", id_ebi;
     LinearLayout linearLayout_fasebi;
     private Obieqti editedObieqti;
     private String reason;
+    private Toolbar toolbar;
+    private Button btn_done;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_object);
 
+        toolbar = (Toolbar) findViewById(R.id.tool_bar);
         e_name = (TextInputLayout) findViewById(R.id.e_addobj_name);
         e_adress = (TextInputLayout) findViewById(R.id.e_addobj_adress);
         e_tel = (TextInputLayout) findViewById(R.id.e_addobj_tel);
         e_comment = (TextInputLayout) findViewById(R.id.e_addobj_comment);
+        e_sk = (TextInputLayout) findViewById(R.id.e_addobj_sk);
+        e_sakpiri = (TextInputLayout) findViewById(R.id.e_addobj_sakpiri);
         linearLayout_fasebi = (LinearLayout) findViewById(R.id.linear_addobj_prices);
-        Button btn_done = (Button) findViewById(R.id.btn_addobj_done);
+        btn_done = (Button) findViewById(R.id.btn_addobj_done);
 
         reason = getIntent().getStringExtra(Constantebi.REASON);
         if (reason.equals(Constantebi.EDIT)) {
@@ -53,8 +59,12 @@ public class AddEditObject extends AppCompatActivity {
                 e_adress.getEditText().setText(editedObieqti.getAdress());
                 e_tel.getEditText().setText(editedObieqti.getTel());
                 e_comment.getEditText().setText(editedObieqti.getComment());
+                e_sk.getEditText().setText(editedObieqti.getSk());
+                e_sakpiri.getEditText().setText(editedObieqti.getSakpiri());
             }
         }
+        toolbar.setTitle(reason);
+        setSupportActionBar(toolbar);
 
 
         for (int i = 0; i < Constantebi.ludiList.size(); i++) {
@@ -104,7 +114,7 @@ public class AddEditObject extends AppCompatActivity {
                     }
                 }
 
-                Toast.makeText(getApplicationContext(), fasebi, Toast.LENGTH_SHORT).show();
+                btn_done.setEnabled(false);
                 sendToDB(reason);
             }
         });
@@ -120,11 +130,14 @@ public class AddEditObject extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                btn_done.setEnabled(false);
+                onBackPressed();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                btn_done.setEnabled(false);
             }
         }) {
             @Override
@@ -140,6 +153,8 @@ public class AddEditObject extends AppCompatActivity {
                 params.put("adress", e_adress.getEditText().getText().toString());
                 params.put("tel", e_tel.getEditText().getText().toString());
                 params.put("comment", e_comment.getEditText().getText().toString());
+                params.put("sk", e_sk.getEditText().getText().toString());
+                params.put("sakpiri", e_sakpiri.getEditText().getText().toString());
                 params.put("fasebi", fasebi);
                 params.put("id_ebi", id_ebi);
 

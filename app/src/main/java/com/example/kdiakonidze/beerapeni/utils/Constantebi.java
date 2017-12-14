@@ -25,6 +25,7 @@ public class Constantebi {
     public static String URL_GET_AMONAWERI_K = "http://apeni.ge/andr_app_links/get_amonaweri_k.php";
     public static String URL_INS_AXALI_OBIEQTI = "http://apeni.ge/andr_app_links/insert_axali_obieqti.php";
     public static String URL_LOGIN = "http://apeni.ge/andr_app_links/login.php";
+    public static String URL_DEL_OBJ = "http://apeni.ge/andr_app_links/del_obj.php";
 
     public static String USER_USERNAME = "";
     public static String USER_NAME = "";
@@ -32,8 +33,8 @@ public class Constantebi {
     public static String USER_ID = "";
 
     public static String REASON = "mizezi";
-    public static String CREATE = "axali obieqti";
-    public static String EDIT = "redaqtireba";
+    public static String CREATE = "ახალი ობიექტი";
+    public static String EDIT = "რედაქტირება";
 
     public static ArrayList<BeerModel> ludiList = new ArrayList<>();
     public static ArrayList<Obieqti> OBIEQTEBI = new ArrayList<>();

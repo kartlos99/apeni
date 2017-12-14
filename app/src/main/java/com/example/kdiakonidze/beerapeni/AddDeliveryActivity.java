@@ -2,6 +2,7 @@ package com.example.kdiakonidze.beerapeni;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -29,11 +30,12 @@ import java.util.Map;
 
 public class AddDeliveryActivity extends AppCompatActivity implements View.OnClickListener {
 
-    TextView t_deliveryInfo, t_beerType, t_davalanebaM, t_davalanebaK;
+    TextView t_deliveryInfo, t_beerType, t_davalanebaM, t_davalanebaK, t_ludi_in;
     EditText eK30Count, eK50Count, eK30Count_Kout, eK50Count_Kout, eTakeMoney;
     Obieqti currObieqti;
     Integer beertype = 0, requestCount = 0;
     Button btn_Done, btnBeerLeft, btnBeerRight, btnK30dec, btnK30inc, btnK50dec, btnK50inc, btnK30dec_Kout, btnK30inc_Kout, btnK50dec_Kout, btnK50inc_Kout;
+    TextInputLayout t_comment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +69,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                     beertype = beertype + Constantebi.ludiList.size();
                 }
                 t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beertype));
+                priceCalculation();
             }
         });
 
@@ -78,18 +81,45 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                     beertype = beertype - Constantebi.ludiList.size();
                 }
                 t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beertype));
+                priceCalculation();
             }
         });
 
         btn_Done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btn_Done.setEnabled(false);
-                sendDataToDB();
+                if (!(eK30Count.getText().toString().equals("") && eK50Count.getText().toString().equals(""))) {
+                    btn_Done.setEnabled(false);
+                }
+
+                if (!(eK30Count_Kout.getText().toString().equals("") && eK50Count_Kout.getText().toString().equals(""))) {
+                    btn_Done.setEnabled(false);
+                }
+
+                if (!eTakeMoney.getText().toString().equals("")) {
+                    btn_Done.setEnabled(false);
+                }
+
+                if(!btn_Done.isEnabled()){
+                    sendDataToDB();
+                }
             }
         });
 
         get_davalianeba();
+    }
+
+    private void priceCalculation() {
+        String k30 = eK30Count.getText().toString();
+        String k50 = eK50Count.getText().toString();
+        if (k30.equals("")) {
+            k30 = "0";
+        }
+        if (k50.equals("")) {
+            k50 = "0";
+        }
+        double fasi = Integer.valueOf(k30) * 30 * currObieqti.getFasebi().get(beertype) + Integer.valueOf(k50) * 50 * currObieqti.getFasebi().get(beertype);
+        t_ludi_in.setText(getResources().getString(R.string.ludis_shetana) + " (" + String.valueOf(fasi) + "₾)");
     }
 
     private void get_davalianeba() {
@@ -160,6 +190,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         t_deliveryInfo = (TextView) findViewById(R.id.t_DeliveryInfo);
         t_davalanebaM = (TextView) findViewById(R.id.t_davalianebaM);
         t_davalanebaK = (TextView) findViewById(R.id.t_davalianebaK);
+        t_ludi_in = (TextView) findViewById(R.id.t_mitana_ludi);
+        t_comment = (TextInputLayout) findViewById(R.id.t_mitana_comment);
     }
 
     private String pliusMinusText(String stringNaomber, boolean oper) {
@@ -208,22 +240,18 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 eK50Count_Kout.setText(pliusMinusText(eK50Count_Kout.getText().toString(), true));
                 break;
         }
+        priceCalculation();
     }
 
     private void sendDataToDB() {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
         // 1. ludis shetana
-        StringRequest request_1 = new StringRequest(Request.Method.POST, Constantebi.URL_INS_LUDISSHETANA, new Response.Listener<String>() {
+        StringRequest request_mitana = new StringRequest(Request.Method.POST, Constantebi.URL_INS_LUDISSHETANA, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-//                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
-                requestCount--;
-                if (requestCount == 0) {
-                    btn_Done.setEnabled(true);
                     Toast.makeText(getApplicationContext(), "მონაცემები ჩაწერილია!", Toast.LENGTH_SHORT).show();
                     onBackPressed();
-                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -236,80 +264,36 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
 
+                if (!(eK30Count.getText().toString().equals("") && eK50Count.getText().toString().equals(""))) {
+                    params.put("mitana", "1");
+                }else {
+                    params.put("mitana", "0");
+                }
+
+                if (!(eK30Count_Kout.getText().toString().equals("") && eK50Count_Kout.getText().toString().equals(""))) {
+                    params.put("kout", "1");
+                }else {
+                    params.put("kout", "0");
+                }
+
+                if (!eTakeMoney.getText().toString().equals("")) {
+                    params.put("mout", "1");
+                }else {
+                    params.put("mout", "0");
+                }
+
                 params.put("obieqtis_id", currObieqti.getId().toString());
                 params.put("distributor_id", Constantebi.USER_ID);
-                params.put("comment", "no comment");
+                params.put("comment", t_comment.getEditText().getText().toString());
+
                 params.put("beer_type", String.valueOf(beertype + 1));
-                params.put("litraji", "0"); // serverze vangarishob chawerisas
                 params.put("ert_fasi", currObieqti.getFasebi().get(beertype).toString());// chasasworebelia
                 params.put("k30", eK30Count.getText().toString());
                 params.put("k50", eK50Count.getText().toString());
 
-                params.toString();
-                return params;
-            }
-        };
+                params.put("k30out", eK30Count_Kout.getText().toString());
+                params.put("k50out", eK50Count_Kout.getText().toString());
 
-        // 2. kasrebis amogeba
-        StringRequest request_2 = new StringRequest(Request.Method.POST, Constantebi.URL_INS_TAKEKASRI, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-//                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
-                requestCount--;
-                if (requestCount == 0) {
-                    btn_Done.setEnabled(true);
-                    Toast.makeText(getApplicationContext(), "მონაცემები ჩაწერილია!", Toast.LENGTH_SHORT).show();
-                    onBackPressed();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                btn_Done.setEnabled(true);
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-
-                params.put("obieqtis_id", currObieqti.getId().toString());
-                params.put("distributor_id", Constantebi.USER_ID);
-                params.put("comment", "no comment");
-                params.put("k30", eK30Count_Kout.getText().toString());
-                params.put("k50", eK50Count_Kout.getText().toString());
-
-                params.toString();
-                return params;
-            }
-        };
-
-        // 3. tanxis ageba
-        StringRequest request_3 = new StringRequest(Request.Method.POST, Constantebi.URL_INS_TAKEMONEY, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-//                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
-                requestCount--;
-                if (requestCount == 0) {
-                    btn_Done.setEnabled(true);
-                    Toast.makeText(getApplicationContext(), "მონაცემები ჩაწერილია!", Toast.LENGTH_SHORT).show();
-                    onBackPressed();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                btn_Done.setEnabled(true);
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<>();
-
-                params.put("obieqtis_id", currObieqti.getId().toString());
-                params.put("distributor_id", Constantebi.USER_ID);
-                params.put("comment", "no comment");
                 params.put("tanxa", eTakeMoney.getText().toString());
 
                 params.toString();
@@ -317,19 +301,6 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             }
         };
 
-        if (!(eK30Count.getText().toString().equals("") && eK50Count.getText().toString().equals(""))) {
-            requestCount++;
-            queue.add(request_1);
-        }
-
-        if (!(eK30Count_Kout.getText().toString().equals("") && eK50Count_Kout.getText().toString().equals(""))) {
-            requestCount++;
-            queue.add(request_2);
-        }
-
-        if (!eTakeMoney.getText().toString().equals("")) {
-            requestCount++;
-            queue.add(request_3);
-        }
+        queue.add(request_mitana);
     }
 }

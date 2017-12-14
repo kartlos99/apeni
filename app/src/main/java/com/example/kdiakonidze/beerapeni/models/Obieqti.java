@@ -8,7 +8,7 @@ import java.util.ArrayList;
  */
 
 public class Obieqti implements Serializable {
-    private String dasaxeleba, adress, tel, comment;
+    private String dasaxeleba, adress, tel, comment, sk, sakpiri;
     private Integer id;
     private ArrayList<Double> fasebi = new ArrayList<>();
 
@@ -63,5 +63,21 @@ public class Obieqti implements Serializable {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getSk() {
+        return sk;
+    }
+
+    public void setSk(String sk) {
+        this.sk = sk;
+    }
+
+    public String getSakpiri() {
+        return sakpiri;
+    }
+
+    public void setSakpiri(String sakpiri) {
+        this.sakpiri = sakpiri;
     }
 }

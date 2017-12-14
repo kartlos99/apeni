@@ -100,13 +100,13 @@ public class AmonaweriActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.tool_bar_amonaw);
 
 
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_LONG).show();
-                return false;
-            }
-        });
+//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//                Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_LONG).show();
+//                return false;
+//            }
+//        });
 
 
         calendar = Calendar.getInstance();
