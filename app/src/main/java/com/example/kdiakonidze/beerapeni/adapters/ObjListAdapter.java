@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.example.kdiakonidze.beerapeni.R;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
-import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 
 import java.util.ArrayList;
 
@@ -19,13 +18,17 @@ import java.util.ArrayList;
 
 public class ObjListAdapter extends BaseAdapter {
     private ArrayList<Obieqti> myObjList;
+    private ArrayList<Obieqti> objListOriginal;
     private Context context;
     private LayoutInflater inflater;
     ViewHolder viewHolder;
 
     public ObjListAdapter(Context context, ArrayList<Obieqti> objList) {
         this.context = context;
-        myObjList = objList;
+        this.myObjList = new ArrayList<>();
+        this.myObjList.addAll(objList);
+        this.objListOriginal = new ArrayList<>();
+        this.objListOriginal.addAll(objList);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -48,12 +51,12 @@ public class ObjListAdapter extends BaseAdapter {
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         View listRowView;
 
-        if(convertView == null){
-            listRowView = inflater.inflate(R.layout.obj_list_row, null );
+        if (convertView == null) {
+            listRowView = inflater.inflate(R.layout.obj_list_row, null);
             viewHolder = new ViewHolder();
             viewHolder.t_objName = (TextView) listRowView.findViewById(R.id.t_objName);
             listRowView.setTag(viewHolder);
-        }else{
+        } else {
             listRowView = convertView;
             viewHolder = (ViewHolder) listRowView.getTag();
         }
@@ -64,7 +67,22 @@ public class ObjListAdapter extends BaseAdapter {
         return listRowView;
     }
 
-    private class ViewHolder{
+    public void filter(String query) {
+        this.myObjList.clear();
+
+        if (query.isEmpty()) {
+            myObjList.addAll(objListOriginal);
+        } else {
+            for (Obieqti mimdinareObieqti : objListOriginal) {
+                if (mimdinareObieqti.getDasaxeleba().contains(query)) {
+                    myObjList.add(mimdinareObieqti);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
+    private class ViewHolder {
         TextView t_objName;
     }
 }

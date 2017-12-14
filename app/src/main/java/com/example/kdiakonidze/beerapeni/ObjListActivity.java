@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.example.kdiakonidze.beerapeni.adapters.ObjListAdapter;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +34,8 @@ public class ObjListActivity extends AppCompatActivity {
 
     Integer mdebareoba = 0;
     ObjListAdapter objListAdapter;
+    ListView objlistView;
+    SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +45,7 @@ public class ObjListActivity extends AppCompatActivity {
         Intent passed_i = getIntent();
         mdebareoba = passed_i.getIntExtra("mdebareoba", 0);
 
+        // ludis fasebs vawebeb tavis obieqtebs
         for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
             int objid = Constantebi.OBIEQTEBI.get(i).getId();
 
@@ -51,9 +56,24 @@ public class ObjListActivity extends AppCompatActivity {
             }
         }
 
+        searchView = (SearchView) findViewById(R.id.searchV_objlist);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Toast.makeText(getApplicationContext(), query+"!!", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                objListAdapter.filter(newText);
+                return false;
+            }
+        });
+
         objListAdapter = new ObjListAdapter(this, Constantebi.OBIEQTEBI);
 
-        ListView objlistView = (ListView) findViewById(R.id.objListView);
+        objlistView = (ListView) findViewById(R.id.objListView);
         objlistView.setAdapter(objListAdapter);
 
         objlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -62,21 +82,21 @@ public class ObjListActivity extends AppCompatActivity {
                 if (mdebareoba.equals(Constantebi.MDEBAREOBA_SHEKVETA)) {
                     Intent intent = new Intent(getApplicationContext(), AddOrderActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("obieqti", Constantebi.OBIEQTEBI.get(i));
+                    bundle.putSerializable("obieqti", (Serializable) objListAdapter.getItem(i));
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
                 if (mdebareoba.equals(Constantebi.MDEBAREOBA_MITANA)) {
                     Intent intent = new Intent(getApplicationContext(), AddDeliveryActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("obieqti", Constantebi.OBIEQTEBI.get(i));
+                    bundle.putSerializable("obieqti", (Serializable) objListAdapter.getItem(i));
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
                 if (mdebareoba.equals(Constantebi.MDEBAREOBA_AMONAWERI)) {
                     Intent intent = new Intent(getApplicationContext(), AmonaweriActivity.class);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("obieqti", Constantebi.OBIEQTEBI.get(i));
+                    bundle.putSerializable("obieqti", (Serializable) objListAdapter.getItem(i));
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }

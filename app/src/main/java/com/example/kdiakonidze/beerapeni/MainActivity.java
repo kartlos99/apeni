@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         toolbar.setTitle(R.string.app_name);
 
 
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close){
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -70,9 +70,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 TextView t_username = (TextView) findViewById(R.id.t_nav_username);
 
                 t_name.setText(Constantebi.USER_NAME);
-                if(Constantebi.USER_TYPE.equals("2")){
+                if (Constantebi.USER_TYPE.equals("2")) {
                     t_username.setText(Constantebi.USER_USERNAME + " (admin)");
-                }else{
+                } else {
                     t_username.setText(Constantebi.USER_USERNAME + " (user)");
                 }
             }
@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -117,7 +116,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        get_BaseUnits();
+        if (Constantebi.OBIEQTEBI.size() == 0) {
+            get_BaseUnits();
+        }
 
     }
 
@@ -127,7 +128,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent loginpage = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(loginpage);
         } else {
-
 
 
         }
