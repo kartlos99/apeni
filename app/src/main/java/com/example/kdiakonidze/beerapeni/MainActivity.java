@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.models.BeerModel;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
+import com.example.kdiakonidze.beerapeni.models.Useri;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 
 import org.json.JSONArray;
@@ -96,8 +97,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return true;
 
                     case R.id.m_adduser:
-
+                        Intent intent_newuser = new Intent(getApplicationContext(), AddEditUser.class);
+                        intent_newuser.putExtra(Constantebi.REASON, Constantebi.CREATE_USER);
+                        startActivity(intent_newuser);
                         return true;
+
+                    case R.id.m_users_list:
+                        Intent intent_userlist = new Intent(getApplicationContext(), UserListActivity.class);
+                        startActivity(intent_userlist);
+                    return true;
 
                     case R.id.m_addbeer:
 
@@ -172,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void get_BaseUnits() {
+    public void get_BaseUnits() {
         RequestQueue queue = Volley.newRequestQueue(this);
         progressDialog = ProgressDialog.show(this, "იტვირთება!", "loading!");
 
@@ -287,8 +295,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        queue.add(request_fasebi);
+        // --- momxmareblebis Camonatvali ---
+        JsonArrayRequest request_users = new JsonArrayRequest(Constantebi.URL_GET_USERS, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                Constantebi.USERsLIST.clear();
+                if (response.length() > 0) {
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            Useri newUser = new Useri(response.getJSONObject(i).getInt("id"), response.getJSONObject(i).getString("username"));
+
+                            newUser.setName(response.getJSONObject(i).getString("name"));
+                            newUser.setType(response.getJSONObject(i).getInt("type"));
+                            newUser.setTel(response.getJSONObject(i).getString("tel"));
+                            newUser.setAdress(response.getJSONObject(i).getString("adress"));
+                            newUser.setMaker(response.getJSONObject(i).getString("maker"));
+                            newUser.setComment(response.getJSONObject(i).getString("comment"));
+
+                            Constantebi.USERsLIST.add(newUser);
+
+                        } catch (JSONException excep) {
+                            excep.printStackTrace();
+                        }
+                    }
+                } else {
+                    Toast.makeText(MainActivity.this, "no users!", Toast.LENGTH_LONG).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "error users load", Toast.LENGTH_LONG).show();
+            }
+        });
+
         queue.add(requestObieqtebi);
         queue.add(requestLudiList);
+        queue.add(request_users);
+        queue.add(request_fasebi);
     }
 }

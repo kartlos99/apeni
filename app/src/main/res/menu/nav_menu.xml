@@ -15,6 +15,12 @@
             android:title="@string/add_user" />
 
         <item
+            android:id="@+id/m_users_list"
+            android:checked="false"
+            android:icon="@drawable/beer_icon"
+            android:title="@string/userslist" />
+
+        <item
             android:id="@+id/m_addbeer"
             android:checked="false"
             android:icon="@drawable/beer_icon"

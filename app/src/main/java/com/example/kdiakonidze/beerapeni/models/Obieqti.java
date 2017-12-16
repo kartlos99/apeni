@@ -80,4 +80,18 @@ public class Obieqti implements Serializable {
     public void setSakpiri(String sakpiri) {
         this.sakpiri = sakpiri;
     }
+
+    @Override
+    public String toString() {
+        return "Obieqti{" +
+                "dasaxeleba='" + dasaxeleba + '\'' +
+                ", adress='" + adress + '\'' +
+                ", tel='" + tel + '\'' +
+                ", comment='" + comment + '\'' +
+                ", sk='" + sk + '\'' +
+                ", sakpiri='" + sakpiri + '\'' +
+                ", id=" + id +
+                ", fasebi=" + fasebi +
+                '}';
+    }
 }

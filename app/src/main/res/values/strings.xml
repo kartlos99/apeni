@@ -36,4 +36,12 @@
     <string name="remove">სიიდან ამოღება</string>
     <string name="comment">კომენტარი</string>
     <string name="ludis_shetana">ლუდის შეტანა</string>
+    <string name="distributorebi">დისტრიბუტორები</string>
+    <string name="saxeli_gvari">სახელი გვარი</string>
+    <string name="adress">მისამართი</string>
+    <string name="tel">ტელ:</string>
+    <string name="admin">ადმინ</string>
+    <string name="confirn">გაიმეორეთ პაროლი</string>
+    <string name="userslist">მომხმარებლები</string>
+    <string name="change_pass">პაროლის შეცვლა</string>
 </resources>

@@ -3,6 +3,7 @@ package com.example.kdiakonidze.beerapeni.utils;
 import com.example.kdiakonidze.beerapeni.models.BeerModel;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
+import com.example.kdiakonidze.beerapeni.models.Useri;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,8 @@ public class Constantebi {
     public static String URL_INS_AXALI_OBIEQTI = "http://apeni.ge/andr_app_links/insert_axali_obieqti.php";
     public static String URL_LOGIN = "http://apeni.ge/andr_app_links/login.php";
     public static String URL_DEL_OBJ = "http://apeni.ge/andr_app_links/del_obj.php";
+    public static String URL_INS_AXALI_USERI = "http://apeni.ge/andr_app_links/insert_axali_momxmarebeli.php";
+    public static String URL_GET_USERS = "http://apeni.ge/andr_app_links/get_users.php";
 
     public static String USER_USERNAME = "";
     public static String USER_NAME = "";
@@ -34,11 +37,13 @@ public class Constantebi {
 
     public static String REASON = "mizezi";
     public static String CREATE = "ახალი ობიექტი";
+    public static String CREATE_USER = "ახალი მომხმარებელი";
     public static String EDIT = "რედაქტირება";
 
     public static ArrayList<BeerModel> ludiList = new ArrayList<>();
     public static ArrayList<Obieqti> OBIEQTEBI = new ArrayList<>();
     public static ArrayList<PeerObjPrice> FASEBI = new ArrayList<>();
+    public static ArrayList<Useri> USERsLIST = new ArrayList<>();
 
     public static Integer MDEBAREOBA_SHEKVETA = 1;
     public static Integer MDEBAREOBA_MITANA = 2;

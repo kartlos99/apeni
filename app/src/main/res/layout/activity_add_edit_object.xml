@@ -27,9 +27,7 @@
             android:layout_marginStart="8dp"
             app:errorEnabled="true"
             app:layout_constraintTop_toBottomOf="@+id/tool_bar"
-            android:layout_marginRight="8dp"
             app:layout_constraintRight_toRightOf="parent"
-            android:layout_marginLeft="8dp"
             app:layout_constraintLeft_toLeftOf="parent">
 
             <EditText
@@ -91,7 +89,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="adress" />
+                android:hint="@string/adress" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -109,7 +107,7 @@
                 android:inputType="phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="tel" />
+                android:hint="@string/tel" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -127,7 +125,7 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="comment" />
+                android:hint="@string/comment" />
 
         </android.support.design.widget.TextInputLayout>
 
