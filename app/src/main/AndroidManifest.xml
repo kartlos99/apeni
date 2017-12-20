@@ -29,7 +29,8 @@
         <activity android:name=".AddEditObject" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".AddEditUser" />
-        <activity android:name=".UserListActivity"></activity>
+        <activity android:name=".UserListActivity" />
+        <activity android:name=".AddEditBeer"></activity>
     </application>
 
 </manifest>

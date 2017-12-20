@@ -105,10 +105,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case R.id.m_users_list:
                         Intent intent_userlist = new Intent(getApplicationContext(), UserListActivity.class);
                         startActivity(intent_userlist);
-                    return true;
+                        return true;
 
                     case R.id.m_addbeer:
-
+                        Intent intent_Beerlist = new Intent(getApplicationContext(), AddEditBeer.class);
+                        startActivity(intent_Beerlist);
                         return true;
 
                     case R.id.m_logout:

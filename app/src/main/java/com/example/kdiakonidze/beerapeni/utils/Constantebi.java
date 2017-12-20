@@ -30,6 +30,8 @@ public class Constantebi {
     public static String URL_INS_AXALI_USERI = "http://apeni.ge/andr_app_links/insert_axali_momxmarebeli.php";
     public static String URL_GET_USERS = "http://apeni.ge/andr_app_links/get_users.php";
     public static String URL_DEL_ORDER = "http://apeni.ge/andr_app_links/del_order.php";
+    public static String URL_DEL_BEER = "http://apeni.ge/andr_app_links/del_beer.php";
+    public static String URL_INS_BEER = "http://apeni.ge/andr_app_links/insert_beer.php";
 
     public static String USER_USERNAME = "";
     public static String USER_NAME = "";

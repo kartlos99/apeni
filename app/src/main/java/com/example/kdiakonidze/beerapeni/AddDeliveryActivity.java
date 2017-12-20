@@ -33,7 +33,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
     TextView t_deliveryInfo, t_beerType, t_davalanebaM, t_davalanebaK, t_ludi_in;
     EditText eK30Count, eK50Count, eK30Count_Kout, eK50Count_Kout, eTakeMoney;
     Obieqti currObieqti;
-    Integer beertype = 0, requestCount = 0;
+    Integer beertype = 0, beerId = 0;
     Button btn_Done, btnBeerLeft, btnBeerRight, btnK30dec, btnK30inc, btnK50dec, btnK50inc, btnK30dec_Kout, btnK30inc_Kout, btnK50dec_Kout, btnK50inc_Kout;
     TextInputLayout t_comment;
 
@@ -60,6 +60,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         btnK50inc_Kout.setOnClickListener(this);
 
         t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beertype));
+        beerId = Constantebi.ludiList.get(beertype).getId();
 
         btnBeerLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +70,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                     beertype = beertype + Constantebi.ludiList.size();
                 }
                 t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beertype));
+                beerId = Constantebi.ludiList.get(beertype).getId();
                 priceCalculation();
             }
         });
@@ -81,6 +83,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                     beertype = beertype - Constantebi.ludiList.size();
                 }
                 t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beertype));
+                beerId = Constantebi.ludiList.get(beertype).getId();
                 priceCalculation();
             }
         });
@@ -286,7 +289,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 params.put("distributor_id", Constantebi.USER_ID);
                 params.put("comment", t_comment.getEditText().getText().toString());
 
-                params.put("beer_type", String.valueOf(beertype + 1));
+                params.put("beer_type", String.valueOf(String.valueOf(beerId)));
                 params.put("ert_fasi", currObieqti.getFasebi().get(beertype).toString());// chasasworebelia
                 params.put("k30", eK30Count.getText().toString());
                 params.put("k50", eK50Count.getText().toString());
