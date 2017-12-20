@@ -89,15 +89,16 @@ public class Useri implements Serializable {
 
     @Override
     public String toString() {
-        return "Useri{" +
-                "id=" + id +
-                ", type=" + type +
-                ", maker=" + maker +
-                ", username='" + username + '\'' +
-                ", name='" + name + '\'' +
-                ", tel='" + tel + '\'' +
-                ", adress='" + adress + '\'' +
-                ", comment='" + comment + '\'' +
-                '}';
+//        return "Useri{" +
+//                "id=" + id +
+//                ", type=" + type +
+//                ", maker=" + maker +
+//                ", username='" + username + '\'' +
+//                ", name='" + name + '\'' +
+//                ", tel='" + tel + '\'' +
+//                ", adress='" + adress + '\'' +
+//                ", comment='" + comment + '\'' +
+//                '}';
+        return name;
     }
 }

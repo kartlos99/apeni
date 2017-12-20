@@ -7,8 +7,8 @@ import java.io.Serializable;
  */
 
 public class Shekvetebi implements Serializable {
-    String obieqti, ludi, tarigi, chk, distrib_Name;
-    int k30in, k50in, k30wont, k50wont, order_id, distrib_id;
+    private String obieqti, ludi, tarigi, chk, distrib_Name, comment;
+    private int k30in, k50in, k30wont, k50wont, order_id, distrib_id;
 
     public Shekvetebi(String obieqti, String ludi, int k30in, int k50in, int k30wont, int k50wont) {
         this.obieqti = obieqti;
@@ -17,6 +17,14 @@ public class Shekvetebi implements Serializable {
         this.k50in = k50in;
         this.k30wont = k30wont;
         this.k50wont = k50wont;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String getObieqti() {

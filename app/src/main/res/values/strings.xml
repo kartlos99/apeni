@@ -44,4 +44,7 @@
     <string name="confirn">გაიმეორეთ პაროლი</string>
     <string name="userslist">მომხმარებლები</string>
     <string name="change_pass">პაროლის შეცვლა</string>
+    <string name="group">დაჯგუფება</string>
+    <string name="vis">ვის დაევალოს</string>
+    <string name="delete">წაშლა</string>
 </resources>

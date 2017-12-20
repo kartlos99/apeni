@@ -83,6 +83,7 @@ public class ObjListActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), AddOrderActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("obieqti", (Serializable) objListAdapter.getItem(i));
+                    intent.putExtra(Constantebi.REASON, Constantebi.NEW_ORDER);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
