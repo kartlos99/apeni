@@ -23,6 +23,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -130,8 +131,11 @@ public class AddEditObject extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
-                btn_done.setEnabled(false);
-                onBackPressed();
+                if (response.equals("ჩაწერილია!") || response.equals("განახლებულია!")){
+                    updateLocalInfo();
+                    onBackPressed();
+                }
+                btn_done.setEnabled(true);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -164,5 +168,11 @@ public class AddEditObject extends AppCompatActivity {
         };
 
         queue.add(request);
+    }
+
+    private void updateLocalInfo() {
+        GlobalServise globalServise = new GlobalServise(getApplicationContext());
+        globalServise.get_Obieqts();
+        globalServise.get_Prises();
     }
 }

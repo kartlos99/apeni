@@ -25,6 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.adapters.ObjListAdapter;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -91,6 +92,7 @@ public class ObjListActivity extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), AddDeliveryActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("obieqti", (Serializable) objListAdapter.getItem(i));
+                    intent.putExtra(Constantebi.REASON, Constantebi.CREATE);
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
@@ -174,6 +176,10 @@ public class ObjListActivity extends AppCompatActivity {
         StringRequest request_DelObj = new StringRequest(Request.Method.POST, Constantebi.URL_DEL_OBJ, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if (response.equals("Removed!")){
+                    GlobalServise globalServise = new GlobalServise(getApplicationContext());
+                    globalServise.get_Obieqts();
+                }
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
             }
         }, new Response.ErrorListener() {

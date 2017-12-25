@@ -111,7 +111,7 @@ public class ShekvetebiAdapter extends BaseAdapter {
 //                Drawable drawable = context.getResources().getDrawable(R.drawable.ic_order_circle);
 //                Drawable dr = new ScaleDrawable(drawable,0,8,8).getDrawable();
 //                dr.setBounds(0,0,8,8);
-                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.ic_order_circle,0);
+                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_order_circle,0,0,0);
             }else {
                 viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
                 viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);

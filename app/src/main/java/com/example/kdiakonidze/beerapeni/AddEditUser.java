@@ -20,6 +20,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.models.Useri;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -148,9 +149,11 @@ public class AddEditUser extends AppCompatActivity {
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                 if (response.equals("ჩაწერილია!") || response.equals("განახლებულია!")){
+                    GlobalServise globalServise = new GlobalServise(getApplicationContext());
+                    globalServise.get_Users();
                     onBackPressed();
                 }
-//                btn_done.setEnabled(false);
+                btn_done.setEnabled(true);
             }
         }, new Response.ErrorListener() {
             @Override

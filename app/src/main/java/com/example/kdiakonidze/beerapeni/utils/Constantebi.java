@@ -43,6 +43,9 @@ public class Constantebi {
     public static String CREATE_USER = "ახალი მომხმარებელი";
     public static String EDIT = "რედაქტირება";
     public static String NEW_ORDER = "შეკვეთის დამატება";
+    public static String MITANA = "mitana";
+    public static String K_OUT = "k_out";
+    public static String M_OUT = "m_out";
 
     public static ArrayList<BeerModel> ludiList = new ArrayList<>();
     public static ArrayList<Obieqti> OBIEQTEBI = new ArrayList<>();
@@ -54,5 +57,6 @@ public class Constantebi {
     public static Integer MDEBAREOBA_AMONAWERI = 3;
 
     public static Boolean loged_in = false;
+
 
 }

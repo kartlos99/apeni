@@ -149,6 +149,7 @@ public class AmonaweriPageFr extends Fragment {
                                 amonaweri.setK_out(response.getJSONObject(i).getInt("k_out"));
                                 amonaweri.setK_balance(response.getJSONObject(i).getInt("bal"));
                             }
+                            amonaweri.setId(response.getJSONObject(i).getInt("id"));
                             amonaweriArrayList.add(amonaweri);
                         }
 

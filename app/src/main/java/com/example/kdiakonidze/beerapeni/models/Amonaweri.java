@@ -9,7 +9,15 @@ import java.io.Serializable;
 public class Amonaweri implements Serializable {
     String tarigi;
     double price, pay, balance;
-    int k_in, k_out, k_balance;
+    int k_in, k_out, k_balance, id;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTarigi() {
         return tarigi;

@@ -23,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.adapters.BeerListAdapter;
 import com.example.kdiakonidze.beerapeni.models.BeerModel;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,9 +83,12 @@ public class AddEditBeer extends AppCompatActivity {
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), response+" +", Toast.LENGTH_SHORT).show();
                 if (response.equals("ჩაწერილია!") || response.equals("განახლებულია!")){
+                    GlobalServise globalServise = new GlobalServise(getApplicationContext());
+                    globalServise.get_Prises();
+                    globalServise.get_BeerList();
                     onBackPressed();
                 }
-//                btn_done.setEnabled(false);
+                btn_beerDone.setEnabled(true);
             }
         }, new Response.ErrorListener() {
             @Override

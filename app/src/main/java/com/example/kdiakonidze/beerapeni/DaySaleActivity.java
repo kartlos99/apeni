@@ -88,7 +88,6 @@ public class DaySaleActivity extends AppCompatActivity {
         t_k30count = (TextView) findViewById(R.id.t_p3_k30_count);
         t_k50count = (TextView) findViewById(R.id.t_p3_k50_count);
         t_laricount = (TextView) findViewById(R.id.t_p3_lari_count);
-//        saleslistView = (ListView) findViewById(R.id.sales_list);
         sp_distr = (Spinner) findViewById(R.id.sp_distributori);
         nonScrolSaleslistView = (NonScrollListView) findViewById(R.id.sales_list1);
 
@@ -100,7 +99,6 @@ public class DaySaleActivity extends AppCompatActivity {
         if (savedInstanceState != null) { // recreate moxda
             archeuli_dge = savedInstanceState.getString("tarigi");
             requestNeeded = false;
-//            sp_distr.setSelection(savedInstanceState.getInt("distrId"));
             requestInProgres = savedInstanceState.getBoolean("progress");
             if (requestInProgres) {
                 progressDialog = ProgressDialog.show(this, "იტვირთება!", "დაელოდეთ!");

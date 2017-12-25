@@ -141,6 +141,7 @@ public class AddOrderActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sendDataToDB(Constantebi.URL_INS_SHEKVETA);
+                btn_newOrderDone.setEnabled(false);
             }
         });
 
@@ -202,12 +203,16 @@ public class AddOrderActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
-                onBackPressed();
+                if (response.equals("ჩაწერილია!") || response.equals("შეკვეთა დაკორექტირდა!")){
+                    onBackPressed();
+                }
+                btn_newOrderDone.setEnabled(true);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), error.getMessage()+" -", Toast.LENGTH_SHORT).show();
+                btn_newOrderDone.setEnabled(true);
             }
         }) {
             @Override

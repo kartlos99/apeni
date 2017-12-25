@@ -65,13 +65,30 @@ public class AmonaweriAdapter extends BaseAdapter {
         Amonaweri currItem = (Amonaweri) getItem(i);
         viewHolder.t_p1.setText(currItem.getTarigi());
         if (location == 0) {
-            viewHolder.t_p2.setText(String.valueOf(currItem.getPrice()));
-            viewHolder.t_p3.setText(String.valueOf(currItem.getPay()));
+            if (currItem.getPrice() == 0) {
+                viewHolder.t_p2.setText("-");
+            } else {
+                viewHolder.t_p2.setText(String.valueOf(currItem.getPrice()));
+            }
+            if (currItem.getPay() == 0) {
+                viewHolder.t_p3.setText("-");
+            }else {
+                viewHolder.t_p3.setText(String.valueOf(currItem.getPay()));
+            }
+
             viewHolder.t_p4.setText(String.valueOf(currItem.getBalance()));
         }
-        if (location == 1){
-            viewHolder.t_p2.setText(String.valueOf(currItem.getK_in()));
-            viewHolder.t_p3.setText(String.valueOf(currItem.getK_out()));
+        if (location == 1) {
+            if (currItem.getK_in() == 0) {
+                viewHolder.t_p2.setText("-");
+            } else {
+                viewHolder.t_p2.setText(String.valueOf(currItem.getK_in()));
+            }
+            if (currItem.getK_out() == 0) {
+                viewHolder.t_p3.setText("-");
+            } else {
+                viewHolder.t_p3.setText(String.valueOf(currItem.getK_out()));
+            }
             viewHolder.t_p4.setText(String.valueOf(currItem.getK_balance()));
         }
 
