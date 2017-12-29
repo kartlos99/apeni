@@ -50,4 +50,8 @@
     <string name="saorient_fasi">საორენტიაციო ფასი</string>
     <string name="uaryofa">უარყოფა</string>
     <string name="lari">₾</string>
+    <string name="mitana_title">მიტანა  30 / 50</string>
+    <string name="shekveta_title">შეკვეთა  30 / 50</string>
+    <string name="beer">ლუდი</string>
+    <string name="obieqti">ობიექტი</string>
 </resources>

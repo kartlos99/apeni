@@ -98,4 +98,8 @@ public class AmonaweriAdapter extends BaseAdapter {
     private class ViewHolderAmo {
         TextView t_p1, t_p2, t_p3, t_p4;
     }
+
+    public int getLocation() {
+        return location;
+    }
 }

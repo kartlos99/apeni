@@ -32,6 +32,8 @@ public class Constantebi {
     public static String URL_DEL_ORDER = "http://apeni.ge/andr_app_links/del_order.php";
     public static String URL_DEL_BEER = "http://apeni.ge/andr_app_links/del_beer.php";
     public static String URL_INS_BEER = "http://apeni.ge/andr_app_links/insert_beer.php";
+    public static String URL_DEL_RECORD = "http://apeni.ge/andr_app_links/del_record.php";
+    public static String URL_GET_RECORD = "http://apeni.ge/andr_app_links/get_record.php";
 
     public static String USER_USERNAME = "";
     public static String USER_NAME = "";
@@ -44,8 +46,8 @@ public class Constantebi {
     public static String EDIT = "რედაქტირება";
     public static String NEW_ORDER = "შეკვეთის დამატება";
     public static String MITANA = "mitana";
-    public static String K_OUT = "k_out";
-    public static String M_OUT = "m_out";
+    public static String K_OUT = "kout";
+    public static String M_OUT = "mout";
 
     public static ArrayList<BeerModel> ludiList = new ArrayList<>();
     public static ArrayList<Obieqti> OBIEQTEBI = new ArrayList<>();

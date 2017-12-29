@@ -40,11 +40,12 @@ import java.util.ArrayList;
 public class DaySaleActivity extends AppCompatActivity {
 
     private ArrayList<SaleInfo> salesDay;
+    private Double takeMoney = 0.0;
     private Calendar calendar;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String archeuli_dge;
     private Button btn_setDate;
-    private TextView tTarigi, t_k30count, t_k50count, t_laricount;
+    private TextView tTarigi, t_k30count, t_k50count, t_laricount, t_takeMoney;
 //    private ListView saleslistView;
     private DaySalesAdapter salesAdapter;
     private ProgressDialog progressDialog;
@@ -52,7 +53,7 @@ public class DaySaleActivity extends AppCompatActivity {
     private String distr_id = "0";
     private RequestQueue queue;
     private Boolean requestInProgres = false, requestNeeded = true;
-    NonScrollListView nonScrolSaleslistView;
+    private NonScrollListView nonScrolSaleslistView;
 
     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -88,6 +89,7 @@ public class DaySaleActivity extends AppCompatActivity {
         t_k30count = (TextView) findViewById(R.id.t_p3_k30_count);
         t_k50count = (TextView) findViewById(R.id.t_p3_k50_count);
         t_laricount = (TextView) findViewById(R.id.t_p3_lari_count);
+        t_takeMoney = (TextView) findViewById(R.id.t_agebuli_tanxa);
         sp_distr = (Spinner) findViewById(R.id.sp_distributori);
         nonScrolSaleslistView = (NonScrollListView) findViewById(R.id.sales_list1);
 
@@ -169,7 +171,7 @@ public class DaySaleActivity extends AppCompatActivity {
                 if (response.length() > 0) {
                     try {
 
-                        for (int i = 0; i < response.length(); i++) {
+                        for (int i = 0; i < response.length()-1; i++) {
                             String dasaxeleba = response.getJSONObject(i).getString("dasaxeleba");
                             Double pr = response.getJSONObject(i).getDouble("pr");
                             int lt = response.getJSONObject(i).getInt("lt");
@@ -178,6 +180,8 @@ public class DaySaleActivity extends AppCompatActivity {
 
                             salesDay.add(new SaleInfo(dasaxeleba, pr, lt, k30, k50));
                         }
+
+                        takeMoney = response.getJSONObject(response.length()-1).getDouble("money");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -226,6 +230,8 @@ public class DaySaleActivity extends AppCompatActivity {
         t_k30count.setText(String.valueOf(k3));
         t_k50count.setText(String.valueOf(k5));
         t_laricount.setText(String.valueOf(pr));
+
+        t_takeMoney.setText(String.valueOf(takeMoney));
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.design.widget.TextInputLayout;
@@ -33,17 +34,21 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
 
     private TextView t_deliveryInfo, t_beerType, t_davalanebaM, t_davalanebaK, t_ludi_in, t_1title, t_2title, t_3title;
     private EditText eK30Count, eK50Count, eK30Count_Kout, eK50Count_Kout, eTakeMoney;
-    private Obieqti currObieqti;
-    private Integer beertype = 0, beerId = 0;
     private Button btn_Done, btnBeerLeft, btnBeerRight, btnK30dec, btnK30inc, btnK50dec, btnK50inc, btnK30dec_Kout, btnK30inc_Kout, btnK50dec_Kout, btnK50inc_Kout;
-    private TextInputLayout t_comment;
-    private String reason, operacia;
     private CardView cardView_mitana, cardView_kout, cardView_mout;
+    private TextInputLayout t_comment;
+    private ProgressDialog progressDialog;
+
+    private Obieqti currObieqti;
+
+    private int editingId = 0;
+    private Integer beerIndex = 0, beerId = 0;
+    private String reason, operacia;
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
-        outState.putString("comment",t_comment.getEditText().getText().toString());
+        outState.putString("comment", t_comment.getEditText().getText().toString());
     }
 
     @Override
@@ -52,7 +57,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_add_delivery);
         initial_findviews();
 
-        if(savedInstanceState!=null){
+        if (savedInstanceState != null) {
             t_comment.getEditText().setText(savedInstanceState.getString("comment"));
         }
 
@@ -61,30 +66,36 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         if (reason.equals(Constantebi.CREATE)) {
             Bundle importedBundle = i.getExtras();
             currObieqti = (Obieqti) importedBundle.getSerializable("obieqti");
+            t_deliveryInfo.setText(currObieqti.getDasaxeleba());
+            t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+            beerId = Constantebi.ludiList.get(beerIndex).getId();
+            get_davalianeba();
         } else {
             operacia = i.getStringExtra("operacia");
+            editingId = i.getIntExtra("id", 0);
             if (operacia.equals(Constantebi.MITANA)) {
                 t_2title.setVisibility(View.GONE);
                 t_3title.setVisibility(View.GONE);
                 cardView_kout.setVisibility(View.GONE);
                 cardView_mout.setVisibility(View.GONE);
+                get_info(operacia, editingId);
             }
             if (operacia.equals(Constantebi.K_OUT)) {
                 t_ludi_in.setVisibility(View.GONE);
                 t_3title.setVisibility(View.GONE);
                 cardView_mitana.setVisibility(View.GONE);
                 cardView_mout.setVisibility(View.GONE);
+                get_info(operacia, editingId);
             }
             if (operacia.equals(Constantebi.M_OUT)) {
                 t_ludi_in.setVisibility(View.GONE);
                 t_2title.setVisibility(View.GONE);
                 cardView_mitana.setVisibility(View.GONE);
                 cardView_kout.setVisibility(View.GONE);
+                eTakeMoney.setText(String.valueOf(i.getDoubleExtra("tanxa",0.0)));
+                findObject(i.getIntExtra("objid", 0));
             }
         }
-
-
-        t_deliveryInfo.setText(currObieqti.getDasaxeleba());
 
         btnK30dec.setOnClickListener(this);
         btnK30inc.setOnClickListener(this);
@@ -95,18 +106,15 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         btnK50dec_Kout.setOnClickListener(this);
         btnK50inc_Kout.setOnClickListener(this);
 
-        t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beertype));
-        beerId = Constantebi.ludiList.get(beertype).getId();
-
         btnBeerLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                beertype--;
-                if (beertype < 0) {
-                    beertype = beertype + Constantebi.ludiList.size();
+                beerIndex--;
+                if (beerIndex < 0) {
+                    beerIndex = beerIndex + Constantebi.ludiList.size();
                 }
-                t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beertype));
-                beerId = Constantebi.ludiList.get(beertype).getId();
+                t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+                beerId = Constantebi.ludiList.get(beerIndex).getId();
                 priceCalculation();
             }
         });
@@ -114,12 +122,12 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         btnBeerRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                beertype++;
-                if (beertype == Constantebi.ludiList.size()) {
-                    beertype = beertype - Constantebi.ludiList.size();
+                beerIndex++;
+                if (beerIndex == Constantebi.ludiList.size()) {
+                    beerIndex = beerIndex - Constantebi.ludiList.size();
                 }
-                t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beertype));
-                beerId = Constantebi.ludiList.get(beertype).getId();
+                t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+                beerId = Constantebi.ludiList.get(beerIndex).getId();
                 priceCalculation();
             }
         });
@@ -127,25 +135,119 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         btn_Done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!(eK30Count.getText().toString().equals("") && eK50Count.getText().toString().equals(""))) {
-                    btn_Done.setEnabled(false);
-                }
-
-                if (!(eK30Count_Kout.getText().toString().equals("") && eK50Count_Kout.getText().toString().equals(""))) {
-                    btn_Done.setEnabled(false);
-                }
-
-                if (!eTakeMoney.getText().toString().equals("")) {
-                    btn_Done.setEnabled(false);
-                }
-
-                if (!btn_Done.isEnabled()) {
-                    sendDataToDB(reason);
+                if (reason.equals(Constantebi.CREATE)) {
+                    if (chekMitana().equals("1") || chekKout().equals("1") || chekMout().equals("1")) {
+                        btn_Done.setEnabled(false);
+                        sendDataToDB(0, chekMitana(), chekKout(), chekMout());
+                    }
+                } else {
+                    if (operacia.equals(Constantebi.MITANA)) {
+                        if (chekMitana().equals("1")) {
+                            btn_Done.setEnabled(false);
+                            sendDataToDB(editingId, "1", "0", "0");
+                        }
+                    }
+                    if (operacia.equals(Constantebi.K_OUT)) {
+                        if (chekKout().equals("1")) {
+                            btn_Done.setEnabled(false);
+                            sendDataToDB(editingId, "0", "1", "0");
+                        }
+                    }
+                    if (operacia.equals(Constantebi.M_OUT)) {
+                        if (chekMout().equals("1")) {
+                            btn_Done.setEnabled(false);
+                            sendDataToDB(editingId, "0", "0", "1");
+                        }
+                    }
                 }
             }
         });
 
-        get_davalianeba();
+
+    }
+
+    private void findObject(int objid) {
+        for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
+            if (Constantebi.OBIEQTEBI.get(i).getId() == objid) {
+                currObieqti = Constantebi.OBIEQTEBI.get(i);
+                t_deliveryInfo.setText(currObieqti.getDasaxeleba());
+            }
+        }
+    }
+
+    private void get_info(final String operacia, int editingId) {
+
+        JsonArrayRequest request_Record = new JsonArrayRequest(Constantebi.URL_GET_RECORD + "?table=" + operacia + "&id=" + editingId, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+
+                if (response.length() > 0) {
+                    if (operacia.equals(Constantebi.MITANA)) {
+                        try {
+
+                            eK30Count.setText(response.getJSONObject(0).getString("kasri30"));
+                            eK50Count.setText(response.getJSONObject(0).getString("kasri50"));
+                            t_comment.getEditText().setText(response.getJSONObject(0).getString("comment"));
+                            beerId = response.getJSONObject(0).getInt("ludis_id");
+
+                            for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
+                                if (Constantebi.OBIEQTEBI.get(i).getId() == response.getJSONObject(0).getInt("obieqtis_id")) {
+                                    currObieqti = Constantebi.OBIEQTEBI.get(i);
+                                }
+                            }
+                            for (int i = 0; i < Constantebi.ludiList.size(); i++) {
+                                if (Constantebi.ludiList.get(i).getId() == beerId) {
+                                    beerIndex = i;
+                                }
+                            }
+
+                            t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    if (response.length() > 0) {
+                        if (operacia.equals(Constantebi.K_OUT)) {
+                            try {
+                                eK30Count_Kout.setText(response.getJSONObject(0).getString("kasri30"));
+                                eK50Count_Kout.setText(response.getJSONObject(0).getString("kasri50"));
+                                t_comment.getEditText().setText(response.getJSONObject(0).getString("comment"));
+
+                                for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
+                                    if (Constantebi.OBIEQTEBI.get(i).getId() == response.getJSONObject(0).getInt("obieqtis_id")) {
+                                        currObieqti = Constantebi.OBIEQTEBI.get(i);
+                                    }
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    t_deliveryInfo.setText(currObieqti.getDasaxeleba());
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "xx :/", Toast.LENGTH_SHORT).show();
+                }
+
+                progressDialog.dismiss();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+
+            }
+        });
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        progressDialog = ProgressDialog.show(this, "იტვირთება!", "დაელოდეთ!");
+        queue.add(request_Record);
     }
 
     private void priceCalculation() {
@@ -157,7 +259,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         if (k50.equals("")) {
             k50 = "0";
         }
-        double fasi = Integer.valueOf(k30) * 30 * currObieqti.getFasebi().get(beertype) + Integer.valueOf(k50) * 50 * currObieqti.getFasebi().get(beertype);
+        double fasi = Integer.valueOf(k30) * 30 * currObieqti.getFasebi().get(beerIndex) + Integer.valueOf(k50) * 50 * currObieqti.getFasebi().get(beerIndex);
         t_ludi_in.setText(getResources().getString(R.string.ludis_shetana) + " (" + String.valueOf(fasi) + "₾)");
     }
 
@@ -289,14 +391,14 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         priceCalculation();
     }
 
-    private void sendDataToDB(String reason) {
+    private void sendDataToDB(final Integer editId, final String sMitana, final String sKout, final String sMout) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
         // 1. ludis shetana
         StringRequest request_mitana = new StringRequest(Request.Method.POST, Constantebi.URL_INS_LUDISSHETANA, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getApplicationContext(), "მონაცემები ჩაწერილია!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "მონაცემები ჩაწერილია! " + response, Toast.LENGTH_SHORT).show();
                 onBackPressed();
             }
         }, new Response.ErrorListener() {
@@ -310,30 +412,17 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
 
-                if (!(eK30Count.getText().toString().equals("") && eK50Count.getText().toString().equals(""))) {
-                    params.put("mitana", "1");
-                } else {
-                    params.put("mitana", "0");
-                }
-
-                if (!(eK30Count_Kout.getText().toString().equals("") && eK50Count_Kout.getText().toString().equals(""))) {
-                    params.put("kout", "1");
-                } else {
-                    params.put("kout", "0");
-                }
-
-                if (!eTakeMoney.getText().toString().equals("")) {
-                    params.put("mout", "1");
-                } else {
-                    params.put("mout", "0");
-                }
+                params.put("id", editId.toString());
+                params.put("mitana", sMitana);
+                params.put("kout", sKout);
+                params.put("mout", sMout);
 
                 params.put("obieqtis_id", currObieqti.getId().toString());
                 params.put("distributor_id", Constantebi.USER_ID);
                 params.put("comment", t_comment.getEditText().getText().toString());
 
                 params.put("beer_type", String.valueOf(String.valueOf(beerId)));
-                params.put("ert_fasi", currObieqti.getFasebi().get(beertype).toString());// chasasworebelia
+                params.put("ert_fasi", currObieqti.getFasebi().get(beerIndex).toString());// chasasworebelia
                 params.put("k30", eK30Count.getText().toString());
                 params.put("k50", eK50Count.getText().toString());
 
@@ -348,5 +437,44 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         };
 
         queue.add(request_mitana);
+    }
+
+    private String chekMout() {
+        if (eTakeMoney.getText().toString().equals("0")) {
+            eTakeMoney.setText("");
+        }
+        if (eTakeMoney.getText().toString().equals("")) {
+            return "0";
+        } else {
+            return "1";
+        }
+    }
+
+    private String chekKout() {
+        if (eK30Count_Kout.getText().toString().equals("0")) {
+            eK30Count_Kout.setText("");
+        }
+        if (eK50Count_Kout.getText().toString().equals("0")) {
+            eK50Count_Kout.setText("");
+        }
+        if (eK30Count_Kout.getText().toString().equals("") && eK50Count_Kout.getText().toString().equals("")) {
+            return "0";
+        } else {
+            return "1";
+        }
+    }
+
+    private String chekMitana() {
+        if (eK30Count.getText().toString().equals("0")) {
+            eK30Count.setText("");
+        }
+        if (eK50Count.getText().toString().equals("0")) {
+            eK50Count.setText("");
+        }
+        if (eK30Count.getText().toString().equals("") && eK50Count.getText().toString().equals("")) {
+            return "0";
+        } else {
+            return "1";
+        }
     }
 }

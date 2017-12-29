@@ -150,6 +150,29 @@ public class AmonaweriActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setText(title_0);
         tabLayout.getTabAt(1).setText(title_1);
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(position == 0) {
+                    AmonaweriPageFr fragmentM = (AmonaweriPageFr) pagerAdapter.getFragmentM();
+                    fragmentM.dataRefresh();
+                }else {
+                    AmonaweriPageFr fragmentK = (AmonaweriPageFr) pagerAdapter.getFragmentK();
+                    fragmentK.dataRefresh();
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         get_davalianeba();
     }
 

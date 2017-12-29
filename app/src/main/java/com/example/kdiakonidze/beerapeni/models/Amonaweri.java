@@ -11,6 +11,20 @@ public class Amonaweri implements Serializable {
     double price, pay, balance;
     int k_in, k_out, k_balance, id;
 
+    @Override
+    public String toString() {
+        return "Amonaweri{" +
+                "tarigi='" + tarigi + '\'' +
+                ", price=" + price +
+                ", pay=" + pay +
+                ", balance=" + balance +
+                ", k_in=" + k_in +
+                ", k_out=" + k_out +
+                ", k_balance=" + k_balance +
+                ", id=" + id +
+                '}';
+    }
+
     public int getId() {
         return id;
     }
