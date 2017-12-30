@@ -173,7 +173,6 @@ public class AmonaweriActivity extends AppCompatActivity {
             }
         });
 
-        get_davalianeba();
     }
 
     @Override
@@ -213,6 +212,12 @@ public class AmonaweriActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        get_davalianeba();
     }
 
     private void get_davalianeba() {

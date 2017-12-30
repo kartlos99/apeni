@@ -74,6 +74,7 @@ public class DaySaleActivity extends AppCompatActivity {
         outState.putSerializable("sales_list", salesDay);
         outState.putBoolean("progress", requestInProgres);
         outState.putInt("distrId", sp_distr.getSelectedItemPosition());
+        outState.putDouble("takemoney", takeMoney);
         super.onSaveInstanceState(outState);
     }
 
@@ -109,6 +110,7 @@ public class DaySaleActivity extends AppCompatActivity {
             salesDay = (ArrayList<SaleInfo>) savedInstanceState.getSerializable("sales_list");
             salesAdapter = new DaySalesAdapter(getApplicationContext(), salesDay);
             nonScrolSaleslistView.setAdapter(salesAdapter);
+            takeMoney = savedInstanceState.getDouble("takemoney");
             showAtherInfo(salesDay);
         } else {
             archeuli_dge = dateFormat.format(calendar.getTime());
