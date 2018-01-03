@@ -39,6 +39,7 @@ public class Constantebi {
     public static String USER_NAME = "";
     public static String USER_TYPE = "";
     public static String USER_ID = "";
+    public static String USER_FILENAME = "userdata.txt";
 
     public static String REASON = "mizezi";
     public static String CREATE = "ახალი ობიექტი";

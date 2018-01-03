@@ -30,7 +30,8 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".AddEditUser" />
         <activity android:name=".UserListActivity" />
-        <activity android:name=".AddEditBeer"></activity>
+        <activity android:name=".AddEditBeer" />
+        <activity android:name=".SysClearActivity"></activity>
     </application>
 
 </manifest>

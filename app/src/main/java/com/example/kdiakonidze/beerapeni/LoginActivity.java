@@ -1,11 +1,13 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.content.Context;
 import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.JsonReader;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,13 +24,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 public class LoginActivity extends AppCompatActivity {
 
     Button btn_login;
     EditText e_username, e_password;
+    CheckBox chk_remember;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +48,12 @@ public class LoginActivity extends AppCompatActivity {
         btn_login = (Button) findViewById(R.id.btn_login);
         e_username = (EditText) findViewById(R.id.e_login_username);
         e_password = (EditText) findViewById(R.id.e_input_password);
+        chk_remember = (CheckBox) findViewById(R.id.chk_damimaxsovre);
+
+        File file = new File(getFilesDir(),Constantebi.USER_FILENAME);
+        if(file.exists()){
+            readFileAsString(Constantebi.USER_FILENAME);
+        }
 
         btn_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,6 +61,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 btn_login.setEnabled(false);
                 avtorizacia();
+//                try {
+//                    rememberUser("me", "123");
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
 //                Constantebi.loged_in = true;
 //                onBackPressed();
             }
@@ -82,6 +103,13 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     Constantebi.loged_in = true;
+                    if (chk_remember.isChecked()) {
+                        try {
+                            rememberUser(username, password);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
                     onBackPressed();
                 }
 
@@ -106,6 +134,44 @@ public class LoginActivity extends AppCompatActivity {
         };
 
         queue.add(request);
+    }
+
+    private void rememberUser(String username, String password) throws IOException {
+//        String fileName = "userdata";
+        File userFile = new File(getFilesDir(), Constantebi.USER_FILENAME);
+        FileWriter fileWriter = new FileWriter(userFile);
+        fileWriter.write(username);
+        fileWriter.write("\n");
+        fileWriter.write(password);
+        fileWriter.close();
+    }
+
+    public void readFileAsString(String fileName) {
+
+//        StringBuilder stringBuilder = new StringBuilder();
+//        String line;
+        BufferedReader reader = null;
+        String username = "";
+        String pass = "";
+
+        try {
+            reader = new BufferedReader(new FileReader(new File(getFilesDir(), fileName)));
+            username = reader.readLine();
+            pass = reader.readLine();
+//            while ((line = reader.readLine()) != null) {
+//                stringBuilder.append(line).append("\n");
+//                Toast.makeText(getApplicationContext(), line, Toast.LENGTH_SHORT).show();
+//            }
+        } catch (FileNotFoundException e) {
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        e_username.setText(username);
+        e_password.setText(pass);
+        btn_login.setEnabled(false);
+        chack_user(username, pass);
     }
 
     @Override

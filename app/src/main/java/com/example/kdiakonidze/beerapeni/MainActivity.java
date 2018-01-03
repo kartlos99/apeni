@@ -30,6 +30,8 @@ import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.File;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button btn_shekvetebi, btn_mitana, btn_dayRealiz, btn_objRealiz;
@@ -112,8 +114,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         startActivity(intent_Beerlist);
                         return true;
 
+                    case R.id.m_sys_clear:
+                        Intent intent_SysClear = new Intent(getApplicationContext(), SysClearActivity.class);
+                        startActivity(intent_SysClear);
+                        return true;
+
                     case R.id.m_logout:
                         Constantebi.loged_in = false;
+                        File file = new File(getFilesDir(),Constantebi.USER_FILENAME);
+                        if(file.exists()){
+                            file.delete();
+                        }
                         Intent loginpage = new Intent(getApplicationContext(), LoginActivity.class);
 //                        loginpage.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                         startActivity(loginpage);
