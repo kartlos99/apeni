@@ -56,4 +56,7 @@
     <string name="obieqti">ობიექტი</string>
     <string name="ssysclear">სისტ. გაწმენდა</string>
     <string name="damimaxsovre">დამიმახსოვრე</string>
+    <string name="chawera">ჩაწერა</string>
+    <string name="sys_clean">სისტემის გაწმენდა</string>
+    <string name="past_days">დღები</string>
 </resources>
