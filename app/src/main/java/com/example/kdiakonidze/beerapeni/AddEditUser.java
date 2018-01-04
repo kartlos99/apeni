@@ -136,7 +136,6 @@ public class AddEditUser extends AppCompatActivity {
         }else {
             e_pass.setError("");
         }
-
         return true;
     }
 

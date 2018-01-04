@@ -2,7 +2,10 @@ package com.example.kdiakonidze.beerapeni;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,7 +30,9 @@ import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,6 +43,7 @@ public class SysClearActivity extends AppCompatActivity {
     ListView list_sysclean;
     EditText e_comment;
 
+    SysCleanAdapter adapter;
     ArrayList<SysClean> cleaningList = new ArrayList<>();
 
     @Override
@@ -49,6 +55,7 @@ public class SysClearActivity extends AppCompatActivity {
         sp_sysclean = (Spinner) findViewById(R.id.spinner_sysclean);
         list_sysclean = (ListView) findViewById(R.id.list_sys_clean);
         e_comment = (EditText) findViewById(R.id.e_cleaning_comment);
+        registerForContextMenu(list_sysclean);
 
         final SpinnerAdapter spAdapter = new ArrayAdapter<Obieqti>(this, android.R.layout.simple_list_item_1, Constantebi.OBIEQTEBI);
         sp_sysclean.setAdapter(spAdapter);
@@ -60,17 +67,65 @@ public class SysClearActivity extends AppCompatActivity {
             public void onClick(View v) {
                 btn_chawera.setEnabled(false);
                 Obieqti obieqti = (Obieqti) spAdapter.getItem(sp_sysclean.getSelectedItemPosition());
-                insertNewCleaningInfo(obieqti.getId());
+                insertNewCleaningInfo(obieqti.getId(), 0);
             }
         });
     }
 
-    private void insertNewCleaningInfo(final int objID) {
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        SysClean currItem = (SysClean) adapter.getItem(info.position);
+        this.getMenuInflater().inflate(R.menu.context_menu_sysclear, menu);
+        menu.setHeaderTitle(currItem.getDasaxeleba());
+        super.onCreateContextMenu(menu, v, menuInfo);
+    }
 
-        StringRequest ins_cleaning = new StringRequest(Request.Method.POST, Constantebi.URL_INS_LUDISSHETANA, new Response.Listener<String>() {
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        SysClean currItem = (SysClean) adapter.getItem(info.position);
+
+        switch (item.getItemId()) {
+            case R.id.cm_sysclear_del:
+                insertNewCleaningInfo(0, currItem.getId());
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    private void insertNewCleaningInfo(final int objID, final int sysClId) {
+
+        StringRequest ins_cleaning = new StringRequest(Request.Method.POST, Constantebi.URL_INS_SYSCLEAN, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getApplicationContext(), "მონაცემები ჩაწერილია! " + response, Toast.LENGTH_SHORT).show();
+                if (response.contains("ჩაწერილია!")) {
+
+                    String id = response.substring(10);
+
+                    SysClean newClear = new SysClean();
+                    newClear.setId(Integer.valueOf(id));
+                    newClear.setDasaxeleba(sp_sysclean.getSelectedItem().toString());
+                    newClear.setComment(e_comment.getText().toString());
+                    newClear.setDistr_id(Integer.valueOf(Constantebi.USER_ID));
+                    newClear.setDge(0);
+                    Calendar calendar = Calendar.getInstance();
+                    SimpleDateFormat mdformat = new SimpleDateFormat("yyyy:MM:dd");
+
+                    newClear.setTarigi(mdformat.format(calendar.getTime()));
+
+                    cleaningList.add(newClear);
+                    adapter.notifyDataSetChanged();
+
+                }
+                if (response.equals("წაშლილია!")) {
+                    for (int i = 0; i < cleaningList.size(); i++) {
+                        if (cleaningList.get(i).getId() == sysClId) {
+                            cleaningList.remove(i);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                 onBackPressed();
             }
         }, new Response.ErrorListener() {
@@ -84,6 +139,7 @@ public class SysClearActivity extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
 
+                params.put("id", String.valueOf(sysClId));
                 params.put("distrib_id", Constantebi.USER_ID);
                 params.put("comment", e_comment.getText().toString());
                 params.put("objID", String.valueOf(String.valueOf(objID)));
@@ -124,7 +180,7 @@ public class SysClearActivity extends AppCompatActivity {
                     }
                 }
 
-                SysCleanAdapter adapter = new SysCleanAdapter(getApplicationContext(), cleaningList);
+                adapter = new SysCleanAdapter(getApplicationContext(), cleaningList);
                 list_sysclean.setAdapter(adapter);
 //                progressDialog.dismiss();
 //                expAdapter.notifyDataSetChanged();

@@ -35,6 +35,7 @@ public class Constantebi {
     public static String URL_DEL_RECORD = "http://apeni.ge/andr_app_links/del_record.php";
     public static String URL_GET_RECORD = "http://apeni.ge/andr_app_links/get_record.php";
     public static String URL_GET_SYSCLEAN = "http://apeni.ge/andr_app_links/get_cleaning.php";
+    public static String URL_INS_SYSCLEAN = "http://apeni.ge/andr_app_links/ins_cleaning.php";
 
     public static String USER_USERNAME = "";
     public static String USER_NAME = "";
