@@ -3,6 +3,7 @@ package com.example.kdiakonidze.beerapeni;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -40,12 +41,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
     private Toolbar toolbar;
-
+    private int screenDefOrientation;
+    int requestCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        screenDefOrientation = getRequestedOrientation();
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
         navigationView = (NavigationView) findViewById(R.id.navig_view);
@@ -121,8 +125,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     case R.id.m_logout:
                         Constantebi.loged_in = false;
-                        File file = new File(getFilesDir(),Constantebi.USER_FILENAME);
-                        if(file.exists()){
+                        File file = new File(getFilesDir(), Constantebi.USER_FILENAME);
+                        if (file.exists()) {
                             file.delete();
                         }
                         Intent loginpage = new Intent(getApplicationContext(), LoginActivity.class);
@@ -223,11 +227,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 }
                 progressDialog.dismiss();
-//                expAdapter.notifyDataSetChanged();
+
+                requestCount++;
+                if (requestCount == 4) {
+                    setRequestedOrientation(screenDefOrientation);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                requestCount++;
+                if (requestCount == 4) {
+                    setRequestedOrientation(screenDefOrientation);
+                }
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                 Toast.makeText(MainActivity.this, "eror no obieqtebi", Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
@@ -256,10 +268,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     Toast.makeText(MainActivity.this, "ლუდის სახეოების მონაცემებია შესაყვანი!", Toast.LENGTH_LONG).show();
                 }
+                requestCount++;
+                if (requestCount == 4) {
+                    setRequestedOrientation(screenDefOrientation);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                requestCount++;
+                if (requestCount == 4) {
+                    setRequestedOrientation(screenDefOrientation);
+                }
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                 Toast.makeText(MainActivity.this, "ludi sadaaa!", Toast.LENGTH_LONG).show();
             }
@@ -297,10 +317,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(MainActivity.this, "ლუდის სახეოების მონაცემებია შესაყვანი!", Toast.LENGTH_LONG).show();
 
                 }
+                requestCount++;
+                if (requestCount == 4) {
+                    setRequestedOrientation(screenDefOrientation);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                requestCount++;
+                if (requestCount == 4) {
+                    setRequestedOrientation(screenDefOrientation);
+                }
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                 Toast.makeText(MainActivity.this, "error fasebi", Toast.LENGTH_LONG).show();
             }
@@ -332,15 +360,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 } else {
                     Toast.makeText(MainActivity.this, "no users!", Toast.LENGTH_LONG).show();
                 }
+                requestCount++;
+                if (requestCount == 4) {
+                    setRequestedOrientation(screenDefOrientation);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                requestCount++;
+                if (requestCount == 4) {
+                    setRequestedOrientation(screenDefOrientation);
+                }
                 Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                 Toast.makeText(MainActivity.this, "error users load", Toast.LENGTH_LONG).show();
             }
         });
 
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        requestCount = 0;
         queue.add(requestObieqtebi);
         queue.add(requestLudiList);
         queue.add(request_users);

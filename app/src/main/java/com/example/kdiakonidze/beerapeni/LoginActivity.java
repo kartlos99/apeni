@@ -1,6 +1,7 @@
 package com.example.kdiakonidze.beerapeni;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,6 +45,8 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         btn_login = (Button) findViewById(R.id.btn_login);
         e_username = (EditText) findViewById(R.id.e_login_username);

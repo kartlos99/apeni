@@ -3,6 +3,7 @@ package com.example.kdiakonidze.beerapeni;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.icu.text.SimpleDateFormat;
 //import android.icu.util.Calendar;
 //import android.icu.util.TimeZone;
@@ -50,18 +51,19 @@ import java.util.Map;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class OrdersActivity extends AppCompatActivity {
 
-    String archeuli_dge;
     Button btn_setDate, btn_addOrder;
     TextView t_Tarigi;
+    CheckBox chBox_orderGroup;
     ListView listView_shekvetebi;
     ProgressDialog progressDialog;
+
     ArrayList<Shekvetebi> shekvetebiArrayList;
     ShekvetebiAdapter shekvetebiAdapter;
     Calendar calendar;
+    String archeuli_dge;
     Boolean chamosatvirtia = true;
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    CheckBox chBox_orderGroup;
-
+    private int screenDefOrientation;
 
     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -93,6 +95,7 @@ public class OrdersActivity extends AppCompatActivity {
         btn_addOrder = (Button) findViewById(R.id.btn_addOrder);
 
         shekvetebiArrayList = new ArrayList<>();
+        screenDefOrientation = getRequestedOrientation();
 
         calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, 4);
@@ -101,7 +104,11 @@ public class OrdersActivity extends AppCompatActivity {
             archeuli_dge = savedInstanceState.getString("tarigi");
             shekvetebiArrayList.clear();
             shekvetebiArrayList = (ArrayList<Shekvetebi>) savedInstanceState.getSerializable("order_list");
-            shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(), shekvetebiArrayList, chBox_orderGroup.isChecked());
+            if(chBox_orderGroup.isChecked()){
+                shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(), groupOrders(shekvetebiArrayList), true);
+            }else {
+                shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(), shekvetebiArrayList, false);
+            }
             listView_shekvetebi.setAdapter(shekvetebiAdapter);
             chamosatvirtia = false;
         } else {
@@ -251,10 +258,12 @@ public class OrdersActivity extends AppCompatActivity {
                     }
                     shekvetebiAdapter.reNewData(shekvetebiArrayList, false);
                 }
+                setRequestedOrientation(screenDefOrientation);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                setRequestedOrientation(screenDefOrientation);
                 Toast.makeText(getApplicationContext(), error.getMessage() + " -", Toast.LENGTH_SHORT).show();
             }
         }) {
@@ -267,6 +276,7 @@ public class OrdersActivity extends AppCompatActivity {
             }
         };
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         queue.add(request_DelOrder);
     }
 
@@ -316,6 +326,7 @@ public class OrdersActivity extends AppCompatActivity {
                 listView_shekvetebi.setAdapter(shekvetebiAdapter);
 
                 progressDialog.dismiss();
+                setRequestedOrientation(screenDefOrientation);
 //                expAdapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
@@ -323,9 +334,11 @@ public class OrdersActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(OrdersActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
+                setRequestedOrientation(screenDefOrientation);
             }
         });
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         queue.add(requestObieqtebi);
 
     }

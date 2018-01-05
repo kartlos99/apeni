@@ -2,6 +2,7 @@ package com.example.kdiakonidze.beerapeni;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.pm.ActivityInfo;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.Build;
@@ -39,6 +40,7 @@ import java.util.ArrayList;
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class DaySaleActivity extends AppCompatActivity {
 
+    private int screenDefOrientation;
     private ArrayList<SaleInfo> salesDay;
     private Double takeMoney = 0.0;
     private Calendar calendar;
@@ -46,7 +48,7 @@ public class DaySaleActivity extends AppCompatActivity {
     private String archeuli_dge;
     private Button btn_setDate;
     private TextView tTarigi, t_k30count, t_k50count, t_laricount, t_takeMoney;
-//    private ListView saleslistView;
+    //    private ListView saleslistView;
     private DaySalesAdapter salesAdapter;
     private ProgressDialog progressDialog;
     private Spinner sp_distr;
@@ -82,6 +84,7 @@ public class DaySaleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_sale);
+        screenDefOrientation = getRequestedOrientation();
 
         queue = Volley.newRequestQueue(this);
 
@@ -173,7 +176,7 @@ public class DaySaleActivity extends AppCompatActivity {
                 if (response.length() > 0) {
                     try {
 
-                        for (int i = 0; i < response.length()-1; i++) {
+                        for (int i = 0; i < response.length() - 1; i++) {
                             String dasaxeleba = response.getJSONObject(i).getString("dasaxeleba");
                             Double pr = response.getJSONObject(i).getDouble("pr");
                             int lt = response.getJSONObject(i).getInt("lt");
@@ -183,7 +186,7 @@ public class DaySaleActivity extends AppCompatActivity {
                             salesDay.add(new SaleInfo(dasaxeleba, pr, lt, k30, k50));
                         }
 
-                        takeMoney = response.getJSONObject(response.length()-1).getDouble("money");
+                        takeMoney = response.getJSONObject(response.length() - 1).getDouble("money");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -202,10 +205,12 @@ public class DaySaleActivity extends AppCompatActivity {
                 }
                 showAtherInfo(salesDay);
                 requestInProgres = false;
+                setRequestedOrientation(screenDefOrientation);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                setRequestedOrientation(screenDefOrientation);
                 Toast.makeText(DaySaleActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
                 requestInProgres = false;
@@ -214,6 +219,7 @@ public class DaySaleActivity extends AppCompatActivity {
 
         if (!requestInProgres && requestNeeded) {
             progressDialog = ProgressDialog.show(this, "იტვირთება!", "დაელოდეთ!");
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
             queue.add(request_fasebi);
             requestInProgres = true;
         }

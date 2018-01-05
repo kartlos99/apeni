@@ -3,6 +3,7 @@ package com.example.kdiakonidze.beerapeni.fragments;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
@@ -31,10 +32,12 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.AddDeliveryActivity;
+import com.example.kdiakonidze.beerapeni.AmonaweriActivity;
 import com.example.kdiakonidze.beerapeni.R;
 import com.example.kdiakonidze.beerapeni.adapters.AmonaweriAdapter;
 import com.example.kdiakonidze.beerapeni.models.Amonaweri;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -145,15 +148,15 @@ public class AmonaweriPageFr extends Fragment {
             case R.id.cm_amonaw_m_edit:
                 if (location == 0) {
 //                    Toast.makeText(getContext(), amonaweriRow.toString(), Toast.LENGTH_LONG).show();
-                    if(amonaweriRow.getPay() != 0){ // tanxis agebis redaqtireba
+                    if (amonaweriRow.getPay() != 0) { // tanxis agebis redaqtireba
                         Intent intent_editMout = new Intent(getContext(), AddDeliveryActivity.class);
                         intent_editMout.putExtra(Constantebi.REASON, Constantebi.EDIT);
                         intent_editMout.putExtra("operacia", Constantebi.M_OUT);
                         intent_editMout.putExtra("id", amonaweriRow.getId());
                         intent_editMout.putExtra("tanxa", amonaweriRow.getPay());
-                        intent_editMout.putExtra("objid",id);
+                        intent_editMout.putExtra("objid", id);
                         startActivity(intent_editMout);
-                    }else {
+                    } else {
                         Intent intent_editMitana = new Intent(getContext(), AddDeliveryActivity.class);
                         intent_editMitana.putExtra(Constantebi.REASON, Constantebi.EDIT);
                         intent_editMitana.putExtra("operacia", Constantebi.MITANA);
@@ -180,7 +183,7 @@ public class AmonaweriPageFr extends Fragment {
                         intent_editKout.putExtra("operacia", Constantebi.K_OUT);
                         intent_editKout.putExtra("id", amonaweriRow.getId());
                         startActivity(intent_editKout);
-                    }else {
+                    } else {
                         Intent intent_editMitana = new Intent(getContext(), AddDeliveryActivity.class);
                         intent_editMitana.putExtra(Constantebi.REASON, Constantebi.EDIT);
                         intent_editMitana.putExtra("operacia", Constantebi.MITANA);
@@ -229,11 +232,13 @@ public class AmonaweriPageFr extends Fragment {
                     }
                     amonaweriAdapter.notifyDataSetChanged();
                 }
+                getActivity().setRequestedOrientation(AmonaweriActivity.screenDefOrientation);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), error.getMessage() + " -", Toast.LENGTH_SHORT).show();
+                getActivity().setRequestedOrientation(AmonaweriActivity.screenDefOrientation);
             }
         }) {
             @Override
@@ -246,6 +251,7 @@ public class AmonaweriPageFr extends Fragment {
             }
         };
 
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         queue.add(request_DelOrder);
     }
 
@@ -289,21 +295,29 @@ public class AmonaweriPageFr extends Fragment {
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(getContext(), "no activiti!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "ჩანაწერები არ არის!", Toast.LENGTH_SHORT).show();
                 }
 
                 amonaweriAdapter = new AmonaweriAdapter(getContext(), amonaweriArrayList, location);
                 amonaweriList.setAdapter(amonaweriAdapter);
                 progressDialog.dismiss();
+                AmonaweriActivity.requestCount--;
+                if (AmonaweriActivity.requestCount == 0) {
+                    getActivity().setRequestedOrientation(AmonaweriActivity.screenDefOrientation);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
+                AmonaweriActivity.requestCount = 0;
+                getActivity().setRequestedOrientation(AmonaweriActivity.screenDefOrientation);
             }
         });
 
+        AmonaweriActivity.requestCount++;
+        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         queue.add(request_amonaweri);
     }
 

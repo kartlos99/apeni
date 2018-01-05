@@ -59,6 +59,9 @@ public class AmonaweriActivity extends AppCompatActivity {
     FragmentManager fragmentManager;
     MyPagesAdapter pagerAdapter;
 
+    public static int requestCount = 0;
+    public static int screenDefOrientation;
+
     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
@@ -99,6 +102,7 @@ public class AmonaweriActivity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabs_amonaweri);
         toolbar = (Toolbar) findViewById(R.id.tool_bar_amonaw);
 
+        screenDefOrientation = getRequestedOrientation();
 
 //        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
 //            @Override
@@ -158,10 +162,10 @@ public class AmonaweriActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if(position == 0) {
+                if (position == 0) {
                     AmonaweriPageFr fragmentM = (AmonaweriPageFr) pagerAdapter.getFragmentM();
                     fragmentM.dataRefresh();
-                }else {
+                } else {
                     AmonaweriPageFr fragmentK = (AmonaweriPageFr) pagerAdapter.getFragmentK();
                     fragmentK.dataRefresh();
                 }
@@ -253,14 +257,21 @@ public class AmonaweriActivity extends AppCompatActivity {
 
                 }
 
+                requestCount--;
+                if (requestCount == 0) {
+                    setRequestedOrientation(screenDefOrientation);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                requestCount = 0;
+                setRequestedOrientation(screenDefOrientation);
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
 
+        requestCount++;
         queue.add(request_davalianeba);
     }
 
