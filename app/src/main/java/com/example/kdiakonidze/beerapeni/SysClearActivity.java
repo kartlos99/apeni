@@ -1,5 +1,6 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -38,13 +39,14 @@ import java.util.Map;
 
 public class SysClearActivity extends AppCompatActivity {
 
-    Button btn_chawera;
+    Button btn_chawera, btn_sysclear_add;
     Spinner sp_sysclean;
     ListView list_sysclean;
     EditText e_comment;
 
     SysCleanAdapter adapter;
     ArrayList<SysClean> cleaningList = new ArrayList<>();
+    private int screenDefOrientation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +54,12 @@ public class SysClearActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sys_clear);
 
         btn_chawera = (Button) findViewById(R.id.btn_add_sysclean);
+        btn_sysclear_add = (Button) findViewById(R.id.btn_sysclear);
         sp_sysclean = (Spinner) findViewById(R.id.spinner_sysclean);
         list_sysclean = (ListView) findViewById(R.id.list_sys_clean);
         e_comment = (EditText) findViewById(R.id.e_cleaning_comment);
         registerForContextMenu(list_sysclean);
+        screenDefOrientation = getRequestedOrientation();
 
         final SpinnerAdapter spAdapter = new ArrayAdapter<Obieqti>(this, android.R.layout.simple_list_item_1, Constantebi.OBIEQTEBI);
         sp_sysclean.setAdapter(spAdapter);
@@ -68,6 +72,23 @@ public class SysClearActivity extends AppCompatActivity {
                 btn_chawera.setEnabled(false);
                 Obieqti obieqti = (Obieqti) spAdapter.getItem(sp_sysclean.getSelectedItemPosition());
                 insertNewCleaningInfo(obieqti.getId(), 0);
+            }
+        });
+
+        btn_sysclear_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (btn_chawera.getVisibility() == View.VISIBLE) {
+                    sp_sysclean.setVisibility(View.GONE);
+                    btn_chawera.setVisibility(View.GONE);
+                    e_comment.setVisibility(View.GONE);
+                    btn_sysclear_add.setText("+");
+                } else {
+                    sp_sysclean.setVisibility(View.VISIBLE);
+                    btn_chawera.setVisibility(View.VISIBLE);
+                    e_comment.setVisibility(View.VISIBLE);
+                    btn_sysclear_add.setText("-");
+                }
             }
         });
     }
@@ -126,6 +147,7 @@ public class SysClearActivity extends AppCompatActivity {
                     }
                 }
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                setRequestedOrientation(screenDefOrientation);
                 onBackPressed();
             }
         }, new Response.ErrorListener() {
@@ -133,6 +155,7 @@ public class SysClearActivity extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 btn_chawera.setEnabled(true);
+                setRequestedOrientation(screenDefOrientation);
             }
         }) {
             @Override
@@ -150,6 +173,7 @@ public class SysClearActivity extends AppCompatActivity {
         };
 
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         queue.add(ins_cleaning);
     }
 
@@ -184,16 +208,19 @@ public class SysClearActivity extends AppCompatActivity {
                 list_sysclean.setAdapter(adapter);
 //                progressDialog.dismiss();
 //                expAdapter.notifyDataSetChanged();
+                setRequestedOrientation(screenDefOrientation);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                 Toast.makeText(getApplicationContext(), "eror: no cleaning data!", Toast.LENGTH_LONG).show();
+                setRequestedOrientation(screenDefOrientation);
 //                progressDialog.dismiss();
             }
         });
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         RequestQueue queue = Volley.newRequestQueue(this);
         queue.add(request_cleaningData);
     }

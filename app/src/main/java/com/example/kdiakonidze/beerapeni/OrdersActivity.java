@@ -69,6 +69,7 @@ public class OrdersActivity extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
             calendar.set(year, month, day);
+            calendar.add(Calendar.HOUR, 4);
             archeuli_dge = dateFormat.format(calendar.getTime());
             btn_setDate.setText(archeuli_dge);
             shekvetebis_chamotvirtva(archeuli_dge);
@@ -104,9 +105,9 @@ public class OrdersActivity extends AppCompatActivity {
             archeuli_dge = savedInstanceState.getString("tarigi");
             shekvetebiArrayList.clear();
             shekvetebiArrayList = (ArrayList<Shekvetebi>) savedInstanceState.getSerializable("order_list");
-            if(chBox_orderGroup.isChecked()){
+            if (chBox_orderGroup.isChecked()) {
                 shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(), groupOrders(shekvetebiArrayList), true);
-            }else {
+            } else {
                 shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(), shekvetebiArrayList, false);
             }
             listView_shekvetebi.setAdapter(shekvetebiAdapter);
@@ -209,16 +210,14 @@ public class OrdersActivity extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getItem(info.position);
-        if (!(currOrder.getOrder_id() == 0)) {
+
+        if (chBox_orderGroup.isChecked()) {
+            Toast.makeText(getApplicationContext(), "მოხსენით დაჯგუფება", Toast.LENGTH_SHORT).show();
+        } else {
             this.getMenuInflater().inflate(R.menu.context_menu_order, menu);
             menu.setHeaderTitle(currOrder.getComment());
-        }else {
-            if(chBox_orderGroup.isChecked()){
-                Toast.makeText(getApplicationContext(), "მოხსენით დაჯგუფება", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(getApplicationContext(), "მიტანას აქ ვერ დააკორექტირებ!", Toast.LENGTH_SHORT).show();
-            }
         }
+
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
@@ -230,32 +229,54 @@ public class OrdersActivity extends AppCompatActivity {
         switch (item.getItemId()) {
 
             case R.id.cm_order_edit:
-                Intent intent_editOrder = new Intent(getApplicationContext(), AddOrderActivity.class);
-                intent_editOrder.putExtra(Constantebi.REASON, Constantebi.EDIT);
-                intent_editOrder.putExtra("obj", currOrder);
-                startActivity(intent_editOrder);
+                boolean exist = false;
+                for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
+                    if (Constantebi.OBIEQTEBI.get(i).getDasaxeleba().equals(currOrder.getObieqti())) {
+                        exist = true;
+                    }
+                }
+                if (exist) {
+                    Intent intent_editOrder;
+                    if ((currOrder.getK30wont() == 0) && (currOrder.getK50wont() == 0)) { // mitana
+                        intent_editOrder = new Intent(getApplicationContext(), AddDeliveryActivity.class);
+                        intent_editOrder.putExtra("id", currOrder.getOrder_id());
+                        intent_editOrder.putExtra("operacia", Constantebi.MITANA);
+                    } else { // shekveta
+                        intent_editOrder = new Intent(getApplicationContext(), AddOrderActivity.class);
+                        intent_editOrder.putExtra("obj", currOrder);
+                    }
+                    intent_editOrder.putExtra(Constantebi.REASON, Constantebi.EDIT);
+                    startActivity(intent_editOrder);
+                }else {
+                    Toast.makeText(getApplicationContext(), "ჩანაწერს ვერ დაარედაქტირებთ,\nობიექტი '"+ currOrder.getObieqti() +"' წაშლილია!", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.cm_order_del:
-                removeOrder(currOrder.getOrder_id());
+                if ((currOrder.getK30wont() == 0) && (currOrder.getK50wont() == 0)) {
+                    removeRecord(currOrder.getOrder_id(), Constantebi.MITANA, info.position);
+                } else {
+                    removeRecord(currOrder.getOrder_id(), Constantebi.ORDER, info.position);
+                }
                 break;
         }
         return super.onContextItemSelected(item);
     }
 
-    private void removeOrder(final int order_id) {
+    private void removeRecord(final int id, final String table, final int listPosition) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
-        StringRequest request_DelOrder = new StringRequest(Request.Method.POST, Constantebi.URL_DEL_ORDER, new Response.Listener<String>() {
+        StringRequest request_DelOrder = new StringRequest(Request.Method.POST, Constantebi.URL_DEL_RECORD, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), response + " +", Toast.LENGTH_SHORT).show();
                 if (response.equals("Removed!")) {
 
-                    for (int i = 0; i < shekvetebiArrayList.size(); i++) {
-                        if (shekvetebiArrayList.get(i).getOrder_id() == order_id) {
-                            shekvetebiArrayList.remove(i);
-                        }
-                    }
+//                    for (int i = 0; i < shekvetebiArrayList.size(); i++) {
+//                        if (shekvetebiArrayList.get(i).getOrder_id() == id) {
+//                            shekvetebiArrayList.remove(i);
+//                        }
+//                    }
+                    shekvetebiArrayList.remove(listPosition);
                     shekvetebiAdapter.reNewData(shekvetebiArrayList, false);
                 }
                 setRequestedOrientation(screenDefOrientation);
@@ -270,7 +291,8 @@ public class OrdersActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<>();
-                params.put("order_id", String.valueOf(order_id));
+                params.put("id", String.valueOf(id));
+                params.put("table", table);
                 params.toString();
                 return params;
             }

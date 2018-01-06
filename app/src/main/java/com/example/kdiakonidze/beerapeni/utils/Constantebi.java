@@ -51,6 +51,7 @@ public class Constantebi {
     public static String MITANA = "mitana";
     public static String K_OUT = "kout";
     public static String M_OUT = "mout";
+    public static String ORDER = "order";
 
     public static ArrayList<BeerModel> ludiList = new ArrayList<>();
     public static ArrayList<Obieqti> OBIEQTEBI = new ArrayList<>();
