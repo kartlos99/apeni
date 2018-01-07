@@ -1,10 +1,12 @@
 package com.example.kdiakonidze.beerapeni;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.SearchView;
@@ -13,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -61,7 +64,7 @@ public class ObjListActivity extends AppCompatActivity {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(getApplicationContext(), query+"!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), query + "!!", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -106,13 +109,6 @@ public class ObjListActivity extends AppCompatActivity {
             }
         });
 
-        objlistView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                return false;
-            }
-        });
-
         this.registerForContextMenu(objlistView);
     }
 
@@ -135,7 +131,7 @@ public class ObjListActivity extends AppCompatActivity {
         Obieqti obieqti = (Obieqti) objListAdapter.getItem(info.position);
 
         int menuId = item.getItemId();
-        switch (menuId){
+        switch (menuId) {
             case R.id.cm_call:
                 Toast.makeText(this, obieqti.getTel(), Toast.LENGTH_LONG).show();
                 Intent callIntent = new Intent(Intent.ACTION_CALL);
@@ -154,7 +150,31 @@ public class ObjListActivity extends AppCompatActivity {
                 startActivity(callIntent);
                 break;
             case R.id.cm_info:
-                Toast.makeText(this, obieqti.toString(), Toast.LENGTH_LONG).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                View infoView = getLayoutInflater().inflate(R.layout.obj_info_dialog, null);
+                TextView tDasaxeleba = (TextView) infoView.findViewById(R.id.t_d_dasaxeleba);
+                TextView tSakPiri = (TextView) infoView.findViewById(R.id.t_d_sakpiri);
+                TextView tComment = (TextView) infoView.findViewById(R.id.t_d_comment);
+
+                tDasaxeleba.setText("ობიექტი: "
+                        + obieqti.getDasaxeleba() + "\n    "
+                        + obieqti.getSk() + "\n    "
+                        + obieqti.getAdress() );
+                tSakPiri.setText("საკ.პირი: "
+                        + obieqti.getSakpiri() + "\n    "
+                        + obieqti.getTel()
+                );
+                tComment.setText(obieqti.getComment());
+
+                builder.setView(infoView)
+                        .setTitle("ინფორმაცია")
+                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                builder.show();
                 break;
             case R.id.cm_edit_obj:
                 Intent intent_editObj = new Intent(getApplicationContext(), AddEditObject.class);
@@ -176,7 +196,7 @@ public class ObjListActivity extends AppCompatActivity {
         StringRequest request_DelObj = new StringRequest(Request.Method.POST, Constantebi.URL_DEL_OBJ, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (response.equals("Removed!")){
+                if (response.equals("Removed!")) {
                     GlobalServise globalServise = new GlobalServise(getApplicationContext());
                     globalServise.get_Obieqts();
                 }
