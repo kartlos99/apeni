@@ -9,4 +9,5 @@
     <dimen name="textsize_3">18sp</dimen>
     <dimen name="textsize_4">24sp</dimen>
     <dimen name="header_hiegth">172dp</dimen>
+    <dimen name="buttonMargin">4sp</dimen>
 </resources>

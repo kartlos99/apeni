@@ -29,83 +29,83 @@
             android:textSize="38sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tool_bar"/>
+            app:layout_constraintTop_toBottomOf="@+id/tool_bar"
+            tools:layout_editor_absoluteX="0dp" />
 
         <Button
             android:id="@+id/btn_shekvetebi"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/buttonMargin"
             android:text="@string/shekveTebi"
+            android:textSize="@dimen/textsize_3"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="@+id/guideline"
             app:layout_constraintRight_toLeftOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            app:layout_constraintBottom_toTopOf="@+id/btn_mitana"
+            app:layout_constraintVertical_weight="1"
+            app:layout_constraintVertical_chainStyle="spread_inside" />
 
         <Button
             android:id="@+id/btn_mitana"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/buttonMargin"
             android:text="@string/mitana"
+            android:textSize="@dimen/textsize_3"
+            app:layout_constraintVertical_weight="1"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="@+id/guideline"
             app:layout_constraintRight_toLeftOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/btn_shekvetebi" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_shekvetebi"
+            app:layout_constraintBottom_toTopOf="@+id/btn_realiz_dge" />
 
         <Button
             android:id="@+id/btn_realiz_dge"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/buttonMargin"
             android:text="@string/day_realizacia"
+            android:textSize="@dimen/textsize_3"
             app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintVertical_weight="1"
             app:layout_constraintLeft_toLeftOf="@+id/guideline"
             app:layout_constraintRight_toLeftOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/btn_mitana" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_mitana"
+            app:layout_constraintBottom_toTopOf="@+id/btn_realiz_obj" />
 
         <Button
             android:id="@+id/btn_realiz_obj"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/buttonMargin"
             android:text="@string/obj_realizacia"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textSize="@dimen/textsize_3"
+            app:layout_constraintVertical_chainStyle="spread_inside"
+            app:layout_constraintVertical_weight="1"
             app:layout_constraintLeft_toLeftOf="@+id/guideline"
             app:layout_constraintRight_toLeftOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/btn_realiz_dge" />
+            app:layout_constraintTop_toBottomOf="@+id/btn_realiz_dge"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.1" />
+            app:layout_constraintGuide_percent="0.1"
+            tools:layout_editor_absoluteY="25dp"
+            tools:layout_editor_absoluteX="39dp" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.9"/>
+            app:layout_constraintGuide_percent="0.9"
+            tools:layout_editor_absoluteY="25dp"
+            tools:layout_editor_absoluteX="346dp" />
 
     </android.support.constraint.ConstraintLayout>
 
