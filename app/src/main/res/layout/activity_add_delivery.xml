@@ -459,9 +459,19 @@
                 android:id="@+id/textView2"
                 tools:layout_editor_absoluteX="103dp" />
 
+            <Button
+                android:id="@+id/btn_change_date"
+                android:text="@string/drois_archeva"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/card_tanxa"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
             <android.support.design.widget.TextInputLayout
                 android:id="@+id/t_mitana_comment"
-                app:layout_constraintTop_toBottomOf="@+id/card_tanxa"
+                app:layout_constraintTop_toBottomOf="@+id/btn_change_date"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:focusable="false"

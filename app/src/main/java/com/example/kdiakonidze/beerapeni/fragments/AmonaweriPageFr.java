@@ -131,9 +131,11 @@ public class AmonaweriPageFr extends Fragment {
 
         if (location == 0) {
             getActivity().getMenuInflater().inflate(R.menu.context_menu_amonaw_m, menu);
+            menu.setHeaderTitle("--  თანხები  --");
         }
         if (location == 1) {
             getActivity().getMenuInflater().inflate(R.menu.context_menu_amonaw_k, menu);
+            menu.setHeaderTitle("--  კასრები  --");
         }
         super.onCreateContextMenu(menu, v, menuInfo);
     }
@@ -142,12 +144,13 @@ public class AmonaweriPageFr extends Fragment {
     public boolean onContextItemSelected(MenuItem item) {
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
+
 
         switch (item.getItemId()) {
             case R.id.cm_amonaw_m_edit:
                 if (location == 0) {
-//                    Toast.makeText(getContext(), amonaweriRow.toString(), Toast.LENGTH_LONG).show();
+                    Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
+                    Toast.makeText(getContext(), amonaweriRow.toString()+" a1", Toast.LENGTH_LONG).show();
                     if (amonaweriRow.getPay() != 0) { // tanxis agebis redaqtireba
                         Intent intent_editMout = new Intent(getContext(), AddDeliveryActivity.class);
                         intent_editMout.putExtra(Constantebi.REASON, Constantebi.EDIT);
@@ -155,18 +158,21 @@ public class AmonaweriPageFr extends Fragment {
                         intent_editMout.putExtra("id", amonaweriRow.getId());
                         intent_editMout.putExtra("tanxa", amonaweriRow.getPay());
                         intent_editMout.putExtra("objid", id);
+                        intent_editMout.putExtra("tarigi", amonaweriRow.getTarigi());
                         startActivity(intent_editMout);
                     } else {
                         Intent intent_editMitana = new Intent(getContext(), AddDeliveryActivity.class);
                         intent_editMitana.putExtra(Constantebi.REASON, Constantebi.EDIT);
                         intent_editMitana.putExtra("operacia", Constantebi.MITANA);
                         intent_editMitana.putExtra("id", amonaweriRow.getId());
+                        intent_editMitana.putExtra("tarigi", amonaweriRow.getTarigi());
                         startActivity(intent_editMitana);
                     }
                 }
                 break;
             case R.id.cm_amonaw_m_del:
                 if (location == 0) {
+                    Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
                     String table = "mitana";
                     if (amonaweriRow.getPay() != 0) {
                         table = "mout";
@@ -176,18 +182,21 @@ public class AmonaweriPageFr extends Fragment {
                 break;
             case R.id.cm_amonaw_k_edit:
                 if (location == 1) {
-//                    Toast.makeText(getContext(), amonaweriRow.toString(), Toast.LENGTH_LONG).show();
+                    Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
+                    Toast.makeText(getContext(), amonaweriRow.toString()+" a2", Toast.LENGTH_LONG).show();
                     if (amonaweriRow.getK_out() != 0) { // kasris aRebas vakoreqtireb
                         Intent intent_editKout = new Intent(getContext(), AddDeliveryActivity.class);
                         intent_editKout.putExtra(Constantebi.REASON, Constantebi.EDIT);
                         intent_editKout.putExtra("operacia", Constantebi.K_OUT);
                         intent_editKout.putExtra("id", amonaweriRow.getId());
+                        intent_editKout.putExtra("tarigi", amonaweriRow.getTarigi());
                         startActivity(intent_editKout);
                     } else {
                         Intent intent_editMitana = new Intent(getContext(), AddDeliveryActivity.class);
                         intent_editMitana.putExtra(Constantebi.REASON, Constantebi.EDIT);
                         intent_editMitana.putExtra("operacia", Constantebi.MITANA);
                         intent_editMitana.putExtra("id", amonaweriRow.getId());
+                        intent_editMitana.putExtra("tarigi", amonaweriRow.getTarigi());
                         startActivity(intent_editMitana);
                     }
                 }
@@ -195,6 +204,7 @@ public class AmonaweriPageFr extends Fragment {
                 break;
             case R.id.cm_amonaw_k_del:
                 if (location == 1) {
+                    Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
                     String table = "mitana";
                     if (amonaweriRow.getK_out() != 0) {
                         table = "kout";

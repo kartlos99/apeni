@@ -121,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 btn_login.setEnabled(true);
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), error.toString()+" შეცდომა login -ze" , Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override

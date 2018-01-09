@@ -1,5 +1,6 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.PersistableBundle;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +29,9 @@ import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,16 +39,31 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
 
     private TextView t_deliveryInfo, t_beerType, t_davalanebaM, t_davalanebaK, t_ludi_in, t_1title, t_2title, t_3title;
     private EditText eK30Count, eK50Count, eK30Count_Kout, eK50Count_Kout, eTakeMoney;
-    private Button btn_Done, btnBeerLeft, btnBeerRight, btnK30dec, btnK30inc, btnK50dec, btnK50inc, btnK30dec_Kout, btnK30inc_Kout, btnK50dec_Kout, btnK50inc_Kout;
+    private Button btn_Done, btnBeerLeft, btnBeerRight, btnK30dec, btnK30inc, btnK50dec, btnK50inc, btnK30dec_Kout, btnK30inc_Kout, btnK50dec_Kout, btnK50inc_Kout, btn_changeDate;
     private CardView cardView_mitana, cardView_kout, cardView_mout;
     private TextInputLayout t_comment;
     private ProgressDialog progressDialog;
 
     private Obieqti currObieqti;
+    Calendar calendar;
+    String archeuli_tarigi;
+    SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     private int editingId = 0;
     private Integer beerIndex = 0, beerId = 0;
     private String reason, operacia;
+
+    DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+            calendar.set(year, month, day);
+
+            archeuli_tarigi = timeFormat.format(calendar.getTime());
+            btn_changeDate.setText(dateFormat.format(calendar.getTime()));
+
+        }
+    };
 
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
@@ -56,6 +76,10 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_delivery);
         initial_findviews();
+
+        calendar = Calendar.getInstance();
+//        calendar.add(Calendar.HOUR, 4);
+        archeuli_tarigi = timeFormat.format(calendar.getTime());
 
         if (savedInstanceState != null) {
             t_comment.getEditText().setText(savedInstanceState.getString("comment"));
@@ -73,6 +97,9 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         } else {
             operacia = i.getStringExtra("operacia");
             editingId = i.getIntExtra("id", 0);
+            archeuli_tarigi = i.getStringExtra("tarigi");
+            btn_changeDate.setText(archeuli_tarigi);
+
             if (operacia.equals(Constantebi.MITANA)) {
                 t_2title.setVisibility(View.GONE);
                 t_3title.setVisibility(View.GONE);
@@ -163,6 +190,16 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
+        btn_changeDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(AddDeliveryActivity.this, dateSetListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.setCancelable(false);
+                datePickerDialog.getDatePicker().setMaxDate(new Date().getTime());
+                datePickerDialog.show();
+            }
+        });
 
     }
 
@@ -311,6 +348,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         btnBeerLeft = (Button) findViewById(R.id.btn_beerleft);
         btnBeerRight = (Button) findViewById(R.id.btn_beerright);
         btn_Done = (Button) findViewById(R.id.btn_beerInputDone);
+        btn_changeDate = (Button) findViewById(R.id.btn_change_date);
 
         btnK30dec = (Button) findViewById(R.id.btn_k30_dec);
         btnK30inc = (Button) findViewById(R.id.btn_k30_inc);
@@ -430,6 +468,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 params.put("k50out", eK50Count_Kout.getText().toString());
 
                 params.put("tanxa", eTakeMoney.getText().toString());
+                params.put("set_tarigi", archeuli_tarigi);
 
                 params.toString();
                 return params;
