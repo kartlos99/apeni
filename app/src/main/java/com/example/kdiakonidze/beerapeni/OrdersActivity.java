@@ -5,10 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.icu.text.SimpleDateFormat;
-//import android.icu.util.Calendar;
-//import android.icu.util.TimeZone;
 import android.os.Build;
-import android.os.PersistableBundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,9 +26,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpClientStack;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.adapters.ShekvetebiAdapter;
@@ -41,10 +36,8 @@ import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +54,7 @@ public class OrdersActivity extends AppCompatActivity {
     ShekvetebiAdapter shekvetebiAdapter;
     Calendar calendar;
     String archeuli_dge;
-    Boolean chamosatvirtia = true;
+    static Boolean chamosatvirtia = false;
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private int screenDefOrientation;
 
@@ -71,7 +64,7 @@ public class OrdersActivity extends AppCompatActivity {
             calendar.set(year, month, day);
             calendar.add(Calendar.HOUR, 4);
             archeuli_dge = dateFormat.format(calendar.getTime());
-            btn_setDate.setText(archeuli_dge);
+            btn_setDate.setText("თარიღი: " + archeuli_dge + " ");
             shekvetebis_chamotvirtva(archeuli_dge);
         }
     };
@@ -111,13 +104,12 @@ public class OrdersActivity extends AppCompatActivity {
                 shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(), shekvetebiArrayList, false);
             }
             listView_shekvetebi.setAdapter(shekvetebiAdapter);
-            chamosatvirtia = false;
         } else {
             archeuli_dge = dateFormat.format(calendar.getTime());
             chamosatvirtia = true;
         }
 
-        btn_setDate.setText(archeuli_dge);
+        btn_setDate.setText("თარიღი: " + archeuli_dge + " ");
 
         btn_setDate.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -152,6 +144,23 @@ public class OrdersActivity extends AppCompatActivity {
         });
 
         this.registerForContextMenu(listView_shekvetebi);
+
+        listView_shekvetebi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (!chBox_orderGroup.isChecked()) {
+                    TextView t_comment = (TextView) view.findViewById(R.id.t_orderlist_row_comment);
+                    Shekvetebi shekvetebi = (Shekvetebi) shekvetebiAdapter.getItem(i);
+                    if (!shekvetebi.getComment().isEmpty()) {
+                        if (t_comment.getVisibility() == View.VISIBLE) {
+                            t_comment.setVisibility(View.GONE);
+                        } else {
+                            t_comment.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private ArrayList<Shekvetebi> groupOrders(ArrayList<Shekvetebi> shekvetebiList) {
@@ -195,7 +204,7 @@ public class OrdersActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        chamosatvirtia = true;
+//        chamosatvirtia = true;
     }
 
     @Override
@@ -247,8 +256,8 @@ public class OrdersActivity extends AppCompatActivity {
                     }
                     intent_editOrder.putExtra(Constantebi.REASON, Constantebi.EDIT);
                     startActivity(intent_editOrder);
-                }else {
-                    Toast.makeText(getApplicationContext(), "ჩანაწერს ვერ დაარედაქტირებთ,\nობიექტი '"+ currOrder.getObieqti() +"' წაშლილია!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(), "ჩანაწერს ვერ დაარედაქტირებთ,\nობიექტი '" + currOrder.getObieqti() + "' წაშლილია!", Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.cm_order_del:
@@ -347,6 +356,7 @@ public class OrdersActivity extends AppCompatActivity {
                 }
                 listView_shekvetebi.setAdapter(shekvetebiAdapter);
 
+                chamosatvirtia = false;
                 progressDialog.dismiss();
                 setRequestedOrientation(screenDefOrientation);
 //                expAdapter.notifyDataSetChanged();

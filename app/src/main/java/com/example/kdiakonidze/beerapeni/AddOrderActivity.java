@@ -1,6 +1,8 @@
 package com.example.kdiakonidze.beerapeni;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,9 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -41,11 +45,25 @@ public class AddOrderActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private String reason;
     private Shekvetebi shekveta;
+    int defOrientation;
+
+    private RetryPolicy mRetryPolicy = new DefaultRetryPolicy(
+            0,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt("beer",beertype);
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_order);
+
+        defOrientation = getRequestedOrientation();
 
         t_OrderInfo = (TextView) findViewById(R.id.t_orderInfo);
         eK30Count = (EditText) findViewById(R.id.edit_K30Count);
@@ -66,6 +84,12 @@ public class AddOrderActivity extends AppCompatActivity {
 
         SpinnerAdapter spAdapter = new ArrayAdapter<Useri>(this, android.R.layout.simple_list_item_1, Constantebi.USERsLIST);
         sp_order_distrib.setAdapter(spAdapter);
+
+        if(savedInstanceState != null){
+            beertype = savedInstanceState.getInt("beer");
+            t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba());
+            beerId = Constantebi.ludiList.get(beertype).getId();
+        }
 
         Intent i = getIntent();
         reason = i.getStringExtra(Constantebi.REASON);
@@ -140,7 +164,7 @@ public class AddOrderActivity extends AppCompatActivity {
         btn_newOrderDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendDataToDB(Constantebi.URL_INS_SHEKVETA);
+                sendDataToDB();
                 btn_newOrderDone.setEnabled(false);
             }
         });
@@ -195,22 +219,25 @@ public class AddOrderActivity extends AppCompatActivity {
         return String.valueOf(ii);
     }
 
-    private void sendDataToDB(String url) {
+    private void sendDataToDB() {
         // aq vagzavnit monacemebs chasawerad
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.POST, Constantebi.URL_INS_SHEKVETA, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                 if (response.equals("ჩაწერილია!") || response.equals("შეკვეთა დაკორექტირდა!")){
+                    OrdersActivity.chamosatvirtia = true;
                     onBackPressed();
                 }
                 btn_newOrderDone.setEnabled(true);
+                setRequestedOrientation(defOrientation);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                setRequestedOrientation(defOrientation);
                 Toast.makeText(getApplicationContext(), error.getMessage()+" -", Toast.LENGTH_SHORT).show();
                 btn_newOrderDone.setEnabled(true);
             }
@@ -241,6 +268,8 @@ public class AddOrderActivity extends AppCompatActivity {
             }
         };
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        request.setRetryPolicy(mRetryPolicy);
         queue.add(request);
     }
 }

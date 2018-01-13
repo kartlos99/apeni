@@ -69,11 +69,11 @@ public class ShekvetebiAdapter extends BaseAdapter {
             viewHolder.t_k30wont = (TextView) listRowView.findViewById(R.id.t_k30wont_orderlist);
             viewHolder.t_k50wont = (TextView) listRowView.findViewById(R.id.t_k50wont_orderlist);
             viewHolder.t_distributor = (TextView) listRowView.findViewById(R.id.t_shek_list_distrib);
+            viewHolder.t_comment = (TextView) listRowView.findViewById(R.id.t_orderlist_row_comment);
             viewHolder.ln_row = (LinearLayout) listRowView.findViewById(R.id.linear_order_row);
 
             listRowView.setTag(viewHolder);
         } else {
-
             listRowView = convertView;
             viewHolder = (ViewHolder) listRowView.getTag();
         }
@@ -92,8 +92,7 @@ public class ShekvetebiAdapter extends BaseAdapter {
         viewHolder.t_k50wont.setText("" + shekveta.getK50wont());
         viewHolder.t_k30in.setText("" + shekveta.getK30in());
         viewHolder.t_k50in.setText("" + shekveta.getK50in());
-
-
+        viewHolder.t_comment.setText(shekveta.getComment());
 
         if (grouped) {
             if (shekveta.getK30in() + shekveta.getK50in() < shekveta.getK30wont() + shekveta.getK50wont()) {
@@ -116,6 +115,12 @@ public class ShekvetebiAdapter extends BaseAdapter {
                 viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
                 viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
             }
+
+            if(!shekveta.getComment().isEmpty()){
+                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_black_24dp,0,0,0);
+            }else {
+                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            }
         }
 
         return listRowView;
@@ -129,7 +134,7 @@ public class ShekvetebiAdapter extends BaseAdapter {
     }
 
     private class ViewHolder {
-        TextView t_obieqti, t_ludi, t_k30in, t_k50in, t_k30wont, t_k50wont, t_distributor;
+        TextView t_obieqti, t_ludi, t_k30in, t_k50in, t_k30wont, t_k50wont, t_distributor, t_comment;
         LinearLayout ln_row;
     }
 }

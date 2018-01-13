@@ -81,13 +81,11 @@ public class AddEditUser extends AppCompatActivity {
         ch_Box_passchange.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                e_pass.setEnabled(b);
+                e_pass_conf.setEnabled(b);
                 if (b) {
-                    e_pass.setEnabled(true);
-                    e_pass_conf.setEnabled(true);
                     passCH = 1;
                 } else {
-                    e_pass.setEnabled(false);
-                    e_pass_conf.setEnabled(false);
                     passCH = 0;
                 }
             }
@@ -120,17 +118,21 @@ public class AddEditUser extends AppCompatActivity {
             e_username.setError("");
         }
 
-        if (((e_pass.getEditText().getText().length() < 3) && reason.equals(Constantebi.CREATE_USER)) ||
-                ((e_pass.getEditText().getText().length() < 3) && reason.equals(Constantebi.EDIT) && (passCH == 1))) {
+        if (e_name.getEditText().getText().length() < 3) {
+            e_name.setError("min 3 symbol");
+            return false;
+        }else {
+            e_name.setError("");
+        }
 
+        if (( reason.equals(Constantebi.CREATE_USER) || (reason.equals(Constantebi.EDIT) && ch_Box_passchange.isChecked())) && (e_pass.getEditText().getText().length() < 3)) {
             e_pass.setError("min 3 symbol");
             return false;
         } else {
             e_pass.setError("");
         }
 
-        if ((e_pass.getEditText().getText().toString().equals(e_pass_conf.getText().toString()) && reason.equals(Constantebi.CREATE_USER)) ||
-                (e_pass.getEditText().getText().toString().equals(e_pass_conf.getText().toString()) && reason.equals(Constantebi.EDIT) && (passCH == 1))) {
+        if (( reason.equals(Constantebi.CREATE_USER) || (reason.equals(Constantebi.EDIT) && ch_Box_passchange.isChecked())) && !e_pass.getEditText().getText().toString().equals(e_pass_conf.getText().toString())) {
             e_pass.setError("not confirmed!");
             return false;
         }else {

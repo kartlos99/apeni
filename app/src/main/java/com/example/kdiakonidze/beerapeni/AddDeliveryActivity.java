@@ -16,9 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -58,17 +60,23 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
             calendar.set(year, month, day);
-
             archeuli_tarigi = timeFormat.format(calendar.getTime());
             btn_changeDate.setText(dateFormat.format(calendar.getTime()));
-
         }
     };
 
+    private RetryPolicy mRetryPolicy = new DefaultRetryPolicy(
+            0,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
+    protected void onSaveInstanceState(Bundle outState) {
         outState.putString("comment", t_comment.getEditText().getText().toString());
+        outState.putString("dro", archeuli_tarigi);
+        outState.putInt("beer",beerIndex);
+        outState.putSerializable("obieqti", currObieqti);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -82,7 +90,16 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         archeuli_tarigi = timeFormat.format(calendar.getTime());
 
         if (savedInstanceState != null) {
+
+            currObieqti = (Obieqti) savedInstanceState.getSerializable("obieqti");
             t_comment.getEditText().setText(savedInstanceState.getString("comment"));
+            archeuli_tarigi =  savedInstanceState.getString("dro");
+            btn_changeDate.setText(archeuli_tarigi);
+
+            beerIndex = savedInstanceState.getInt("beer");
+            t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+            beerId = Constantebi.ludiList.get(beerIndex).getId();
+            priceCalculation();
         }
 
         Intent i = getIntent();
@@ -475,6 +492,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             }
         };
 
+        request_mitana.setRetryPolicy(mRetryPolicy);
         queue.add(request_mitana);
     }
 
