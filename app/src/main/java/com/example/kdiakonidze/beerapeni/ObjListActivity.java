@@ -49,16 +49,8 @@ public class ObjListActivity extends AppCompatActivity {
         Intent passed_i = getIntent();
         mdebareoba = passed_i.getIntExtra("mdebareoba", 0);
 
-        // ludis fasebs vawebeb tavis obieqtebs
-        for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
-            int objid = Constantebi.OBIEQTEBI.get(i).getId();
 
-            for (int j = 0; j < Constantebi.FASEBI.size(); j++) {
-                if (objid == Constantebi.FASEBI.get(j).getObj_id()) {
-                    Constantebi.OBIEQTEBI.get(i).setFasebi(Constantebi.FASEBI.get(j).getFasebi());
-                }
-            }
-        }
+
 
         searchView = (SearchView) findViewById(R.id.searchV_objlist);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

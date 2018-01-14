@@ -1,5 +1,7 @@
 package com.example.kdiakonidze.beerapeni.utils;
 
+import android.content.pm.ActivityInfo;
+
 import com.example.kdiakonidze.beerapeni.models.BeerModel;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
@@ -61,6 +63,8 @@ public class Constantebi {
     public static Integer MDEBAREOBA_SHEKVETA = 1;
     public static Integer MDEBAREOBA_MITANA = 2;
     public static Integer MDEBAREOBA_AMONAWERI = 3;
+
+    public static int screenDefOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER;
 
     public static Boolean loged_in = false;
 

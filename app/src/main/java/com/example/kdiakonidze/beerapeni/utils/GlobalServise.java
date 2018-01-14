@@ -1,7 +1,9 @@
 package com.example.kdiakonidze.beerapeni.utils;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -58,16 +60,23 @@ public class GlobalServise {
                             excep.printStackTrace();
                         }
                     }
-
                 }
 //                progressDialog.dismiss();
-//                expAdapter.notifyDataSetChanged();
+                MainActivity.requestCount++;
+                if (MainActivity.requestCount == 4) {
+                    activityOrientationNormal();
+                    attachPricesToObj();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
-                Toast.makeText(context, "eror no obieqtebi", Toast.LENGTH_LONG).show();
+                MainActivity.requestCount++;
+                if (MainActivity.requestCount == 4) {
+                    activityOrientationNormal();
+                    attachPricesToObj();
+                }
+                Toast.makeText(context, error.toString() + " | eror no obieqtebi -", Toast.LENGTH_LONG).show();
 //                progressDialog.dismiss();
             }
         });
@@ -98,19 +107,29 @@ public class GlobalServise {
                 } else {
                     Toast.makeText(context, "ლუდის სახეოების მონაცემებია შესაყვანი!", Toast.LENGTH_LONG).show();
                 }
+
+                MainActivity.requestCount++;
+                if (MainActivity.requestCount == 4) {
+                    activityOrientationNormal();
+                    attachPricesToObj();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
-                Toast.makeText(context, "ludi sadaaa!", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, error.toString()+ " | ludi sadaaa! -", Toast.LENGTH_LONG).show();
+                MainActivity.requestCount++;
+                if (MainActivity.requestCount == 4) {
+                    activityOrientationNormal();
+                    attachPricesToObj();
+                }
             }
         });
 
         queue.add(requestLudiList);
     }
 
-    public void get_Prises(){
+    public void get_Prises() {
         // ludis fasebi titoeuli obieqtistvis
         JsonArrayRequest request_fasebi = new JsonArrayRequest(Constantebi.URL_GET_FASEBI, new Response.Listener<JSONArray>() {
             @Override
@@ -141,21 +160,30 @@ public class GlobalServise {
 
                 } else {
                     Toast.makeText(context, "ლუდის ფასებია შესაყვანი!", Toast.LENGTH_LONG).show();
+                }
 
+                MainActivity.requestCount++;
+                if (MainActivity.requestCount == 4) {
+                    activityOrientationNormal();
+                    attachPricesToObj();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
-                Toast.makeText(context, "error fasebi", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, error.toString() + " | error fasebi -", Toast.LENGTH_LONG).show();
+                MainActivity.requestCount++;
+                if (MainActivity.requestCount == 4) {
+                    activityOrientationNormal();
+                    attachPricesToObj();
+                }
             }
         });
 
         queue.add(request_fasebi);
     }
 
-    public void get_Users(){
+    public void get_Users() {
         // --- momxmareblebis Camonatvali ---
         JsonArrayRequest request_users = new JsonArrayRequest(Constantebi.URL_GET_USERS, new Response.Listener<JSONArray>() {
             @Override
@@ -182,15 +210,41 @@ public class GlobalServise {
                 } else {
                     Toast.makeText(context, "no users!", Toast.LENGTH_LONG).show();
                 }
+                MainActivity.requestCount++;
+                if (MainActivity.requestCount == 4) {
+                    activityOrientationNormal();
+                    attachPricesToObj();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, error.getMessage(), Toast.LENGTH_LONG).show();
-                Toast.makeText(context, "error users load", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, error.toString() + " | error users load -", Toast.LENGTH_LONG).show();
+                MainActivity.requestCount++;
+                if (MainActivity.requestCount == 4) {
+                    activityOrientationNormal();
+                    attachPricesToObj();
+                }
             }
         });
 
         queue.add(request_users);
+    }
+
+    public void attachPricesToObj(){  // ludis fasebs vawebeb tavis obieqtebs
+        for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
+            int objid = Constantebi.OBIEQTEBI.get(i).getId();
+
+            for (int j = 0; j < Constantebi.FASEBI.size(); j++) {
+                if (objid == Constantebi.FASEBI.get(j).getObj_id()) {
+                    Constantebi.OBIEQTEBI.get(i).setFasebi(Constantebi.FASEBI.get(j).getFasebi());
+                }
+            }
+        }
+    }
+
+    public void activityOrientationNormal(){
+        Activity activity = (Activity) context;
+        activity.setRequestedOrientation(Constantebi.screenDefOrientation);
     }
 }

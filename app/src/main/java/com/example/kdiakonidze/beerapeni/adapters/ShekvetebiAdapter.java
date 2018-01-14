@@ -82,6 +82,7 @@ public class ShekvetebiAdapter extends BaseAdapter {
 
         if (grouped) {
             viewHolder.t_distributor.setVisibility(View.GONE);
+            viewHolder.t_comment.setVisibility(View.GONE);
         } else {
             viewHolder.t_distributor.setVisibility(View.VISIBLE);
             viewHolder.t_distributor.setText(shekveta.getDistrib_Name());
@@ -102,6 +103,7 @@ public class ShekvetebiAdapter extends BaseAdapter {
             }
             viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
             viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+
         }else {
             viewHolder.ln_row.setBackgroundColor(Color.TRANSPARENT);
             if (shekveta.getChk().equals("1")) {

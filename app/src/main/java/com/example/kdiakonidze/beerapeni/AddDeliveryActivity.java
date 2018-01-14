@@ -210,7 +210,6 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         btn_changeDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 DatePickerDialog datePickerDialog = new DatePickerDialog(AddDeliveryActivity.this, dateSetListener, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 datePickerDialog.setCancelable(false);
                 datePickerDialog.getDatePicker().setMaxDate(new Date().getTime());
@@ -454,6 +453,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), "მონაცემები ჩაწერილია! " + response, Toast.LENGTH_SHORT).show();
+                OrdersActivity.chamosatvirtia = true;  // mitanas rom davakreqtirebt, amit mixvdebarom ganaaxlos shekvetebis gverdi
                 onBackPressed();
             }
         }, new Response.ErrorListener() {

@@ -250,6 +250,7 @@ public class OrdersActivity extends AppCompatActivity {
                         intent_editOrder = new Intent(getApplicationContext(), AddDeliveryActivity.class);
                         intent_editOrder.putExtra("id", currOrder.getOrder_id());
                         intent_editOrder.putExtra("operacia", Constantebi.MITANA);
+                        intent_editOrder.putExtra("tarigi", archeuli_dge);
                     } else { // shekveta
                         intent_editOrder = new Intent(getApplicationContext(), AddOrderActivity.class);
                         intent_editOrder.putExtra("obj", currOrder);
