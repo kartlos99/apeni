@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 
 public class Amonaweri implements Serializable {
-    String tarigi;
+    String tarigi, comment;
     double price, pay, balance;
     int k_in, k_out, k_balance, id;
 
@@ -23,6 +23,14 @@ public class Amonaweri implements Serializable {
                 ", k_balance=" + k_balance +
                 ", id=" + id +
                 '}';
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public int getId() {

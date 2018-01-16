@@ -3,6 +3,7 @@ package com.example.kdiakonidze.beerapeni;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.PersistableBundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -74,7 +75,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString("comment", t_comment.getEditText().getText().toString());
         outState.putString("dro", archeuli_tarigi);
-        outState.putInt("beer",beerIndex);
+        outState.putInt("beer", beerIndex);
         outState.putSerializable("obieqti", currObieqti);
         super.onSaveInstanceState(outState);
     }
@@ -93,7 +94,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
 
             currObieqti = (Obieqti) savedInstanceState.getSerializable("obieqti");
             t_comment.getEditText().setText(savedInstanceState.getString("comment"));
-            archeuli_tarigi =  savedInstanceState.getString("dro");
+            archeuli_tarigi = savedInstanceState.getString("dro");
             btn_changeDate.setText(archeuli_tarigi);
 
             beerIndex = savedInstanceState.getInt("beer");
@@ -136,7 +137,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 t_2title.setVisibility(View.GONE);
                 cardView_mitana.setVisibility(View.GONE);
                 cardView_kout.setVisibility(View.GONE);
-                eTakeMoney.setText(String.valueOf(i.getDoubleExtra("tanxa",0.0)));
+                eTakeMoney.setText(String.valueOf(i.getDoubleExtra("tanxa", 0.0)));
                 findObject(i.getIntExtra("objid", 0));
             }
         }
@@ -413,7 +414,6 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         return String.valueOf(ii);
     }
 
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -448,18 +448,20 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
     private void sendDataToDB(final Integer editId, final String sMitana, final String sKout, final String sMout) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
-        // 1. ludis shetana
+        // ludis shetana, kasris ageba, fulis ageba
         StringRequest request_mitana = new StringRequest(Request.Method.POST, Constantebi.URL_INS_LUDISSHETANA, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), "მონაცემები ჩაწერილია! " + response, Toast.LENGTH_SHORT).show();
                 OrdersActivity.chamosatvirtia = true;  // mitanas rom davakreqtirebt, amit mixvdebarom ganaaxlos shekvetebis gverdi
+                setRequestedOrientation(Constantebi.screenDefOrientation);
                 onBackPressed();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), error.toString() + " -", Toast.LENGTH_SHORT).show();
+                setRequestedOrientation(Constantebi.screenDefOrientation);
                 btn_Done.setEnabled(true);
             }
         }) {
@@ -493,6 +495,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         };
 
         request_mitana.setRetryPolicy(mRetryPolicy);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         queue.add(request_mitana);
     }
 

@@ -42,7 +42,9 @@ import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,7 +66,6 @@ public class AmonaweriPageFr extends Fragment {
     private int location = -1, id = -1;
     Boolean chamosatvirtia = true;
     private AmonaweriAdapter amonaweriAdapter;
-
 
     @Nullable
     @Override
@@ -103,7 +104,11 @@ public class AmonaweriPageFr extends Fragment {
             gasagzavni_tarigi = savedInstanceState.getString("tarigi");
             amonaweriArrayList.clear();
             amonaweriArrayList = (ArrayList<Amonaweri>) savedInstanceState.getSerializable("amonaweri");
-            amonaweriAdapter = new AmonaweriAdapter(getContext(), amonaweriArrayList, location);
+            if (AmonaweriActivity.grouped) {
+                amonaweriAdapter = new AmonaweriAdapter(getContext(), groupAmonaweri(amonaweriArrayList), location, true);
+            } else {
+                amonaweriAdapter = new AmonaweriAdapter(getContext(), amonaweriArrayList, location, false);
+            }
             amonaweriList.setAdapter(amonaweriAdapter);
 
             chamosatvirtia = false;
@@ -124,18 +129,38 @@ public class AmonaweriPageFr extends Fragment {
             t_balance.setText("ნაშთი");
         }
 
+        amonaweriList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (!AmonaweriActivity.grouped) {
+                    TextView t_comment = (TextView) view.findViewById(R.id.t_amonaweri_row_comment);
+                    Amonaweri amonaweri = (Amonaweri) amonaweriAdapter.getItem(i);
+                    if (!amonaweri.getComment().isEmpty()) {
+                        if (t_comment.getVisibility() == View.VISIBLE) {
+                            t_comment.setVisibility(View.GONE);
+                        } else {
+                            t_comment.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
-        if (location == 0) {
-            getActivity().getMenuInflater().inflate(R.menu.context_menu_amonaw_m, menu);
-            menu.setHeaderTitle("--  თანხები  --");
-        }
-        if (location == 1) {
-            getActivity().getMenuInflater().inflate(R.menu.context_menu_amonaw_k, menu);
-            menu.setHeaderTitle("--  კასრები  --");
+        if(AmonaweriActivity.grouped){
+            Toast.makeText(getContext(), "მოხსენით დაჯგუფება!", Toast.LENGTH_SHORT).show();
+        }else {
+            if (location == 0) {
+                getActivity().getMenuInflater().inflate(R.menu.context_menu_amonaw_m, menu);
+                menu.setHeaderTitle("--  თანხები  --");
+            }
+            if (location == 1) {
+                getActivity().getMenuInflater().inflate(R.menu.context_menu_amonaw_k, menu);
+                menu.setHeaderTitle("--  კასრები  --");
+            }
         }
         super.onCreateContextMenu(menu, v, menuInfo);
     }
@@ -150,7 +175,7 @@ public class AmonaweriPageFr extends Fragment {
             case R.id.cm_amonaw_m_edit:
                 if (location == 0) {
                     Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
-                    Toast.makeText(getContext(), amonaweriRow.toString()+" a1", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), amonaweriRow.toString() + " a1", Toast.LENGTH_LONG).show();
                     if (amonaweriRow.getPay() != 0) { // tanxis agebis redaqtireba
                         Intent intent_editMout = new Intent(getContext(), AddDeliveryActivity.class);
                         intent_editMout.putExtra(Constantebi.REASON, Constantebi.EDIT);
@@ -183,7 +208,7 @@ public class AmonaweriPageFr extends Fragment {
             case R.id.cm_amonaw_k_edit:
                 if (location == 1) {
                     Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
-                    Toast.makeText(getContext(), amonaweriRow.toString()+" a2", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), amonaweriRow.toString() + " a2", Toast.LENGTH_LONG).show();
                     if (amonaweriRow.getK_out() != 0) { // kasris aRebas vakoreqtireb
                         Intent intent_editKout = new Intent(getContext(), AddDeliveryActivity.class);
                         intent_editKout.putExtra(Constantebi.REASON, Constantebi.EDIT);
@@ -242,13 +267,13 @@ public class AmonaweriPageFr extends Fragment {
                     }
                     amonaweriAdapter.notifyDataSetChanged();
                 }
-                getActivity().setRequestedOrientation(AmonaweriActivity.screenDefOrientation);
+                getActivity().setRequestedOrientation(Constantebi.screenDefOrientation);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getContext(), error.getMessage() + " -", Toast.LENGTH_SHORT).show();
-                getActivity().setRequestedOrientation(AmonaweriActivity.screenDefOrientation);
+                getActivity().setRequestedOrientation(Constantebi.screenDefOrientation);
             }
         }) {
             @Override
@@ -263,6 +288,15 @@ public class AmonaweriPageFr extends Fragment {
 
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         queue.add(request_DelOrder);
+    }
+
+    public void refreshData(Boolean gr) {
+        if (gr) {
+            amonaweriAdapter = new AmonaweriAdapter(getContext(), groupAmonaweri(amonaweriArrayList), location, true);
+        } else {
+            amonaweriAdapter = new AmonaweriAdapter(getContext(), amonaweriArrayList, location, false);
+        }
+        amonaweriList.setAdapter(amonaweriAdapter);
     }
 
     public void setNewData(String tarigi, int objID) {
@@ -298,6 +332,7 @@ public class AmonaweriPageFr extends Fragment {
                                 amonaweri.setK_balance(response.getJSONObject(i).getInt("bal"));
                             }
                             amonaweri.setId(response.getJSONObject(i).getInt("id"));
+                            amonaweri.setComment(response.getJSONObject(i).getString("comment"));
                             amonaweriArrayList.add(amonaweri);
                         }
 
@@ -308,12 +343,16 @@ public class AmonaweriPageFr extends Fragment {
                     Toast.makeText(getContext(), "ჩანაწერები არ არის!", Toast.LENGTH_SHORT).show();
                 }
 
-                amonaweriAdapter = new AmonaweriAdapter(getContext(), amonaweriArrayList, location);
+                if (AmonaweriActivity.grouped) {
+                    amonaweriAdapter = new AmonaweriAdapter(getContext(), groupAmonaweri(amonaweriArrayList), location, true);
+                } else {
+                    amonaweriAdapter = new AmonaweriAdapter(getContext(), amonaweriArrayList, location, false);
+                }
                 amonaweriList.setAdapter(amonaweriAdapter);
                 progressDialog.dismiss();
                 AmonaweriActivity.requestCount--;
                 if (AmonaweriActivity.requestCount == 0) {
-                    getActivity().setRequestedOrientation(AmonaweriActivity.screenDefOrientation);
+                    getActivity().setRequestedOrientation(Constantebi.screenDefOrientation);
                 }
             }
         }, new Response.ErrorListener() {
@@ -322,13 +361,84 @@ public class AmonaweriPageFr extends Fragment {
                 Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
                 AmonaweriActivity.requestCount = 0;
-                getActivity().setRequestedOrientation(AmonaweriActivity.screenDefOrientation);
+                getActivity().setRequestedOrientation(Constantebi.screenDefOrientation);
             }
         });
 
         AmonaweriActivity.requestCount++;
         getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         queue.add(request_amonaweri);
+    }
+
+    private ArrayList<Amonaweri> groupAmonaweri(ArrayList<Amonaweri> rowList) {
+        ArrayList<Amonaweri> groupedList = new ArrayList<>();
+        Date gr_date = new Date();
+        Date currRowDate = new Date();
+
+        if (rowList.size() > 0) {
+
+            try {
+                gr_date = dateFormat.parse(rowList.get(0).getTarigi());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            Double pr = 0.0;
+            Double pay = 0.0;
+            Double bal = 0.0;
+            int k_in = 0;
+            int k_out = 0;
+            int k_bal = 0;
+
+            bal = rowList.get(0).getBalance();
+            k_bal = rowList.get(0).getK_balance();
+
+            for (int i = 0; i < rowList.size(); i++) {
+                try {
+                    currRowDate = dateFormat.parse(rowList.get(i).getTarigi());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                if (currRowDate.equals(gr_date)) {
+                    pr += rowList.get(i).getPrice();
+                    pay += rowList.get(i).getPay();
+                    k_in += rowList.get(i).getK_in();
+                    k_out += rowList.get(i).getK_out();
+
+                } else {
+                    Amonaweri currGrRow = new Amonaweri();
+                    currGrRow.setTarigi(dateFormat.format(gr_date));
+                    currGrRow.setPrice(pr);
+                    currGrRow.setPay(pay);
+                    currGrRow.setBalance(bal);
+                    currGrRow.setK_in(k_in);
+                    currGrRow.setK_out(k_out);
+                    currGrRow.setK_balance(k_bal);
+                    groupedList.add(currGrRow);
+
+                    gr_date = currRowDate;
+                    pr = rowList.get(i).getPrice();
+                    pay = rowList.get(i).getPay();
+                    bal = rowList.get(i).getBalance();
+                    k_in = rowList.get(i).getK_in();
+                    k_out = rowList.get(i).getK_out();
+                    k_bal = rowList.get(i).getK_balance();
+
+                }
+            }
+            Amonaweri currGrRow = new Amonaweri();
+            currGrRow.setTarigi(dateFormat.format(gr_date));
+            currGrRow.setPrice(pr);
+            currGrRow.setPay(pay);
+            currGrRow.setBalance(bal);
+            currGrRow.setK_in(k_in);
+            currGrRow.setK_out(k_out);
+            currGrRow.setK_balance(k_bal);
+            groupedList.add(currGrRow);
+
+        }
+        return groupedList;
     }
 
     public void dataRefresh() {

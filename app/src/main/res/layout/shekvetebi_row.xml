@@ -27,7 +27,7 @@
             android:id="@+id/t_shek_list_distrib"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="6dp"
             android:textColor="@color/colorCardview"
             android:visibility="invisible" />
     </LinearLayout>
@@ -83,7 +83,9 @@
     <TextView
         android:id="@+id/t_orderlist_row_comment"
         android:textColor="@color/colorForText"
-        android:layout_margin="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

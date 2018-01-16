@@ -119,7 +119,7 @@ public class ShekvetebiAdapter extends BaseAdapter {
             }
 
             if(!shekveta.getComment().isEmpty()){
-                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_black_24dp,0,0,0);
+                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_icon,0,0,0);
             }else {
                 viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
             }

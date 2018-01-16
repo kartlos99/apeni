@@ -151,7 +151,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             globalServise.get_Prises();
             globalServise.get_Users();
         }
-
     }
 
     @Override

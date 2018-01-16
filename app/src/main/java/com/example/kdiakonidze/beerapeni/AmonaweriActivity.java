@@ -23,6 +23,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,11 +58,12 @@ public class AmonaweriActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private TabLayout tabLayout;
     private Toolbar toolbar;
+    private CheckBox chk_gr_amonaweri;
     FragmentManager fragmentManager;
     MyPagesAdapter pagerAdapter;
 
     public static int requestCount = 0;
-    public static int screenDefOrientation;
+    public static Boolean grouped = true;
 
     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -101,17 +104,7 @@ public class AmonaweriActivity extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.viewpager_amonaweri);
         tabLayout = (TabLayout) findViewById(R.id.tabs_amonaweri);
         toolbar = (Toolbar) findViewById(R.id.tool_bar_amonaw);
-
-        screenDefOrientation = getRequestedOrientation();
-
-//        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem item) {
-//                Toast.makeText(getApplicationContext(), item.getTitle(), Toast.LENGTH_LONG).show();
-//                return false;
-//            }
-//        });
-
+        chk_gr_amonaweri = (CheckBox) findViewById(R.id.chk_gr_amonaweri);
 
         calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, 4);
@@ -131,6 +124,7 @@ public class AmonaweriActivity extends AppCompatActivity {
             title_1 = savedInstanceState.getString("vali_k");
         } else {
             archeuli_dge = dateFormat.format(calendar.getTime());
+            grouped = true;
         }
 
         t_objInfo.setText(currObieqti.getDasaxeleba() + "\nთარიღი " + archeuli_dge);
@@ -174,6 +168,18 @@ public class AmonaweriActivity extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+
+        chk_gr_amonaweri.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                grouped = b;
+
+                AmonaweriPageFr fragmentM = (AmonaweriPageFr) pagerAdapter.getFragmentM();
+                AmonaweriPageFr fragmentK = (AmonaweriPageFr) pagerAdapter.getFragmentK();
+                fragmentM.refreshData(grouped);
+                fragmentK.refreshData(grouped);
             }
         });
 
@@ -259,14 +265,14 @@ public class AmonaweriActivity extends AppCompatActivity {
 
                 requestCount--;
                 if (requestCount == 0) {
-                    setRequestedOrientation(screenDefOrientation);
+                    setRequestedOrientation(Constantebi.screenDefOrientation);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 requestCount = 0;
-                setRequestedOrientation(screenDefOrientation);
+                setRequestedOrientation(Constantebi.screenDefOrientation);
                 Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
             }
         });

@@ -1,6 +1,10 @@
 package com.example.kdiakonidze.beerapeni.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +25,15 @@ public class AmonaweriAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
     private ViewHolderAmo viewHolder;
     private int location = -1;
+    private Boolean grouped = true;
+    Context context;
 
-    public AmonaweriAdapter(Context context, ArrayList<Amonaweri> amonaweriList, int location) {
+    public AmonaweriAdapter(Context context, ArrayList<Amonaweri> amonaweriList, int location, Boolean isGrouped) {
         this.amonaweriList = amonaweriList;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.location = location;
+        grouped = isGrouped;
+        this.context = context;
     }
 
     @Override
@@ -55,6 +63,7 @@ public class AmonaweriAdapter extends BaseAdapter {
             viewHolder.t_p2 = (TextView) listRowView.findViewById(R.id.t_amon_list_in);
             viewHolder.t_p3 = (TextView) listRowView.findViewById(R.id.t_amon_list_out);
             viewHolder.t_p4 = (TextView) listRowView.findViewById(R.id.t_amon_list_balance);
+            viewHolder.t_comment = (TextView) listRowView.findViewById(R.id.t_amonaweri_row_comment);
 
             listRowView.setTag(viewHolder);
         } else {
@@ -92,14 +101,27 @@ public class AmonaweriAdapter extends BaseAdapter {
             viewHolder.t_p4.setText(String.valueOf(currItem.getK_balance()));
         }
 
+        viewHolder.t_comment.setText(currItem.getComment());
+        if(grouped){
+            viewHolder.t_comment.setVisibility(View.GONE);
+        }else {
+            if(currItem.getComment().isEmpty() ){
+//                viewHolder.t_p1.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                viewHolder.t_p3.setTextColor(Color.BLACK);
+                viewHolder.t_p2.setTextColor(Color.BLACK);
+            }else {
+//                Drawable drawable = context.getResources().getDrawable(R.drawable.ic_comment_icon);
+//                ScaleDrawable scaleDrawable = new ScaleDrawable(drawable, Gravity.CENTER, 0.4f, 0.8f);
+//                viewHolder.t_p1.setBackground(scaleDrawable.getDrawable());
+                viewHolder.t_p3.setTextColor(Color.MAGENTA);
+                viewHolder.t_p2.setTextColor(Color.MAGENTA);
+//                viewHolder.t_p1.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_icon,0,0,0);
+            }
+        }
         return listRowView;
     }
 
     private class ViewHolderAmo {
-        TextView t_p1, t_p2, t_p3, t_p4;
-    }
-
-    public int getLocation() {
-        return location;
+        TextView t_p1, t_p2, t_p3, t_p4, t_comment;
     }
 }
