@@ -175,7 +175,7 @@ public class AmonaweriPageFr extends Fragment {
             case R.id.cm_amonaw_m_edit:
                 if (location == 0) {
                     Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
-                    Toast.makeText(getContext(), amonaweriRow.toString() + " a1", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getContext(), amonaweriRow.toString() + " a1", Toast.LENGTH_LONG).show();
                     if (amonaweriRow.getPay() != 0) { // tanxis agebis redaqtireba
                         Intent intent_editMout = new Intent(getContext(), AddDeliveryActivity.class);
                         intent_editMout.putExtra(Constantebi.REASON, Constantebi.EDIT);
@@ -208,7 +208,7 @@ public class AmonaweriPageFr extends Fragment {
             case R.id.cm_amonaw_k_edit:
                 if (location == 1) {
                     Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
-                    Toast.makeText(getContext(), amonaweriRow.toString() + " a2", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getContext(), amonaweriRow.toString() + " a2", Toast.LENGTH_LONG).show();
                     if (amonaweriRow.getK_out() != 0) { // kasris aRebas vakoreqtireb
                         Intent intent_editKout = new Intent(getContext(), AddDeliveryActivity.class);
                         intent_editKout.putExtra(Constantebi.REASON, Constantebi.EDIT);

@@ -38,4 +38,10 @@ public class UserListActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        userListAdapter.notifyDataSetChanged();
+    }
 }

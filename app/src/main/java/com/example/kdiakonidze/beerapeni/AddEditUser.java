@@ -1,9 +1,12 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.content.pm.ActivityInfo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -95,7 +98,7 @@ public class AddEditUser extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if(checkCondition()) {
+                if (checkCondition()) {
                     btn_done.setEnabled(false);
                     if (ch_Box_admin.isChecked()) {
                         sendToDB(reason, "2");
@@ -110,32 +113,49 @@ public class AddEditUser extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (reason.equals(Constantebi.EDIT)) {
+            getMenuInflater().inflate(R.menu.user_menu, menu);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_del_user) {
+            delRecord(editedUser.getId(), "users");
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     private Boolean checkCondition() {
         if (e_username.getEditText().getText().length() < 3) {
             e_username.setError("min 3 symbol");
             return false;
-        }else {
+        } else {
             e_username.setError("");
         }
 
         if (e_name.getEditText().getText().length() < 3) {
             e_name.setError("min 3 symbol");
             return false;
-        }else {
+        } else {
             e_name.setError("");
         }
 
-        if (( reason.equals(Constantebi.CREATE_USER) || (reason.equals(Constantebi.EDIT) && ch_Box_passchange.isChecked())) && (e_pass.getEditText().getText().length() < 3)) {
+        if ((reason.equals(Constantebi.CREATE_USER) || (reason.equals(Constantebi.EDIT) && ch_Box_passchange.isChecked())) && (e_pass.getEditText().getText().length() < 3)) {
             e_pass.setError("min 3 symbol");
             return false;
         } else {
             e_pass.setError("");
         }
 
-        if (( reason.equals(Constantebi.CREATE_USER) || (reason.equals(Constantebi.EDIT) && ch_Box_passchange.isChecked())) && !e_pass.getEditText().getText().toString().equals(e_pass_conf.getText().toString())) {
+        if ((reason.equals(Constantebi.CREATE_USER) || (reason.equals(Constantebi.EDIT) && ch_Box_passchange.isChecked())) && !e_pass.getEditText().getText().toString().equals(e_pass_conf.getText().toString())) {
             e_pass.setError("not confirmed!");
             return false;
-        }else {
+        } else {
             e_pass.setError("");
         }
         return true;
@@ -149,7 +169,7 @@ public class AddEditUser extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
-                if (response.equals("ჩაწერილია!") || response.equals("განახლებულია!")){
+                if (response.equals("ჩაწერილია!") || response.equals("განახლებულია!")) {
                     GlobalServise globalServise = new GlobalServise(getApplicationContext());
                     globalServise.get_Users();
                     onBackPressed();
@@ -188,5 +208,44 @@ public class AddEditUser extends AppCompatActivity {
         };
 
         queue.add(request);
+    }
+
+    private void delRecord(final int id, final String table) {
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        StringRequest request_DelOrder = new StringRequest(Request.Method.POST, Constantebi.URL_DEL_RECORD, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getApplicationContext(), response + " +", Toast.LENGTH_SHORT).show();
+                if (response.equals("Removed!")) {
+
+                    for (int i = 0; i < Constantebi.USERsLIST.size(); i++) {
+                        if (Constantebi.USERsLIST.get(i).getId() == id) {
+                            Constantebi.USERsLIST.remove(i);
+                        }
+                    }
+                    onBackPressed();
+                }
+                setRequestedOrientation(Constantebi.screenDefOrientation);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.getMessage() + " -", Toast.LENGTH_SHORT).show();
+                setRequestedOrientation(Constantebi.screenDefOrientation);
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("id", String.valueOf(id));
+                params.put("table", table);
+                params.toString();
+                return params;
+            }
+        };
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+        queue.add(request_DelOrder);
     }
 }
