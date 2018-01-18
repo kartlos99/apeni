@@ -101,6 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                         Constantebi.USER_USERNAME = json.getString("username");
                         Constantebi.USER_NAME = json.getString("name");
                         Constantebi.USER_TYPE = json.getString("type");
+                        Constantebi.USER_PASS = password;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

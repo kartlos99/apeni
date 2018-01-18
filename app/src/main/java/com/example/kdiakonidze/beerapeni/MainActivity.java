@@ -1,7 +1,6 @@
 package com.example.kdiakonidze.beerapeni;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -9,31 +8,30 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.kdiakonidze.beerapeni.models.BeerModel;
-import com.example.kdiakonidze.beerapeni.models.Obieqti;
-import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
-import com.example.kdiakonidze.beerapeni.models.Useri;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -124,6 +122,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         startActivity(intent_SysClear);
                         return true;
 
+                    case R.id.m_ch_pass:
+                        change_pass_dialog();
+
+                        return true;
+
                     case R.id.m_logout:
                         Constantebi.loged_in = false;
                         File file = new File(getFilesDir(), Constantebi.USER_FILENAME);
@@ -151,6 +154,84 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             globalServise.get_Prises();
             globalServise.get_Users();
         }
+    }
+
+    private void change_pass_dialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View chPassView = getLayoutInflater().inflate(R.layout.change_pass_dialog, null);
+        builder
+                .setView(chPassView)
+                .setTitle("პაროლის შეცვლა\nმომხმარებელი: "+Constantebi.USER_USERNAME)
+                .setPositiveButton("შეცვლა", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .setNegativeButton("გასვლა", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+        
+        final AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE ).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                EditText eOldPass = (EditText) chPassView.findViewById(R.id.e_old_pass);
+                EditText eNewPass = (EditText) chPassView.findViewById(R.id.e_new_pass);
+                EditText eNewPass2 = (EditText) chPassView.findViewById(R.id.e_new_pass2);
+                if (eOldPass.getText().toString().equals(Constantebi.USER_PASS)) {
+                    if (eNewPass.getText().toString().length() >= 3) {
+                        if (eNewPass.getText().toString().equals(eNewPass2.getText().toString())) {
+                            change_password(eNewPass.getText().toString());
+                            dialog.dismiss();
+                        } else {
+                            Toast.makeText(getApplicationContext(), "დაადასტურეთ ახალი პაროლი!", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "მინიმუმ 3 სიმბოლო!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "პაროლი არასწორია!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void change_password(final String newPass) {
+        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+
+        StringRequest request = new StringRequest(Request.Method.POST, Constantebi.URL_CH_PASS, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getApplicationContext(), response + " +", Toast.LENGTH_SHORT).show();
+                if (response.equals("sheicvala!") ) {
+                    Constantebi.USER_PASS = newPass;
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("user_id", Constantebi.USER_ID);
+                params.put("new_pass", newPass);
+
+                params.toString();
+                return params;
+            }
+        };
+
+        queue.add(request);
     }
 
     @Override

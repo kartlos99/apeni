@@ -38,11 +38,13 @@ public class Constantebi {
     public static String URL_GET_RECORD = "http://apeni.ge/andr_app_links/get_record.php";
     public static String URL_GET_SYSCLEAN = "http://apeni.ge/andr_app_links/get_cleaning.php";
     public static String URL_INS_SYSCLEAN = "http://apeni.ge/andr_app_links/ins_cleaning.php";
+    public static String URL_CH_PASS = "http://apeni.ge/andr_app_links/ch_pass.php";
 
     public static String USER_USERNAME = "";
     public static String USER_NAME = "";
     public static String USER_TYPE = "";
     public static String USER_ID = "";
+    public static String USER_PASS = "";
     public static String USER_FILENAME = "userdata.txt";
 
     public static String REASON = "mizezi";
