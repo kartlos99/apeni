@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -63,6 +64,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_mitana.setOnClickListener(MainActivity.this);
         btn_dayRealiz.setOnClickListener(MainActivity.this);
         btn_objRealiz.setOnClickListener(MainActivity.this);
+
+        Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/bpg-glaho-web-caps-webfont.ttf");
+        btn_mitana.setTypeface(typeface);
+        btn_objRealiz.setTypeface(typeface);
+        btn_shekvetebi.setTypeface(typeface);
+        btn_dayRealiz.setTypeface(typeface);
+
+        Typeface typeface_title = Typeface.createFromAsset(getAssets(),"fonts/alk-life-webfont.ttf");
+        TextView textView = (TextView) findViewById(R.id.textView);
+        textView.setTypeface(typeface_title);
 
         setSupportActionBar(toolbar);
         toolbar.setTitle(R.string.app_name);
@@ -174,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     }
                 });
-        
+
         final AlertDialog dialog = builder.create();
         dialog.setCancelable(false);
         dialog.show();
