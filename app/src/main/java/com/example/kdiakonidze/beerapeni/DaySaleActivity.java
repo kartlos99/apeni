@@ -46,7 +46,7 @@ public class DaySaleActivity extends AppCompatActivity {
     private Calendar calendar;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private String archeuli_dge;
-    private Button btn_setDate;
+    private Button btn_setDate, btn_back, btn_fwd;
     private TextView tTarigi, t_k30count, t_k50count, t_laricount, t_takeMoney;
     //    private ListView saleslistView;
     private DaySalesAdapter salesAdapter;
@@ -65,7 +65,7 @@ public class DaySaleActivity extends AppCompatActivity {
             archeuli_dge = dateFormat.format(calendar.getTime());
             btn_setDate.setText(archeuli_dge);
             getsales(archeuli_dge, distr_id);
-            tTarigi.setText("დღიური რეალიზაცია\nთარიღი " + archeuli_dge);
+//            tTarigi.setText("დღიური რეალიზაცია\nთარიღი " + archeuli_dge);
         }
     };
 
@@ -89,6 +89,8 @@ public class DaySaleActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
 
         btn_setDate = (Button) findViewById(R.id.btn_tarigi);
+        btn_back = (Button) findViewById(R.id.btn_day_back);
+        btn_fwd = (Button) findViewById(R.id.btn_day_forward);
         tTarigi = (TextView) findViewById(R.id.t_tarigi);
         t_k30count = (TextView) findViewById(R.id.t_p3_k30_count);
         t_k50count = (TextView) findViewById(R.id.t_p3_k50_count);
@@ -121,7 +123,7 @@ public class DaySaleActivity extends AppCompatActivity {
         }
 
         btn_setDate.setText(archeuli_dge);
-        tTarigi.setText("დღიური რეალიზაცია\nთარიღი " + archeuli_dge);
+        tTarigi.setText("დღიური რეალიზაცია");//\nთარიღი " + archeuli_dge);
 
         final ArrayList<String> distributors = new ArrayList<>();
         distributors.add("ყველა");
@@ -162,6 +164,25 @@ public class DaySaleActivity extends AppCompatActivity {
             }
         });
 
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calendar.add(Calendar.DAY_OF_MONTH, -1);
+                archeuli_dge = dateFormat.format(calendar.getTime());
+                btn_setDate.setText(archeuli_dge);
+                getsales(archeuli_dge, distr_id);
+            }
+        });
+
+        btn_fwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calendar.add(Calendar.DAY_OF_MONTH, 1);
+                archeuli_dge = dateFormat.format(calendar.getTime());
+                btn_setDate.setText(archeuli_dge);
+                getsales(archeuli_dge, distr_id);
+            }
+        });
 
     }
 
