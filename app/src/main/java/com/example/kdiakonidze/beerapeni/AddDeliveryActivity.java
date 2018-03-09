@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -46,6 +48,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
     private CardView cardView_mitana, cardView_kout, cardView_mout;
     private TextInputLayout t_comment;
     private ProgressDialog progressDialog;
+    private CheckBox chk_sachuqari;
 
     private Obieqti currObieqti;
     Calendar calendar;
@@ -218,6 +221,18 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             }
         });
 
+        chk_sachuqari.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                priceCalculation();
+                if (t_comment.getEditText().getText().toString().equals("") && b){
+                    t_comment.getEditText().setText("საჩუქრად!");
+                }
+                if (t_comment.getEditText().getText().toString().equals("საჩუქრად!") && !b){
+                    t_comment.getEditText().setText("");
+                }
+            }
+        });
     }
 
     private void findObject(int objid) {
@@ -313,7 +328,11 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         if (k50.equals("")) {
             k50 = "0";
         }
-        double fasi = Integer.valueOf(k30) * 30 * currObieqti.getFasebi().get(beerIndex) + Integer.valueOf(k50) * 50 * currObieqti.getFasebi().get(beerIndex);
+
+        double fasi = 0.0;
+        if (!chk_sachuqari.isChecked()) {
+            fasi = Integer.valueOf(k30) * 30 * currObieqti.getFasebi().get(beerIndex) + Integer.valueOf(k50) * 50 * currObieqti.getFasebi().get(beerIndex);
+        }
         t_ludi_in.setText(getResources().getString(R.string.ludis_shetana) + " (" + String.valueOf(fasi) + "₾)");
     }
 
@@ -395,6 +414,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         cardView_mitana = (CardView) findViewById(R.id.cardView_add_Beer1);
         cardView_kout = (CardView) findViewById(R.id.cardView_TakeKasri);
         cardView_mout = (CardView) findViewById(R.id.card_tanxa);
+        chk_sachuqari = (CheckBox) findViewById(R.id.ckbox_sachuqari);
     }
 
     private String pliusMinusText(String stringNaomber, boolean oper) {
@@ -479,7 +499,12 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 params.put("comment", t_comment.getEditText().getText().toString());
 
                 params.put("beer_type", String.valueOf(String.valueOf(beerId)));
-                params.put("ert_fasi", currObieqti.getFasebi().get(beerIndex).toString());// chasasworebelia
+                // *********
+                if (chk_sachuqari.isChecked()) {
+                    params.put("ert_fasi", "0");
+                }else {
+                    params.put("ert_fasi", currObieqti.getFasebi().get(beerIndex).toString());
+                }
                 params.put("k30", eK30Count.getText().toString());
                 params.put("k50", eK50Count.getText().toString());
 
