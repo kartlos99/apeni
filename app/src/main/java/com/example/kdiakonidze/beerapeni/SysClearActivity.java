@@ -1,6 +1,8 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -104,12 +106,28 @@ public class SysClearActivity extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        SysClean currItem = (SysClean) adapter.getItem(info.position);
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final SysClean currItem = (SysClean) adapter.getItem(info.position);
 
         switch (item.getItemId()) {
             case R.id.cm_sysclear_del:
-                insertNewCleaningInfo(0, currItem.getId());
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setCancelable(true);
+                builder.setMessage(Constantebi.MSG_DEL).setTitle("** * * * * **");
+                builder.setPositiveButton("დიახ", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        insertNewCleaningInfo(0, currItem.getId());
+                    }
+                }).setNegativeButton("არა", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
         }
         return super.onContextItemSelected(item);
     }

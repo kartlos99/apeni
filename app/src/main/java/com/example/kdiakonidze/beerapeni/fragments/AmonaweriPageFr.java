@@ -2,6 +2,7 @@ package com.example.kdiakonidze.beerapeni.fragments;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -13,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -168,7 +170,7 @@ public class AmonaweriPageFr extends Fragment {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
 
 
         switch (item.getItemId()) {
@@ -197,12 +199,27 @@ public class AmonaweriPageFr extends Fragment {
                 break;
             case R.id.cm_amonaw_m_del:
                 if (location == 0) {
-                    Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
-                    String table = "mitana";
-                    if (amonaweriRow.getPay() != 0) {
-                        table = "mout";
-                    }
-                    delRecord(amonaweriRow.getId(), table);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    builder.setMessage(Constantebi.MSG_DEL).setTitle("** * * * * **");
+                    builder.setPositiveButton("დიახ", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
+                            String table = "mitana";
+                            if (amonaweriRow.getPay() != 0) {
+                                table = "mout";
+                            }
+                            delRecord(amonaweriRow.getId(), table);
+                        }
+                    }).setNegativeButton("არა", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
                 break;
             case R.id.cm_amonaw_k_edit:
@@ -229,12 +246,27 @@ public class AmonaweriPageFr extends Fragment {
                 break;
             case R.id.cm_amonaw_k_del:
                 if (location == 1) {
-                    Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
-                    String table = "mitana";
-                    if (amonaweriRow.getK_out() != 0) {
-                        table = "kout";
-                    }
-                    delRecord(amonaweriRow.getId(), table);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setCancelable(true);
+                    builder.setMessage(Constantebi.MSG_DEL).setTitle("** * * * * **");
+                    builder.setPositiveButton("დიახ", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
+                            String table = "mitana";
+                            if (amonaweriRow.getK_out() != 0) {
+                                table = "kout";
+                            }
+                            delRecord(amonaweriRow.getId(), table);
+                        }
+                    }).setNegativeButton("არა", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
                 }
                 break;
         }

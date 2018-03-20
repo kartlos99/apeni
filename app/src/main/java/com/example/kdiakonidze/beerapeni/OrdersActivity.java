@@ -2,11 +2,13 @@ package com.example.kdiakonidze.beerapeni;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -233,8 +235,8 @@ public class OrdersActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getItem(info.position);
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getItem(info.position);
         switch (item.getItemId()) {
 
             case R.id.cm_order_edit:
@@ -262,11 +264,26 @@ public class OrdersActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.cm_order_del:
-                if ((currOrder.getK30wont() == 0) && (currOrder.getK50wont() == 0)) {
-                    removeRecord(currOrder.getOrder_id(), Constantebi.MITANA, info.position);
-                } else {
-                    removeRecord(currOrder.getOrder_id(), Constantebi.ORDER, info.position);
-                }
+                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setCancelable(true);
+                builder.setMessage(Constantebi.MSG_DEL).setTitle("** * * * * **");
+                builder.setPositiveButton("დიახ", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if ((currOrder.getK30wont() == 0) && (currOrder.getK50wont() == 0)) {
+                            removeRecord(currOrder.getOrder_id(), Constantebi.MITANA, info.position);
+                        } else {
+                            removeRecord(currOrder.getOrder_id(), Constantebi.ORDER, info.position);
+                        }
+                    }
+                }).setNegativeButton("არა", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
                 break;
         }
         return super.onContextItemSelected(item);
