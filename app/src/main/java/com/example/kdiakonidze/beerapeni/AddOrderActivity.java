@@ -91,17 +91,17 @@ public class AddOrderActivity extends AppCompatActivity {
             beerId = Constantebi.ludiList.get(beertype).getId();
         }
 
-        Intent i = getIntent();
-        reason = i.getStringExtra(Constantebi.REASON);
+        Intent intent = getIntent();
+        reason = intent.getStringExtra(Constantebi.REASON);
         if (reason.equals(Constantebi.NEW_ORDER)) {
-            Bundle importedBundle = i.getExtras();
+            Bundle importedBundle = intent.getExtras();
             currObieqti = (Obieqti) importedBundle.getSerializable("obieqti");
             t_OrderInfo.setText(currObieqti.getDasaxeleba());
             t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba());
             beerId = Constantebi.ludiList.get(beertype).getId();
         }
         if (reason.equals(Constantebi.EDIT)) {
-            shekveta = (Shekvetebi) i.getSerializableExtra("obj");
+            shekveta = (Shekvetebi) intent.getSerializableExtra("obj");
             shevseba(shekveta);
         }
 
@@ -168,6 +168,14 @@ public class AddOrderActivity extends AppCompatActivity {
                 btn_newOrderDone.setEnabled(false);
             }
         });
+
+        int index = 0;
+        for (int i = 0; i < Constantebi.USERsLIST.size(); i++) {
+            if(Constantebi.USERsLIST.get(i).getUsername().equals(Constantebi.USER_USERNAME)){
+                index = i;
+            }
+        }
+        sp_order_distrib.setSelection(index);
 
     }
 

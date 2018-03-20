@@ -129,6 +129,9 @@ public class OrdersActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ObjListActivity.class);
                 intent.putExtra("mdebareoba", Constantebi.MDEBAREOBA_SHEKVETA);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("data", groupOrders(shekvetebiArrayList));
+                intent.putExtra("objINorder", bundle);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(intent);
             }
@@ -264,7 +267,7 @@ public class OrdersActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.cm_order_del:
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setCancelable(true);
                 builder.setMessage(Constantebi.MSG_DEL).setTitle("** * * * * **");
                 builder.setPositiveButton("დიახ", new DialogInterface.OnClickListener() {

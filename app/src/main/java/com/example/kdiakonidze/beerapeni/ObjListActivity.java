@@ -27,10 +27,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.adapters.ObjListAdapter;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
+import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,11 +48,8 @@ public class ObjListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_obj_list);
 
-        Intent passed_i = getIntent();
+        final Intent passed_i = getIntent();
         mdebareoba = passed_i.getIntExtra("mdebareoba", 0);
-
-
-
 
         searchView = (SearchView) findViewById(R.id.searchV_objlist);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -76,12 +75,41 @@ public class ObjListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (mdebareoba.equals(Constantebi.MDEBAREOBA_SHEKVETA)) {
-                    Intent intent = new Intent(getApplicationContext(), AddOrderActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("obieqti", (Serializable) objListAdapter.getItem(i));
-                    intent.putExtra(Constantebi.REASON, Constantebi.NEW_ORDER);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    Obieqti clickedObj = (Obieqti) objListAdapter.getItem(i);
+                    Boolean olredyInList = false;
+                    Bundle bundleO = passed_i.getExtras().getBundle("objINorder");
+                    ArrayList<Shekvetebi> shekvetebiArrayList = (ArrayList<Shekvetebi>) bundleO.getSerializable("data");
+                    for (int ii = 0 ; ii < shekvetebiArrayList.size(); ii++){
+                        if (shekvetebiArrayList.get(ii).getObieqti().equals(clickedObj.getDasaxeleba())){
+                            if (shekvetebiArrayList.get(ii).getK30wont()+shekvetebiArrayList.get(ii).getK50wont() > shekvetebiArrayList.get(ii).getK30in()+shekvetebiArrayList.get(ii).getK50in() ){
+                                olredyInList = true;
+                            }
+                        }
+                    }
+
+                    if(olredyInList){
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+//                        builder.setCancelable(true);
+//                        builder.setMessage("ამ ობიექტზე უკვე არსებობს შეკვეთა! გთხოვთ განაახლოთ არსებული შეკვეთა");
+//                        builder.setPositiveButton("უკან", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                onBackPressed();
+//                            }
+//                        });
+//                        AlertDialog dialog = builder.create();
+//                        dialog.show();
+                        Toast.makeText(getApplicationContext(), "ამ ობიექტზე უკვე არსებობს შეკვეთა! გთხოვთ განაახლოთ არსებული შეკვეთა", Toast.LENGTH_LONG).show();
+                        onBackPressed();
+                    }else {
+                        Intent intent = new Intent(getApplicationContext(), AddOrderActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("obieqti", (Serializable) objListAdapter.getItem(i));
+                        intent.putExtra(Constantebi.REASON, Constantebi.NEW_ORDER);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
+
                 }
                 if (mdebareoba.equals(Constantebi.MDEBAREOBA_MITANA)) {
                     Intent intent = new Intent(getApplicationContext(), AddDeliveryActivity.class);

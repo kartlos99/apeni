@@ -175,6 +175,7 @@ public class AddEditUser extends AppCompatActivity {
                     onBackPressed();
                 }
                 btn_done.setEnabled(true);
+                onBackPressed();
             }
         }, new Response.ErrorListener() {
             @Override
