@@ -128,6 +128,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         startActivity(intent_Beerlist);
                         return true;
 
+                    case R.id.m_sawyobi:
+                        Intent sawyobi_page = new Intent(getApplicationContext(), SawyobiPage.class);
+                        startActivity(sawyobi_page);
+                        return true;
+
                     case R.id.m_sys_clear:
                         Intent intent_SysClear = new Intent(getApplicationContext(), SysClearActivity.class);
                         startActivity(intent_SysClear);
@@ -135,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     case R.id.m_ch_pass:
                         change_pass_dialog();
-
                         return true;
 
                     case R.id.m_logout:

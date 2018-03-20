@@ -31,7 +31,9 @@
         <activity android:name=".AddEditUser" />
         <activity android:name=".UserListActivity" />
         <activity android:name=".AddEditBeer" />
-        <activity android:name=".SysClearActivity"></activity>
+        <activity android:name=".SysClearActivity" />
+        <activity android:name=".SawyobiPage" />
+        <activity android:name=".SawyobiList"></activity>
     </application>
 
 </manifest>

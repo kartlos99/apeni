@@ -6,7 +6,9 @@
     <color name="colorForText">#223322</color>
     <color name="colorCardview">#a0d4d1</color>
     <color name="colorCardview_2">#99beba</color>
+    <color name="colorCardview_green">#a1ec9d</color>
     <color name="color_orderCol">#44c2d6d6</color>
     <color name="color_orderRed">#5aff0008</color>
+    <color name="color_ForChek">#ffd3a6</color>
 
 </resources>

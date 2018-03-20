@@ -67,4 +67,11 @@
     <string name="back">უკან</string>
     <string name="forward">წინ</string>
     <string name="sachuqari">საჩუქარი</string>
+    <string name="sawyobi">საწყობი</string>
+    <string name="savse">სავსე კასრები</string>
+    <string name="nashti">ნაშთი</string>
+    <string name="chamotana">ჩამოტანა 30/50</string>
+    <string name="carieli">ცარიელი კასრები</string>
+    <string name="wageba">წაღება 30/50</string>
+    <string name="detaluri">დეტალური</string>
 </resources>

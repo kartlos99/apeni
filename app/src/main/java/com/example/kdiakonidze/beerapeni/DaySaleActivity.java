@@ -28,7 +28,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.adapters.DaySalesAdapter;
-import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
 import com.example.kdiakonidze.beerapeni.models.SaleInfo;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 
@@ -213,7 +212,7 @@ public class DaySaleActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 } else {
-                    Toast.makeText(DaySaleActivity.this, "არც არაფერი გაგვიყიდია :/", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DaySaleActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
                 }
 
                 salesAdapter = new DaySalesAdapter(getApplicationContext(), salesDay);

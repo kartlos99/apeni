@@ -29,6 +29,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
+import com.example.kdiakonidze.beerapeni.models.SawyobiDetailRow;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 
 import org.json.JSONArray;
@@ -49,6 +50,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
     private TextInputLayout t_comment;
     private ProgressDialog progressDialog;
     private CheckBox chk_sachuqari;
+    private SawyobiDetailRow row;
+    private Boolean sawyobi = false;
 
     private Obieqti currObieqti;
     Calendar calendar;
@@ -80,7 +83,12 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         outState.putString("dro", archeuli_tarigi);
         outState.putInt("beer", beerIndex);
         outState.putSerializable("obieqti", currObieqti);
+        outState.putBoolean("sawy", sawyobi);
         super.onSaveInstanceState(outState);
+    }
+
+    public void showtext(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -99,9 +107,14 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             t_comment.getEditText().setText(savedInstanceState.getString("comment"));
             archeuli_tarigi = savedInstanceState.getString("dro");
             btn_changeDate.setText(archeuli_tarigi);
+            sawyobi = savedInstanceState.getBoolean("sawy");
 
             beerIndex = savedInstanceState.getInt("beer");
-            t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+            if (sawyobi) {
+                t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba());
+            } else {
+                t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+            }
             beerId = Constantebi.ludiList.get(beerIndex).getId();
             priceCalculation();
         }
@@ -133,6 +146,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 t_3title.setVisibility(View.GONE);
                 cardView_mitana.setVisibility(View.GONE);
                 cardView_mout.setVisibility(View.GONE);
+                chk_sachuqari.setVisibility(View.INVISIBLE);
                 get_info(operacia, editingId);
             }
             if (operacia.equals(Constantebi.M_OUT)) {
@@ -140,9 +154,33 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 t_2title.setVisibility(View.GONE);
                 cardView_mitana.setVisibility(View.GONE);
                 cardView_kout.setVisibility(View.GONE);
+                chk_sachuqari.setVisibility(View.INVISIBLE);
                 eTakeMoney.setText(String.valueOf(i.getDoubleExtra("tanxa", 0.0)));
                 findObject(i.getIntExtra("objid", 0));
             }
+
+            // es 2 sawyobshi shetana gatanistvis
+            if (operacia.equals(Constantebi.SAWYOBSHI_SHETANA)) {
+                t_2title.setVisibility(View.GONE);
+                t_3title.setVisibility(View.GONE);
+                cardView_kout.setVisibility(View.GONE);
+                cardView_mout.setVisibility(View.GONE);
+                Bundle bundle = i.getExtras().getBundle("data");
+                row = (SawyobiDetailRow) bundle.getSerializable("edit_row");
+                showRow(row);
+                sawyobi = true;
+            }
+            if (operacia.equals(Constantebi.SAWYOBIDAN_GATANA)) {
+                t_ludi_in.setVisibility(View.GONE);
+                t_3title.setVisibility(View.GONE);
+                cardView_mitana.setVisibility(View.GONE);
+                cardView_mout.setVisibility(View.GONE);
+                Bundle bundle = i.getExtras().getBundle("data");
+                row = (SawyobiDetailRow) bundle.getSerializable("edit_row");
+                showRow(row);
+                sawyobi = true;
+            }
+
         }
 
         btnK30dec.setOnClickListener(this);
@@ -161,9 +199,13 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 if (beerIndex < 0) {
                     beerIndex = beerIndex + Constantebi.ludiList.size();
                 }
-                t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
                 beerId = Constantebi.ludiList.get(beerIndex).getId();
-                priceCalculation();
+                if (sawyobi) {
+                    t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba());
+                } else {
+                    t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+                    priceCalculation();
+                }
             }
         });
 
@@ -174,9 +216,13 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 if (beerIndex == Constantebi.ludiList.size()) {
                     beerIndex = beerIndex - Constantebi.ludiList.size();
                 }
-                t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
                 beerId = Constantebi.ludiList.get(beerIndex).getId();
-                priceCalculation();
+                if (sawyobi) {
+                    t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba());
+                } else {
+                    t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+                    priceCalculation();
+                }
             }
         });
 
@@ -186,25 +232,37 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 if (reason.equals(Constantebi.CREATE)) {
                     if (chekMitana().equals("1") || chekKout().equals("1") || chekMout().equals("1")) {
                         btn_Done.setEnabled(false);
-                        sendDataToDB(0, chekMitana(), chekKout(), chekMout());
+                        sendDataToDB(0, chekMitana(), chekKout(), chekMout(), false);
                     }
                 } else {
                     if (operacia.equals(Constantebi.MITANA)) {
                         if (chekMitana().equals("1")) {
                             btn_Done.setEnabled(false);
-                            sendDataToDB(editingId, "1", "0", "0");
+                            sendDataToDB(editingId, "1", "0", "0", false);
                         }
                     }
                     if (operacia.equals(Constantebi.K_OUT)) {
                         if (chekKout().equals("1")) {
                             btn_Done.setEnabled(false);
-                            sendDataToDB(editingId, "0", "1", "0");
+                            sendDataToDB(editingId, "0", "1", "0", false);
                         }
                     }
                     if (operacia.equals(Constantebi.M_OUT)) {
                         if (chekMout().equals("1")) {
                             btn_Done.setEnabled(false);
-                            sendDataToDB(editingId, "0", "0", "1");
+                            sendDataToDB(editingId, "0", "0", "1", false);
+                        }
+                    }
+                    if (operacia.equals(Constantebi.SAWYOBSHI_SHETANA)) {
+                        if (chekMitana().equals("1")) {  // carielo rom ar iyos velebi
+                            btn_Done.setEnabled(false);
+                            sendDataToDB(Integer.parseInt(row.getId()), "0", "0", "0", true);
+                        }
+                    }
+                    if (operacia.equals(Constantebi.SAWYOBIDAN_GATANA)) {
+                        if (chekKout().equals("1")) {
+                            btn_Done.setEnabled(false);
+                            sendDataToDB(Integer.parseInt(row.getId()), "0", "0", "0", true);
                         }
                     }
                 }
@@ -224,15 +282,50 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         chk_sachuqari.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                priceCalculation();
-                if (t_comment.getEditText().getText().toString().equals("") && b){
-                    t_comment.getEditText().setText("საჩუქრად!");
-                }
-                if (t_comment.getEditText().getText().toString().equals("საჩუქრად!") && !b){
-                    t_comment.getEditText().setText("");
+                if(!sawyobi) {
+                    priceCalculation();
+                    if (t_comment.getEditText().getText().toString().equals("") && b) {
+                        t_comment.getEditText().setText("საჩუქრად!");
+                    }
+                    if (t_comment.getEditText().getText().toString().equals("საჩუქრად!") && !b) {
+                        t_comment.getEditText().setText("");
+                    }
                 }
             }
         });
+    }
+
+    private void showRow(SawyobiDetailRow row) {
+
+        t_comment.getEditText().setText(row.getComment());
+        beerId = row.getLudisID();
+
+        if (beerId != 0) {
+            t_1title.setText("ჩამოტანა");
+            eK30Count.setText(String.valueOf(row.getK30()));
+            eK50Count.setText(String.valueOf(row.getK50()));
+            for (int i = 0; i < Constantebi.ludiList.size(); i++) {
+                if (Constantebi.ludiList.get(i).getId() == beerId) {
+                    beerIndex = i;
+                }
+            }
+            t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba());
+        } else {
+            t_2title.setText("წაღება");
+            eK30Count_Kout.setText(String.valueOf(row.getK30()));
+            eK50Count_Kout.setText(String.valueOf(row.getK50()));
+            chk_sachuqari.setVisibility(View.INVISIBLE);
+        }
+
+        archeuli_tarigi = row.getTarigi();
+        btn_changeDate.setText(archeuli_tarigi);
+        chk_sachuqari.setText("");
+        if(row.getChek().equals("1")){
+            chk_sachuqari.setChecked(true);
+        }else {
+            chk_sachuqari.setChecked(false);
+        }
+
     }
 
     private void findObject(int objid) {
@@ -408,6 +501,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         t_ludi_in = (TextView) findViewById(R.id.t_mitana_ludi);
         t_comment = (TextInputLayout) findViewById(R.id.t_mitana_comment);
 
+        t_1title = (TextView) findViewById(R.id.t_mitana_ludi);
         t_2title = (TextView) findViewById(R.id.t_wamogebuliKasrebi);
         t_3title = (TextView) findViewById(R.id.textView2);
 
@@ -462,18 +556,29 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 eK50Count_Kout.setText(pliusMinusText(eK50Count_Kout.getText().toString(), true));
                 break;
         }
-        priceCalculation();
+        if (!sawyobi)
+            priceCalculation();
     }
 
-    private void sendDataToDB(final Integer editId, final String sMitana, final String sKout, final String sMout) {
+    private void sendDataToDB(final Integer editId, final String sMitana, final String sKout, final String sMout, final Boolean sawyobi) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
+        String url;
+        if (sawyobi) {
+            url = Constantebi.URL_INS_SAWYOBI;
+        } else {
+            url = Constantebi.URL_INS_LUDISSHETANA;
+        }
 
         // ludis shetana, kasris ageba, fulis ageba
-        StringRequest request_mitana = new StringRequest(Request.Method.POST, Constantebi.URL_INS_LUDISSHETANA, new Response.Listener<String>() {
+        StringRequest request_mitana = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), "მონაცემები ჩაწერილია! " + response, Toast.LENGTH_SHORT).show();
-                OrdersActivity.chamosatvirtia = true;  // mitanas rom davakreqtirebt, amit mixvdebarom ganaaxlos shekvetebis gverdi
+                if (!sawyobi) {
+                    OrdersActivity.chamosatvirtia = true; // mitanas rom davakreqtirebt, amit mixvdebarom ganaaxlos shekvetebis gverdi
+                }else {
+                    SawyobiList.chamosatvirtia = true;
+                }
                 setRequestedOrientation(Constantebi.screenDefOrientation);
                 onBackPressed();
             }
@@ -493,17 +598,30 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 params.put("mitana", sMitana);
                 params.put("kout", sKout);
                 params.put("mout", sMout);
+                if (sawyobi) {
+                    if (row.getLudisID() == 0) {
+                        params.put("wageba", "1");
+                    } else {
+                        params.put("chamotana", "1");
+                    }
+                    if(chk_sachuqari.isChecked()){
+                        params.put("chek", "1");
+                    }else {
+                        params.put("chek", "0");
+                    }
+                } else {
+                    params.put("obieqtis_id", currObieqti.getId().toString());
+                }
 
-                params.put("obieqtis_id", currObieqti.getId().toString());
                 params.put("distributor_id", Constantebi.USER_ID);
                 params.put("comment", t_comment.getEditText().getText().toString());
 
-                params.put("beer_type", String.valueOf(String.valueOf(beerId)));
+                params.put("beer_type", String.valueOf(beerId));
                 // *********
-                if (chk_sachuqari.isChecked()) {
+                if (chk_sachuqari.isChecked() && !sawyobi) {
                     params.put("ert_fasi", "0");
-                }else {
-                    params.put("ert_fasi", currObieqti.getFasebi().get(beerIndex).toString());
+                } else {
+                    //params.put("ert_fasi", currObieqti.getFasebi().get(beerIndex).toString());
                 }
                 params.put("k30", eK30Count.getText().toString());
                 params.put("k50", eK50Count.getText().toString());
