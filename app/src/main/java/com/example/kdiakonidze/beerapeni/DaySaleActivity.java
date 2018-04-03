@@ -103,6 +103,26 @@ public class DaySaleActivity extends AppCompatActivity {
         calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, 4);
 
+        final ArrayList<String> distributors = new ArrayList<>();
+        distributors.add("ყველა");
+        for (int i = 0; i < Constantebi.USERsLIST.size(); i++) {
+            distributors.add(Constantebi.USERsLIST.get(i).getName());
+        }
+        SpinnerAdapter spAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, distributors);
+        sp_distr.setAdapter(spAdapter);
+
+        if (Constantebi.USER_TYPE.equals(Constantebi.USER_TYPE_user)){
+            int index = 0;
+            for (int i = 0; i < Constantebi.USERsLIST.size(); i++) {
+                if(Constantebi.USERsLIST.get(i).getUsername().equals(Constantebi.USER_USERNAME)){
+                    index = i;
+                    distr_id = String.valueOf(Constantebi.USERsLIST.get(i).getId());
+                }
+            }
+            sp_distr.setSelection(index+1);
+            sp_distr.setEnabled(false);
+        }
+
         if (savedInstanceState != null) { // recreate moxda
             archeuli_dge = savedInstanceState.getString("tarigi");
             requestNeeded = false;
@@ -123,14 +143,6 @@ public class DaySaleActivity extends AppCompatActivity {
 
         btn_setDate.setText(archeuli_dge);
         tTarigi.setText("დღიური რეალიზაცია");//\nთარიღი " + archeuli_dge);
-
-        final ArrayList<String> distributors = new ArrayList<>();
-        distributors.add("ყველა");
-        for (int i = 0; i < Constantebi.USERsLIST.size(); i++) {
-            distributors.add(Constantebi.USERsLIST.get(i).getName());
-        }
-        SpinnerAdapter spAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, distributors);
-        sp_distr.setAdapter(spAdapter);
 
         sp_distr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

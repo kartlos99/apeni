@@ -247,4 +247,6 @@ public class GlobalServise {
         Activity activity = (Activity) context;
         activity.setRequestedOrientation(Constantebi.screenDefOrientation);
     }
+
+
 }

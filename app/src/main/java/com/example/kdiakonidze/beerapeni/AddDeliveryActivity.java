@@ -611,6 +611,11 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                     }
                 } else {
                     params.put("obieqtis_id", currObieqti.getId().toString());
+                    if (chk_sachuqari.isChecked()) {
+                        params.put("ert_fasi", "0");
+                    } else {
+                        params.put("ert_fasi", currObieqti.getFasebi().get(beerIndex).toString());
+                    }
                 }
 
                 params.put("distributor_id", Constantebi.USER_ID);
@@ -618,11 +623,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
 
                 params.put("beer_type", String.valueOf(beerId));
                 // *********
-                if (chk_sachuqari.isChecked() && !sawyobi) {
-                    params.put("ert_fasi", "0");
-                } else {
-                    //params.put("ert_fasi", currObieqti.getFasebi().get(beerIndex).toString());
-                }
+
                 params.put("k30", eK30Count.getText().toString());
                 params.put("k50", eK50Count.getText().toString());
 

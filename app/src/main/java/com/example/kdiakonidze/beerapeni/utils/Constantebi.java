@@ -51,6 +51,8 @@ public class Constantebi {
     public static String USER_ID = "";
     public static String USER_PASS = "";
     public static String USER_FILENAME = "userdata.txt";
+    public static String USER_TYPE_admin = "2";
+    public static String USER_TYPE_user = "1";
 
     public static String REASON = "mizezi";
     public static String CREATE = "ახალი ობიექტი";

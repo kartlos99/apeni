@@ -206,6 +206,7 @@
         app:layout_constraintTop_toBottomOf="@+id/cardView_add_Order"
         app:layout_constraintStart_toStartOf="@+id/cardView_add_Order"
         android:layout_marginTop="8dp"
+        android:checked="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

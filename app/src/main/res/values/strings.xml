@@ -4,7 +4,7 @@
     <string name="mitana">მიტანა</string>
     <string name="obj_realizacia">ობიექტების რეალიზაცია</string>
     <string name="day_realizacia">დღიური რეალიზაცია</string>
-    <string name="ludsaxarshi">ლუდსახარში</string>
+    <string name="ludsaxarshi">თბილისი</string>
     <string name="text_tarigi">თარიღი</string>
     <string name="shekvetis_damateba">შეკვეთის დამატება</string>
     <string name="_30litri">30ლ</string>
@@ -74,4 +74,5 @@
     <string name="carieli">ცარიელი კასრები</string>
     <string name="wageba">წაღება 30/50</string>
     <string name="detaluri">დეტალური</string>
+    <string name="ufleba_false">არაგაქვთ ამ ოპერაციის განხორციელების უფლება</string>
 </resources>

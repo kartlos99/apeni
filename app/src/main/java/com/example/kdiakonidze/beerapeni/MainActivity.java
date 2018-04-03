@@ -91,7 +91,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     t_username.setText(Constantebi.USER_USERNAME + " (admin)");
                 } else {
                     t_username.setText(Constantebi.USER_USERNAME + " (user)");
+                    navigationView.getMenu().getItem(1).setEnabled(false);
+                    navigationView.getMenu().getItem(3).setEnabled(false);
+                    navigationView.getMenu().getItem(4).setEnabled(false);
                 }
+
             }
         };
         drawerLayout.addDrawerListener(toggle);
