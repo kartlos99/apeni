@@ -34,12 +34,14 @@ import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
 public class DaySaleActivity extends AppCompatActivity {
 
-    private int screenDefOrientation;
+    private int screenDefOrientation, k30empty = 0, k50empty = 0;
     private ArrayList<SaleInfo> salesDay;
     private Double takeMoney = 0.0;
     private Calendar calendar;
@@ -76,6 +78,8 @@ public class DaySaleActivity extends AppCompatActivity {
         outState.putBoolean("progress", requestInProgres);
         outState.putInt("distrId", sp_distr.getSelectedItemPosition());
         outState.putDouble("takemoney", takeMoney);
+        outState.putInt("k30e",k30empty);
+        outState.putInt("k50e",k50empty);
         super.onSaveInstanceState(outState);
     }
 
@@ -135,7 +139,17 @@ public class DaySaleActivity extends AppCompatActivity {
             salesAdapter = new DaySalesAdapter(getApplicationContext(), salesDay);
             nonScrolSaleslistView.setAdapter(salesAdapter);
             takeMoney = savedInstanceState.getDouble("takemoney");
+            k30empty = savedInstanceState.getInt("k30e");
+            k50empty = savedInstanceState.getInt("k50e");
             showAtherInfo(salesDay);
+            Date date = new Date();
+            try {
+                date = dateFormat.parse(archeuli_dge);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            calendar.setTime(date);
         } else {
             archeuli_dge = dateFormat.format(calendar.getTime());
             getsales(archeuli_dge, distr_id);
@@ -208,7 +222,7 @@ public class DaySaleActivity extends AppCompatActivity {
                 if (response.length() > 0) {
                     try {
 
-                        for (int i = 0; i < response.length() - 1; i++) {
+                        for (int i = 0; i < response.length() - 2; i++) {
                             String dasaxeleba = response.getJSONObject(i).getString("dasaxeleba");
                             Double pr = response.getJSONObject(i).getDouble("pr");
                             int lt = response.getJSONObject(i).getInt("lt");
@@ -218,7 +232,10 @@ public class DaySaleActivity extends AppCompatActivity {
                             salesDay.add(new SaleInfo(dasaxeleba, pr, lt, k30, k50));
                         }
 
-                        takeMoney = response.getJSONObject(response.length() - 1).getDouble("money");
+                        takeMoney = response.getJSONObject(response.length() - 2).getDouble("money");
+
+                        k30empty = response.getJSONObject(response.length() - 1).getInt("k30");
+                        k50empty = response.getJSONObject(response.length() - 1).getInt("k50");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -267,8 +284,8 @@ public class DaySaleActivity extends AppCompatActivity {
             pr += salesDay.get(i).getPr();
         }
 
-        t_k30count.setText(String.valueOf(k3));
-        t_k50count.setText(String.valueOf(k5));
+        t_k30count.setText(String.valueOf(k3)+"\n"+String.valueOf(k30empty));
+        t_k50count.setText(String.valueOf(k5)+"\n"+String.valueOf(k50empty));
         t_laricount.setText(String.valueOf(pr));
 
         t_takeMoney.setText(String.valueOf(takeMoney));

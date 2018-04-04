@@ -8,13 +8,21 @@ import java.util.ArrayList;
  */
 
 public class Obieqti implements Serializable {
-    private String dasaxeleba, adress, tel, comment, sk, sakpiri;
+    private String dasaxeleba, adress, tel, comment, sk, sakpiri, chek;
     private Integer id;
     private ArrayList<Double> fasebi = new ArrayList<>();
 
     public Obieqti(String dasaxeleba) {
         this.dasaxeleba = dasaxeleba;
 
+    }
+
+    public String getChek() {
+        return chek;
+    }
+
+    public void setChek(String chek) {
+        this.chek = chek;
     }
 
     public Integer getId() {

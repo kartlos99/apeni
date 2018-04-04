@@ -172,6 +172,7 @@ public class OrdersActivity extends AppCompatActivity {
         ArrayList<Shekvetebi> groupedOrderList = new ArrayList<>();
         String objName = "", beerName = "";
         int k30w = 0, k50w = 0, k30in = 0, k50in = 0;
+        boolean chek = false;
 
         if (shekvetebiList.size() > 0) {
             Shekvetebi shekveta = shekvetebiList.get(0);
@@ -187,6 +188,12 @@ public class OrdersActivity extends AppCompatActivity {
                 k50in += shekvetebiList.get(i).getK50in();
             } else {
                 Shekvetebi newGrOrder = new Shekvetebi(objName, beerName, k30in, k50in, k30w, k50w);
+                if (chek) {
+                    newGrOrder.setChk("1");
+                } else {
+                    newGrOrder.setChk("0");
+                }
+                chek = false;
                 groupedOrderList.add(newGrOrder);
                 Shekvetebi shekveta = shekvetebiList.get(i);
                 objName = shekveta.getObieqti();
@@ -196,10 +203,19 @@ public class OrdersActivity extends AppCompatActivity {
                 k30in = shekvetebiList.get(i).getK30in();
                 k50in = shekvetebiList.get(i).getK50in();
             }
+            if (shekvetebiList.get(i).getChk().equals("1")) {
+                chek = true;
+            }
         }
 
         if (!objName.equals("")) {
             Shekvetebi newGrOrder = new Shekvetebi(objName, beerName, k30in, k50in, k30w, k50w);
+            if (chek) {
+                newGrOrder.setChk("1");
+            } else {
+                newGrOrder.setChk("0");
+            }
+            chek = false;
             groupedOrderList.add(newGrOrder);
         }
 

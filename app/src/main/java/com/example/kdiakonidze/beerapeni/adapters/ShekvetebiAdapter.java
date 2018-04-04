@@ -104,6 +104,13 @@ public class ShekvetebiAdapter extends BaseAdapter {
             viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
             viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
 
+            if (shekveta.getChk().equals("1")) {
+                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_order_circle,0,0,0);
+            }else {
+                viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
+                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            }
+
         }else {
             viewHolder.ln_row.setBackgroundColor(Color.TRANSPARENT);
             if (shekveta.getChk().equals("1")) {

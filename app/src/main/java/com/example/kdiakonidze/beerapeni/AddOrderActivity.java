@@ -99,6 +99,11 @@ public class AddOrderActivity extends AppCompatActivity {
             t_OrderInfo.setText(currObieqti.getDasaxeleba());
             t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba());
             beerId = Constantebi.ludiList.get(beertype).getId();
+            if (currObieqti.getChek().equals("1")){
+                chBox_orderChek.setChecked(true);
+            }else {
+                chBox_orderChek.setChecked(false);
+            }
         }
         if (reason.equals(Constantebi.EDIT)) {
             shekveta = (Shekvetebi) intent.getSerializableExtra("obj");

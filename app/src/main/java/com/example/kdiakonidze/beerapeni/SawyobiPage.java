@@ -73,7 +73,7 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
     String archeuli_tarigi, archeuli_dro;
     SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private int beerIndex = 0, beerId = 0, int_emptyK30 = 0, int_emptyK50 = 0;
+    private int beerIndex = 0, beerId = 0, int_emptyK30 = 0, int_emptyK50 = 0, k30at_obj = 0, k50at_obj = 0;
     private ArrayList<Totalinout> totalinfo;
     private SawyobiAdapter sawyobiAdapter;
 
@@ -103,7 +103,7 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    public void showtext(String msg){
+    public void showtext(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
@@ -140,6 +140,8 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         outState.putString("k50out", eK50Count_Kout.getText().toString());
         outState.putInt("empty30", int_emptyK30);
         outState.putInt("empty50", int_emptyK50);
+        outState.putInt("k30at", k30at_obj);
+        outState.putInt("k50at", k50at_obj);
         super.onSaveInstanceState(outState);
     }
 
@@ -191,11 +193,12 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
             sK30Count_Kout = savedInstanceState.getString("k30out");
             sK50Count_Kout = savedInstanceState.getString("k50out");
 
-            Toast.makeText(this, savedInstanceState.getString("k30")+" "+savedInstanceState.getString("k30out"), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, savedInstanceState.getString("k30") + " " + savedInstanceState.getString("k30out"), Toast.LENGTH_SHORT).show();
             int_emptyK30 = savedInstanceState.getInt("empty30");
             int_emptyK50 = savedInstanceState.getInt("empty50");
-            t_empty30.setText("30ლ : " + int_emptyK30);
-            t_empty50.setText("50ლ : " + int_emptyK50);
+            k30at_obj = savedInstanceState.getInt("k30at");
+            k50at_obj = savedInstanceState.getInt("k50at");
+            vizualizacia();
             Date date1 = calendar.getTime();
             try {
                 date1 = new SimpleDateFormat("yyyy-MM-dd").parse(archeuli_tarigi);
@@ -437,12 +440,16 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
                             if (dasaxeleba.equals("0")) {
                                 int_emptyK30 = k30r - k30s;
                                 int_emptyK50 = k50r - k50s;
-                                t_empty30.setText("30ლ : " + int_emptyK30);
-                                t_empty50.setText("50ლ : " + int_emptyK50);
+                                k30at_obj -= k30r;
+                                k50at_obj -= k50r;
                             } else {
                                 totalinfo.add(new Totalinout(dasaxeleba, k30s, k50s, k30r, k50r));
+                                k30at_obj += k30r;
+                                k50at_obj += k50r;
                             }
                         }
+
+                        vizualizacia();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -484,6 +491,11 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
             requestInProgres = true;
         }
         requestNeeded = true;
+    }
+
+    private void vizualizacia() {
+        t_empty30.setText("30ლ : " + int_emptyK30 + " (+" + k30at_obj + ")");
+        t_empty50.setText("50ლ : " + int_emptyK50 + " (+" + k50at_obj + ")");
     }
 
     private void dasasruli() {

@@ -40,7 +40,7 @@ public class GlobalServise {
             @Override
             public void onResponse(JSONArray response) {
                 // aq modis obieqtebis chamonatvali
-                Toast.makeText(context, "wamoigo", Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, "obiectebi ok", Toast.LENGTH_LONG).show();
                 Constantebi.OBIEQTEBI.clear();
                 if (response.length() > 0) {
 
@@ -53,6 +53,7 @@ public class GlobalServise {
                             axaliObieqti.setComment(response.getJSONObject(i).getString("comment"));
                             axaliObieqti.setSk(response.getJSONObject(i).getString("sk"));
                             axaliObieqti.setSakpiri(response.getJSONObject(i).getString("sakpiri"));
+                            axaliObieqti.setChek(response.getJSONObject(i).getString("chek"));
 
                             Constantebi.OBIEQTEBI.add(axaliObieqti);
 
@@ -134,6 +135,7 @@ public class GlobalServise {
         JsonArrayRequest request_fasebi = new JsonArrayRequest(Constantebi.URL_GET_FASEBI, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+//                Toast.makeText(context, "fasebi ok", Toast.LENGTH_LONG).show();
                 Constantebi.FASEBI.clear();
                 Integer objid = 0;
                 if (response.length() > 0) {
@@ -241,6 +243,7 @@ public class GlobalServise {
                 }
             }
         }
+        //Toast.makeText(context, "mieba", Toast.LENGTH_LONG).show();
     }
 
     public void activityOrientationNormal(){

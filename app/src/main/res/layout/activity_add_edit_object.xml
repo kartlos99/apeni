@@ -163,6 +163,14 @@
             android:layout_height="wrap_content"
             tools:layout_editor_absoluteX="296dp" />
 
+        <CheckBox
+            android:id="@+id/chk_obj_chek"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/btn_addobj_done"
+            />
+
     </android.support.constraint.ConstraintLayout>
 
 </ScrollView>

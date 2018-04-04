@@ -1,5 +1,6 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.content.pm.ActivityInfo;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +38,7 @@ public class AddEditObject extends AppCompatActivity {
     private String reason;
     private Toolbar toolbar;
     private Button btn_done;
+    private CheckBox obj_chek;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,7 @@ public class AddEditObject extends AppCompatActivity {
         e_sakpiri = (TextInputLayout) findViewById(R.id.e_addobj_sakpiri);
         linearLayout_fasebi = (LinearLayout) findViewById(R.id.linear_addobj_prices);
         btn_done = (Button) findViewById(R.id.btn_addobj_done);
+        obj_chek = (CheckBox) findViewById(R.id.chk_obj_chek);
 
         reason = getIntent().getStringExtra(Constantebi.REASON);
         if (reason.equals(Constantebi.EDIT)) {
@@ -62,6 +66,11 @@ public class AddEditObject extends AppCompatActivity {
                 e_comment.getEditText().setText(editedObieqti.getComment());
                 e_sk.getEditText().setText(editedObieqti.getSk());
                 e_sakpiri.getEditText().setText(editedObieqti.getSakpiri());
+                if (editedObieqti.getChek().equals("1")){
+                    obj_chek.setChecked(true);
+                }else {
+                    obj_chek.setChecked(false);
+                }
             }
         }
         toolbar.setTitle(reason);
@@ -162,6 +171,12 @@ public class AddEditObject extends AppCompatActivity {
                 params.put("fasebi", fasebi);
                 params.put("id_ebi", id_ebi);
 
+                if (obj_chek.isChecked()){
+                    params.put("chek", "1");
+                }else {
+                    params.put("chek", "0");
+                }
+
                 params.toString();
                 return params;
             }
@@ -171,7 +186,9 @@ public class AddEditObject extends AppCompatActivity {
     }
 
     private void updateLocalInfo() {
-        GlobalServise globalServise = new GlobalServise(getApplicationContext());
+
+        MainActivity.requestCount = 2; // 2 requests vamateb da 4 mde rom ava fasebs miabams obieqtebs!!!
+        GlobalServise globalServise = new GlobalServise(AddEditObject.this);
         globalServise.get_Obieqts();
         globalServise.get_Prises();
     }
