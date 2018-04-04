@@ -426,6 +426,8 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
             public void onResponse(JSONArray response) {
 
                 totalinfo.clear();
+                k30at_obj = 0;
+                k50at_obj = 0;
 
                 if (response.length() > 0) {
                     try {

@@ -89,6 +89,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 t_name.setText(Constantebi.USER_NAME);
                 if (Constantebi.USER_TYPE.equals("2")) {
                     t_username.setText(Constantebi.USER_USERNAME + " (admin)");
+                    navigationView.getMenu().getItem(1).setEnabled(true);
+                    navigationView.getMenu().getItem(3).setEnabled(true);
+                    navigationView.getMenu().getItem(4).setEnabled(true);
                 } else {
                     t_username.setText(Constantebi.USER_USERNAME + " (user)");
                     navigationView.getMenu().getItem(1).setEnabled(false);
@@ -101,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

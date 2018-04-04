@@ -30,6 +30,7 @@ import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.Useri;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,6 +47,7 @@ public class AddOrderActivity extends AppCompatActivity {
     private String reason;
     private Shekvetebi shekveta;
     int defOrientation;
+    private ArrayList<Shekvetebi> shekvetebiArrayList;
 
     private RetryPolicy mRetryPolicy = new DefaultRetryPolicy(
             0,
@@ -104,6 +106,7 @@ public class AddOrderActivity extends AppCompatActivity {
             }else {
                 chBox_orderChek.setChecked(false);
             }
+            shekvetebiArrayList = (ArrayList<Shekvetebi>) importedBundle.getSerializable("orderArray");
         }
         if (reason.equals(Constantebi.EDIT)) {
             shekveta = (Shekvetebi) intent.getSerializableExtra("obj");
@@ -169,8 +172,25 @@ public class AddOrderActivity extends AppCompatActivity {
         btn_newOrderDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendDataToDB();
-                btn_newOrderDone.setEnabled(false);
+                Boolean olredyInList = false;
+
+                if (reason.equals(Constantebi.NEW_ORDER)) {
+                    for (int i = 0; i < shekvetebiArrayList.size(); i++) {
+                        if (shekvetebiArrayList.get(i).getObieqti().equals(currObieqti.getDasaxeleba()) && shekvetebiArrayList.get(i).getLudi().equals(Constantebi.ludiList.get(beertype).getDasaxeleba())) {
+                            if (shekvetebiArrayList.get(i).getK30wont() + shekvetebiArrayList.get(i).getK50wont() > shekvetebiArrayList.get(i).getK30in() + shekvetebiArrayList.get(i).getK50in()) {
+                                olredyInList = true;
+                            }
+                        }
+                    }
+                }
+
+                if(olredyInList){
+                    Toast.makeText(getApplicationContext(), "ამ ობიექტზე უკვე არსებობს შეკვეთა! გთხოვთ განაახლოთ არსებული შეკვეთა", Toast.LENGTH_LONG).show();
+                    onBackPressed();
+                }else {
+                    sendDataToDB();
+                    btn_newOrderDone.setEnabled(false);
+                }
             }
         });
 

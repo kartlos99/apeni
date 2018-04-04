@@ -75,40 +75,19 @@ public class ObjListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (mdebareoba.equals(Constantebi.MDEBAREOBA_SHEKVETA)) {
-                    Obieqti clickedObj = (Obieqti) objListAdapter.getItem(i);
-                    Boolean olredyInList = false;
+
                     Bundle bundleO = passed_i.getExtras().getBundle("objINorder");
                     ArrayList<Shekvetebi> shekvetebiArrayList = (ArrayList<Shekvetebi>) bundleO.getSerializable("data");
-                    for (int ii = 0 ; ii < shekvetebiArrayList.size(); ii++){
-                        if (shekvetebiArrayList.get(ii).getObieqti().equals(clickedObj.getDasaxeleba())){
-                            if (shekvetebiArrayList.get(ii).getK30wont()+shekvetebiArrayList.get(ii).getK50wont() > shekvetebiArrayList.get(ii).getK30in()+shekvetebiArrayList.get(ii).getK50in() ){
-                                olredyInList = true;
-                            }
-                        }
-                    }
 
-                    if(olredyInList){
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-//                        builder.setCancelable(true);
-//                        builder.setMessage("ამ ობიექტზე უკვე არსებობს შეკვეთა! გთხოვთ განაახლოთ არსებული შეკვეთა");
-//                        builder.setPositiveButton("უკან", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//                                onBackPressed();
-//                            }
-//                        });
-//                        AlertDialog dialog = builder.create();
-//                        dialog.show();
-                        Toast.makeText(getApplicationContext(), "ამ ობიექტზე უკვე არსებობს შეკვეთა! გთხოვთ განაახლოთ არსებული შეკვეთა", Toast.LENGTH_LONG).show();
-                        onBackPressed();
-                    }else {
+
                         Intent intent = new Intent(getApplicationContext(), AddOrderActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putSerializable("obieqti", (Serializable) objListAdapter.getItem(i));
+                        bundle.putSerializable("orderArray", shekvetebiArrayList);
                         intent.putExtra(Constantebi.REASON, Constantebi.NEW_ORDER);
                         intent.putExtras(bundle);
                         startActivity(intent);
-                    }
+
 
                 }
                 if (mdebareoba.equals(Constantebi.MDEBAREOBA_MITANA)) {
