@@ -36,7 +36,7 @@ public class Constantebi {
     public static String URL_DEL_ORDER =    "http://apeni.ge/andr_app_links/del_order.php";
     public static String URL_DEL_BEER =     "http://apeni.ge/andr_app_links/del_beer.php";
     public static String URL_INS_BEER =     "http://apeni.ge/andr_app_links/insert_beer.php";
-    public static String URL_DEL_RECORD =   "http://apeni.ge/andr_app_links/del_record.php";
+    public static String URL_DEL_RECORD =   "http://apeni.ge/andr_app_links/del_record_v2.php";
     public static String URL_GET_RECORD =   "http://apeni.ge/andr_app_links/get_record.php";
     public static String URL_GET_SYSCLEAN = "http://apeni.ge/andr_app_links/get_cleaning.php";
     public static String URL_INS_SYSCLEAN = "http://apeni.ge/andr_app_links/ins_cleaning.php";
