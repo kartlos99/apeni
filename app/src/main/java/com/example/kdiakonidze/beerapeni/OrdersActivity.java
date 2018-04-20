@@ -13,12 +13,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,8 +33,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.kdiakonidze.beerapeni.adapters.ExpShekvetebiAdapter;
 import com.example.kdiakonidze.beerapeni.adapters.ShekvetebiAdapter;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
+import com.example.kdiakonidze.beerapeni.models.ShekvetebiGR;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 
 import org.json.JSONArray;
@@ -49,11 +53,12 @@ public class OrdersActivity extends AppCompatActivity {
     Button btn_setDate, btn_addOrder;
     TextView t_Tarigi;
     CheckBox chBox_orderGroup;
-    ListView listView_shekvetebi;
+    ExpandableListView listView_shekvetebi;
     ProgressDialog progressDialog;
 
     ArrayList<Shekvetebi> shekvetebiArrayList;
-    ShekvetebiAdapter shekvetebiAdapter;
+    ArrayList<ShekvetebiGR> shekvetebiArrayListGR;
+    ExpShekvetebiAdapter shekvetebiAdapter;
     Calendar calendar;
     String archeuli_dge;
     static Boolean chamosatvirtia = false;
@@ -85,12 +90,13 @@ public class OrdersActivity extends AppCompatActivity {
         setContentView(R.layout.activity_orders);
 
         chBox_orderGroup = (CheckBox) findViewById(R.id.checkbox_order_group);
-        listView_shekvetebi = (ListView) findViewById(R.id.list_shekvetebi);
+        listView_shekvetebi = (ExpandableListView) findViewById(R.id.list_shekvetebi);
         t_Tarigi = (TextView) findViewById(R.id.t_tarigi);
         btn_setDate = (Button) findViewById(R.id.btn_setdate);
         btn_addOrder = (Button) findViewById(R.id.btn_addOrder);
 
         shekvetebiArrayList = new ArrayList<>();
+        shekvetebiArrayListGR = new ArrayList<>();
         screenDefOrientation = getRequestedOrientation();
 
         calendar = Calendar.getInstance();
@@ -101,9 +107,9 @@ public class OrdersActivity extends AppCompatActivity {
             shekvetebiArrayList.clear();
             shekvetebiArrayList = (ArrayList<Shekvetebi>) savedInstanceState.getSerializable("order_list");
             if (chBox_orderGroup.isChecked()) {
-                shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(), groupOrders(shekvetebiArrayList), true);
+                shekvetebiAdapter = new ExpShekvetebiAdapter(getApplicationContext(), expandOrders(groupOrders(shekvetebiArrayList)), true);
             } else {
-                shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(), shekvetebiArrayList, false);
+                shekvetebiAdapter = new ExpShekvetebiAdapter(getApplicationContext(), expandOrders(shekvetebiArrayList), false);
             }
             listView_shekvetebi.setAdapter(shekvetebiAdapter);
         } else {
@@ -141,21 +147,22 @@ public class OrdersActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
-                    shekvetebiAdapter.reNewData(groupOrders(shekvetebiArrayList), b);
+                    shekvetebiAdapter.reNewData(expandOrders(groupOrders(shekvetebiArrayList)), b);
                 } else {
-                    shekvetebiAdapter.reNewData(shekvetebiArrayList, b);
+                    shekvetebiAdapter.reNewData(expandOrders(shekvetebiArrayList), b);
                 }
             }
         });
 
         this.registerForContextMenu(listView_shekvetebi);
 
-        listView_shekvetebi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView_shekvetebi.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
                 if (!chBox_orderGroup.isChecked()) {
+                    //  Toast.makeText(getApplicationContext(), "მოხსენით დაჯგუფება", Toast.LENGTH_SHORT).show();
                     TextView t_comment = (TextView) view.findViewById(R.id.t_orderlist_row_comment);
-                    Shekvetebi shekvetebi = (Shekvetebi) shekvetebiAdapter.getItem(i);
+                    Shekvetebi shekvetebi = (Shekvetebi) shekvetebiAdapter.getChild(i, i1);
                     if (!shekvetebi.getComment().isEmpty()) {
                         if (t_comment.getVisibility() == View.VISIBLE) {
                             t_comment.setVisibility(View.GONE);
@@ -164,13 +171,14 @@ public class OrdersActivity extends AppCompatActivity {
                         }
                     }
                 }
+                return true;
             }
         });
     }
 
     private ArrayList<Shekvetebi> groupOrders(ArrayList<Shekvetebi> shekvetebiList) {
         ArrayList<Shekvetebi> groupedOrderList = new ArrayList<>();
-        String objName = "", beerName = "";
+        String objName = "", beerName = "", dName = "";
         int k30w = 0, k50w = 0, k30in = 0, k50in = 0;
         boolean chek = false;
 
@@ -178,6 +186,7 @@ public class OrdersActivity extends AppCompatActivity {
             Shekvetebi shekveta = shekvetebiList.get(0);
             objName = shekveta.getObieqti();
             beerName = shekveta.getLudi();
+            dName = shekveta.getDistrib_Name();
         }
 
         for (int i = 0; i < shekvetebiList.size(); i++) {
@@ -194,10 +203,12 @@ public class OrdersActivity extends AppCompatActivity {
                     newGrOrder.setChk("0");
                 }
                 chek = false;
+                newGrOrder.setDistrib_Name(dName);
                 groupedOrderList.add(newGrOrder);
                 Shekvetebi shekveta = shekvetebiList.get(i);
                 objName = shekveta.getObieqti();
                 beerName = shekveta.getLudi();
+                dName = shekveta.getDistrib_Name();
                 k30w = shekvetebiList.get(i).getK30wont();
                 k50w = shekvetebiList.get(i).getK50wont();
                 k30in = shekvetebiList.get(i).getK30in();
@@ -216,6 +227,7 @@ public class OrdersActivity extends AppCompatActivity {
                 newGrOrder.setChk("0");
             }
             chek = false;
+            newGrOrder.setDistrib_Name(dName);
             groupedOrderList.add(newGrOrder);
         }
 
@@ -238,24 +250,34 @@ public class OrdersActivity extends AppCompatActivity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-        Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getItem(info.position);
-
-        if (chBox_orderGroup.isChecked()) {
-            Toast.makeText(getApplicationContext(), "მოხსენით დაჯგუფება", Toast.LENGTH_SHORT).show();
-        } else {
-            this.getMenuInflater().inflate(R.menu.context_menu_order, menu);
-            menu.setHeaderTitle(currOrder.getComment());
-        }
-
         super.onCreateContextMenu(menu, v, menuInfo);
+        ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) menuInfo;
+
+        //AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        int type = ExpandableListView.getPackedPositionType(info.packedPosition);
+        int group = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+        int child = ExpandableListView.getPackedPositionChild(info.packedPosition);
+
+        if (type == 1) {
+            if (chBox_orderGroup.isChecked()) {
+                Toast.makeText(getApplicationContext(), "მოხსენით დაჯგუფება", Toast.LENGTH_SHORT).show();
+            } else {
+                Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getChild(group, child);
+                this.getMenuInflater().inflate(R.menu.context_menu_order, menu);
+                menu.setHeaderTitle(currOrder.getComment());
+            }
+        }
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
+        //final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        ExpandableListView.ExpandableListContextMenuInfo info = (ExpandableListView.ExpandableListContextMenuInfo) item.getMenuInfo();
 
-        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-        final Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getItem(info.position);
+        int group = ExpandableListView.getPackedPositionGroup(info.packedPosition);
+        int child = ExpandableListView.getPackedPositionChild(info.packedPosition);
+
+        final Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getChild(group, child);
         switch (item.getItemId()) {
 
             case R.id.cm_order_edit:
@@ -290,9 +312,9 @@ public class OrdersActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         if ((currOrder.getK30wont() == 0) && (currOrder.getK50wont() == 0)) {
-                            removeRecord(currOrder.getOrder_id(), Constantebi.MITANA, info.position);
+                            removeRecord(currOrder.getOrder_id(), Constantebi.MITANA);
                         } else {
-                            removeRecord(currOrder.getOrder_id(), Constantebi.ORDER, info.position);
+                            removeRecord(currOrder.getOrder_id(), Constantebi.ORDER);
                         }
                     }
                 }).setNegativeButton("არა", new DialogInterface.OnClickListener() {
@@ -308,7 +330,7 @@ public class OrdersActivity extends AppCompatActivity {
         return super.onContextItemSelected(item);
     }
 
-    private void removeRecord(final int id, final String table, final int listPosition) {
+    private void removeRecord(final int id, final String table) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
         StringRequest request_DelOrder = new StringRequest(Request.Method.POST, Constantebi.URL_DEL_RECORD, new Response.Listener<String>() {
@@ -317,13 +339,18 @@ public class OrdersActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), response + " +", Toast.LENGTH_SHORT).show();
                 if (response.equals("Removed!")) {
 
-//                    for (int i = 0; i < shekvetebiArrayList.size(); i++) {
-//                        if (shekvetebiArrayList.get(i).getOrder_id() == id) {
-//                            shekvetebiArrayList.remove(i);
-//                        }
-//                    }
-                    shekvetebiArrayList.remove(listPosition);
-                    shekvetebiAdapter.reNewData(shekvetebiArrayList, false);
+                    for (int i = 0; i < shekvetebiArrayList.size(); i++) {
+                        if (shekvetebiArrayList.get(i).getOrder_id() == id) {
+                            if (table.equals(Constantebi.MITANA) && (shekvetebiArrayList.get(i).getK30wont() + shekvetebiArrayList.get(i).getK50wont() == 0)) {
+                                shekvetebiArrayList.remove(i);
+                            }
+                            if (table.equals(Constantebi.ORDER) && (shekvetebiArrayList.get(i).getK30in() + shekvetebiArrayList.get(i).getK50in() == 0)) {
+                                shekvetebiArrayList.remove(i);
+                            }
+                        }
+                    }
+
+                    shekvetebiAdapter.reNewData(expandOrders(shekvetebiArrayList), false);
                 }
                 setRequestedOrientation(screenDefOrientation);
             }
@@ -362,6 +389,7 @@ public class OrdersActivity extends AppCompatActivity {
                 // aq modis obieqtebis chamonatvali
 
                 shekvetebiArrayList.clear();
+                shekvetebiArrayListGR.clear();
                 if (response.length() > 0) {
                     for (int i = 0; i < response.length(); i++) {
                         try {
@@ -387,12 +415,18 @@ public class OrdersActivity extends AppCompatActivity {
                     }
                 }
 
+
                 if (chBox_orderGroup.isChecked()) {
-                    shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(), groupOrders(shekvetebiArrayList), chBox_orderGroup.isChecked());
+                    shekvetebiArrayListGR = expandOrders(groupOrders(shekvetebiArrayList));
                 } else {
-                    shekvetebiAdapter = new ShekvetebiAdapter(getApplicationContext(), shekvetebiArrayList, chBox_orderGroup.isChecked());
+                    shekvetebiArrayListGR = expandOrders(shekvetebiArrayList);
                 }
+
+                shekvetebiAdapter = new ExpShekvetebiAdapter(getApplicationContext(), shekvetebiArrayListGR, chBox_orderGroup.isChecked());
                 listView_shekvetebi.setAdapter(shekvetebiAdapter);
+                if (shekvetebiArrayListGR.size() > 0){
+                    listView_shekvetebi.expandGroup(0);
+                }
 
                 chamosatvirtia = false;
                 progressDialog.dismiss();
@@ -411,5 +445,106 @@ public class OrdersActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         queue.add(requestObieqtebi);
 
+    }
+
+    private ArrayList<ShekvetebiGR> expandOrders(ArrayList<Shekvetebi> shekvetebiArrayList) {
+        ArrayList<ShekvetebiGR> shekvetebiArListGR = new ArrayList<>();
+
+        if (shekvetebiArrayList.size() > 0) {
+            boolean exists = false;
+            int k30w = 0, k50w = 0, k30 = 0, k50 = 0;
+
+            if (chBox_orderGroup.isChecked()) {
+
+                for (int i = 0; i < shekvetebiArrayList.size(); i++) {
+
+                    for (int j = 0; j < shekvetebiArListGR.size(); j++) {
+                        if (shekvetebiArListGR.get(j).getName().equals(shekvetebiArrayList.get(i).getDistrib_Name())) {
+                            exists = true;
+                            shekvetebiArListGR.get(j).getChilds().add(shekvetebiArrayList.get(i));
+                            break;
+                        }
+                    }
+
+                    if (!exists) {
+                        ArrayList<Shekvetebi> newChildList = new ArrayList<>();
+                        newChildList.add(shekvetebiArrayList.get(i));
+                        shekvetebiArListGR.add(new ShekvetebiGR(shekvetebiArrayList.get(i).getDistrib_Name(), newChildList));
+                    }
+                    exists = false;
+                }
+
+            } else {
+
+                int order = 0;
+                ArrayList<Shekvetebi> childList = new ArrayList<>();
+                ArrayList<Shekvetebi> mitanebi = new ArrayList<>();
+
+                for (int i = 0; i < shekvetebiArrayList.size(); i++) {
+                    order = shekvetebiArrayList.get(i).getK30wont() + shekvetebiArrayList.get(i).getK50wont();
+
+                    if (order > 0) {
+                        for (int j = 0; j < shekvetebiArListGR.size(); j++) {
+                            if (shekvetebiArListGR.get(j).getName().equals(shekvetebiArrayList.get(i).getDistrib_Name())) {
+                                exists = true;
+                                shekvetebiArListGR.get(j).getChilds().add(shekvetebiArrayList.get(i));
+                                break;
+                            }
+                        }
+
+                        if (!exists) {
+                            ArrayList<Shekvetebi> newChildList = new ArrayList<>();
+                            newChildList.add(shekvetebiArrayList.get(i));
+                            shekvetebiArListGR.add(new ShekvetebiGR(shekvetebiArrayList.get(i).getDistrib_Name(), newChildList));
+                        }
+                        exists = false;
+
+                    } else {
+                        mitanebi.add(shekvetebiArrayList.get(i));
+                    }
+                }
+
+                for (int i = 0; i < mitanebi.size(); i++) {
+
+                    for (int j = 0; j < shekvetebiArListGR.size(); j++) {
+                        for (int k = 0; k < shekvetebiArListGR.get(j).getChilds().size(); k++) {
+                            if (shekvetebiArListGR.get(j).getChilds().get(k).getObieqti().equals(mitanebi.get(i).getObieqti())) {
+                                exists = true;
+                                shekvetebiArListGR.get(j).getChilds().add(mitanebi.get(i));
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!exists) {
+                        ArrayList<Shekvetebi> newChildList = new ArrayList<>();
+                        newChildList.add(mitanebi.get(i));
+                        shekvetebiArListGR.add(new ShekvetebiGR(shekvetebiArrayList.get(i).getDistrib_Name(), newChildList));
+                    }
+                    exists = false;
+                }
+
+
+            }
+
+            for (int i = 0; i < shekvetebiArListGR.size(); i++) {
+                k30w = 0;
+                k50w = 0;
+                k30 = 0;
+                k50 = 0;
+                for (int j = 0; j < shekvetebiArListGR.get(i).getChilds().size(); j++) {
+                    k30w += shekvetebiArListGR.get(i).getChilds().get(j).getK30wont();
+                    k50w += shekvetebiArListGR.get(i).getChilds().get(j).getK50wont();
+                    k30 += shekvetebiArListGR.get(i).getChilds().get(j).getK30in();
+                    k50 += shekvetebiArListGR.get(i).getChilds().get(j).getK50in();
+                }
+                shekvetebiArListGR.get(i).setK30w(k30w);
+                shekvetebiArListGR.get(i).setK50w(k50w);
+                shekvetebiArListGR.get(i).setK30(k30);
+                shekvetebiArListGR.get(i).setK50(k50);
+            }
+        }
+
+        return shekvetebiArListGR;
     }
 }
