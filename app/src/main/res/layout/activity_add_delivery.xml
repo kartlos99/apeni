@@ -66,6 +66,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <CheckBox
+                android:id="@+id/mitanis_ptichka"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
             <TextView
                 android:id="@+id/t_mitana_ludi"
                 android:text="@string/ludis_shetana"
@@ -474,7 +482,7 @@
                 android:id="@+id/ckbox_sachuqari"
                 app:layout_constraintTop_toTopOf="@+id/btn_change_date"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="4dp"
                 android:text="@string/sachuqari"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

@@ -49,7 +49,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
     private CardView cardView_mitana, cardView_kout, cardView_mout;
     private TextInputLayout t_comment;
     private ProgressDialog progressDialog;
-    private CheckBox chk_sachuqari;
+    private CheckBox chk_sachuqari, chk_ptichka;
     private SawyobiDetailRow row;
     private Boolean sawyobi = false;
 
@@ -296,7 +296,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void showRow(SawyobiDetailRow row) {
-
+        chk_sachuqari.setVisibility(View.INVISIBLE);
         t_comment.getEditText().setText(row.getComment());
         beerId = row.getLudisID();
 
@@ -314,16 +314,16 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             t_2title.setText("წაღება");
             eK30Count_Kout.setText(String.valueOf(row.getK30()));
             eK50Count_Kout.setText(String.valueOf(row.getK50()));
-            chk_sachuqari.setVisibility(View.INVISIBLE);
+            chk_ptichka.setVisibility(View.INVISIBLE);
         }
 
         archeuli_tarigi = row.getTarigi();
         btn_changeDate.setText(archeuli_tarigi);
-        chk_sachuqari.setText("");
+
         if(row.getChek().equals("1")){
-            chk_sachuqari.setChecked(true);
+            chk_ptichka.setChecked(true);
         }else {
-            chk_sachuqari.setChecked(false);
+            chk_ptichka.setChecked(false);
         }
 
     }
@@ -364,30 +364,35 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                             }
 
                             t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+                            if (response.getJSONObject(0).getString("chek").equals("1")){
+                                chk_ptichka.setChecked(true);
+                            }else {
+                                chk_ptichka.setChecked(false);
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
 
-                    if (response.length() > 0) {
-                        if (operacia.equals(Constantebi.K_OUT)) {
-                            try {
-                                eK30Count_Kout.setText(response.getJSONObject(0).getString("kasri30"));
-                                eK50Count_Kout.setText(response.getJSONObject(0).getString("kasri50"));
-                                t_comment.getEditText().setText(response.getJSONObject(0).getString("comment"));
 
-                                for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
-                                    if (Constantebi.OBIEQTEBI.get(i).getId() == response.getJSONObject(0).getInt("obieqtis_id")) {
-                                        currObieqti = Constantebi.OBIEQTEBI.get(i);
-                                    }
+                    if (operacia.equals(Constantebi.K_OUT)) {
+                        try {
+                            eK30Count_Kout.setText(response.getJSONObject(0).getString("kasri30"));
+                            eK50Count_Kout.setText(response.getJSONObject(0).getString("kasri50"));
+                            t_comment.getEditText().setText(response.getJSONObject(0).getString("comment"));
+
+                            for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
+                                if (Constantebi.OBIEQTEBI.get(i).getId() == response.getJSONObject(0).getInt("obieqtis_id")) {
+                                    currObieqti = Constantebi.OBIEQTEBI.get(i);
                                 }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
                             }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
+
 
                     t_deliveryInfo.setText(currObieqti.getDasaxeleba());
 
@@ -509,6 +514,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         cardView_kout = (CardView) findViewById(R.id.cardView_TakeKasri);
         cardView_mout = (CardView) findViewById(R.id.card_tanxa);
         chk_sachuqari = (CheckBox) findViewById(R.id.ckbox_sachuqari);
+        chk_ptichka = (CheckBox) findViewById(R.id.mitanis_ptichka);
     }
 
     private String pliusMinusText(String stringNaomber, boolean oper) {
@@ -604,7 +610,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                     } else {
                         params.put("chamotana", "1");
                     }
-                    if(chk_sachuqari.isChecked()){
+                    if(chk_ptichka.isChecked()){
                         params.put("chek", "1");
                     }else {
                         params.put("chek", "0");
@@ -615,6 +621,9 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                         params.put("ert_fasi", "0");
                     } else {
                         params.put("ert_fasi", currObieqti.getFasebi().get(beerIndex).toString());
+                    }
+                    if (chk_ptichka.isChecked()) {
+                        params.put("chek", "1");
                     }
                 }
 
