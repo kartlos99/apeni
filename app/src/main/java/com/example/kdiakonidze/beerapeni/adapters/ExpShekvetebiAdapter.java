@@ -80,7 +80,17 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
         TextView title = (TextView) convertView.findViewById(R.id.t_distrib_name);
         TextView t_ksum = (TextView) convertView.findViewById(R.id.t_kwont);
         title.setText(shekvetebiArListGR.get(groupPosition).getName());
-        t_ksum.setText(shekvetebiArListGR.get(groupPosition).getK30w() + " / " +shekvetebiArListGR.get(groupPosition).getK50w() + "   |   " +shekvetebiArListGR.get(groupPosition).getK30() + " / " +shekvetebiArListGR.get(groupPosition).getK50());
+        //t_ksum.setText(shekvetebiArListGR.get(groupPosition).getK30w() + " / " +shekvetebiArListGR.get(groupPosition).getK50w() + "   |   " +shekvetebiArListGR.get(groupPosition).getK30() + " / " +shekvetebiArListGR.get(groupPosition).getK50());
+        String summingData = "";
+        for (int i = 0; i < shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().size(); i++) {
+            summingData += shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getLudi()
+                    + " : " + shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30wont()
+                    + "/" + shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50wont()
+                    + " | " + shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30in()
+                    + "/" + shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50in();
+            summingData += "\n";
+        }
+        t_ksum.setText(summingData);
         return convertView;
     }
 
@@ -145,8 +155,10 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
                 viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
                 viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
             }
+            viewHolder.t_ludi.setBackgroundColor(Color.parseColor(shekveta.getColor()));
 
         }else {
+            viewHolder.t_ludi.setBackgroundColor(Color.TRANSPARENT);
             viewHolder.ln_row.setBackgroundColor(Color.TRANSPARENT);
             if (shekveta.getChk().equals("1")) {
 //                viewHolder.t_obieqti.setBackgroundColor(context.getResources().getColor(R.color.colorCardview_2));
@@ -165,6 +177,7 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
             }else {
                 viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
             }
+            listRowView.setBackgroundColor(Color.parseColor(shekveta.getColor()));
         }
 
         return listRowView;

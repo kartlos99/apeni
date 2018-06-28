@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public class Obieqti implements Serializable {
     private String dasaxeleba, adress, tel, comment, sk, sakpiri, chek;
-    private Integer id;
+    private Integer id, valiM, valiK30, valiK50;
     private ArrayList<Double> fasebi = new ArrayList<>();
 
     public Obieqti(String dasaxeleba) {
@@ -87,6 +87,30 @@ public class Obieqti implements Serializable {
 
     public void setSakpiri(String sakpiri) {
         this.sakpiri = sakpiri;
+    }
+
+    public Integer getValiM() {
+        return valiM;
+    }
+
+    public void setValiM(Integer valiM) {
+        this.valiM = valiM;
+    }
+
+    public Integer getValiK30() {
+        return valiK30;
+    }
+
+    public void setValiK30(Integer valiK30) {
+        this.valiK30 = valiK30;
+    }
+
+    public Integer getValiK50() {
+        return valiK50;
+    }
+
+    public void setValiK50(Integer valiK50) {
+        this.valiK50 = valiK50;
     }
 
     @Override

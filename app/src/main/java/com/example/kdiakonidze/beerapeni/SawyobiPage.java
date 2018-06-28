@@ -8,12 +8,16 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
@@ -39,6 +43,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.kdiakonidze.beerapeni.adapters.SawyobiAdapter;
 import com.example.kdiakonidze.beerapeni.models.Totalinout;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.MyDialog;
 
 
 import org.json.JSONArray;
@@ -55,7 +60,7 @@ import java.util.Map;
 public class SawyobiPage extends AppCompatActivity implements View.OnClickListener {
 
     private Toolbar toolbar;
-    private Button btn_chawera, btn_beerleft, btn_beerright, btnK30dec, btnK30inc, btnK50dec, btnK50inc, btnK30dec_Kout, btnK30inc_Kout, btnK50dec_Kout, btnK50inc_Kout, btn_changeDate;
+    private Button btn_chawera, btn_beerleft, btn_beerright, btnK30dec, btnK30inc, btnK50dec, btnK50inc, btnK30dec_Kout, btnK30inc_Kout, btnK50dec_Kout, btnK50inc_Kout, btn_changeDate, btn_emptyK_list;
     private EditText eK30Count, eK50Count, eK30Count_Kout, eK50Count_Kout;
     private String sK30Count = "0", sK50Count = "0", sK30Count_Kout = "0", sK50Count_Kout = "0";
     private Calendar calendar;
@@ -160,6 +165,8 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_sawyobi_page);
 
         initialization();
+
+        btn_emptyK_list.setEnabled(false);
 
         btnK30dec.setOnClickListener(this);
         btnK30inc.setOnClickListener(this);
@@ -276,9 +283,40 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
                     constrCarieliBox.setVisibility(View.VISIBLE);
                     scrollView_sawy.setBackgroundColor(Color.TRANSPARENT);
                 }
-
             }
         });
+
+        btn_emptyK_list.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CharSequence[] items = new CharSequence[Constantebi.OBIEQTEBI.size()];
+                for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
+                    items[i] = Constantebi.OBIEQTEBI.get(i).getDasaxeleba()+ "  :  " + Constantebi.OBIEQTEBI.get(i).getValiK30()+ " / " + Constantebi.OBIEQTEBI.get(i).getValiK50();
+                }
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(SawyobiPage.this);
+
+                builder.setTitle("ობიექტებზე დატოვებული კასრები 30/50")
+                        .setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        })
+                        .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                builder.show();
+
+                //Toast.makeText(getApplicationContext(), listK, Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+        get_davalianeba();
     }
 
     private void initialization() {
@@ -311,6 +349,7 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         scrollView_sawy = (ScrollView) findViewById(R.id.scrool_sawyobi);
         nonScrollistView = (NonScrollListView) cardView_nashti_full.findViewById(R.id.list_forNashtebi);
         checkSawyobi = (CheckBox) findViewById(R.id.checkBox_sawyobi);
+        btn_emptyK_list = (Button) findViewById(R.id.btn_emptyK_list);
 
         cardView_wageba.findViewById(R.id.btn_beerleft).setVisibility(View.GONE);
         cardView_wageba.findViewById(R.id.btn_beerright).setVisibility(View.GONE);
@@ -557,4 +596,55 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void get_davalianeba() {
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        String url = Constantebi.URL_GET_DAVALIANEBA;
+
+        JsonArrayRequest request_davalianeba = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                // aq modis davalianebis chamonaTvali yvela obieqtistvis
+
+                if (response.length() > 0) {
+                    Integer davalianebaM = 0, davalianebaK = 0;
+
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+
+                            for (int j = 0; j <  Constantebi.OBIEQTEBI.size(); j++) {
+
+                                if (response.getJSONObject(i).getInt("obj_id") == Constantebi.OBIEQTEBI.get(j).getId()) {
+                                    Constantebi.OBIEQTEBI.get(j).setValiM(response.getJSONObject(i).getInt("pr") - response.getJSONObject(i).getInt("pay"));
+                                    Constantebi.OBIEQTEBI.get(j).setValiK30(response.getJSONObject(i).getInt("k30in") - response.getJSONObject(i).getInt("k30out"));
+                                    Constantebi.OBIEQTEBI.get(j).setValiK50(response.getJSONObject(i).getInt("k50in") - response.getJSONObject(i).getInt("k50out"));
+                                }
+                            }
+
+                        } catch (JSONException excep) {
+                            excep.printStackTrace();
+                        }
+                    }
+                    btn_emptyK_list.setEnabled(true);
+                }
+//                requestCount--;
+//                if (requestCount == 0) {
+                    setRequestedOrientation(Constantebi.screenDefOrientation);
+//                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+//                requestCount = 0;
+                setRequestedOrientation(Constantebi.screenDefOrientation);
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+//        requestCount++;
+        queue.add(request_davalianeba);
+    }
+
+
 }

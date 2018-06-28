@@ -132,6 +132,10 @@ public class ShekvetebiAdapter extends BaseAdapter {
             }
         }
 
+
+
+        listRowView.setBackgroundColor(Color.blue(45));
+
         return listRowView;
     }
 

@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 
 public class Shekvetebi implements Serializable {
-    private String obieqti, ludi, tarigi, chk, distrib_Name, comment;
+    private String obieqti, ludi, tarigi, chk, distrib_Name, comment, color;
     private int k30in, k50in, k30wont, k50wont, order_id, distrib_id;
 
     public Shekvetebi(String obieqti, String ludi, int k30in, int k50in, int k30wont, int k50wont) {
@@ -113,5 +113,13 @@ public class Shekvetebi implements Serializable {
 
     public void setDistrib_id(int distrib_id) {
         this.distrib_id = distrib_id;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

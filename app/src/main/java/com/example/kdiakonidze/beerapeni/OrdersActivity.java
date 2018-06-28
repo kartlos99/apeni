@@ -178,7 +178,7 @@ public class OrdersActivity extends AppCompatActivity {
 
     private ArrayList<Shekvetebi> groupOrders(ArrayList<Shekvetebi> shekvetebiList) {
         ArrayList<Shekvetebi> groupedOrderList = new ArrayList<>();
-        String objName = "", beerName = "", dName = "";
+        String objName = "", beerName = "", dName = "", beerBeckgroundColor = "#ffffff";
         int k30w = 0, k50w = 0, k30in = 0, k50in = 0;
         boolean chek = false;
 
@@ -187,6 +187,7 @@ public class OrdersActivity extends AppCompatActivity {
             objName = shekveta.getObieqti();
             beerName = shekveta.getLudi();
             dName = shekveta.getDistrib_Name();
+            beerBeckgroundColor = shekveta.getColor();
         }
 
         for (int i = 0; i < shekvetebiList.size(); i++) {
@@ -204,11 +205,13 @@ public class OrdersActivity extends AppCompatActivity {
                 }
                 chek = false;
                 newGrOrder.setDistrib_Name(dName);
+                newGrOrder.setColor(beerBeckgroundColor);
                 groupedOrderList.add(newGrOrder);
                 Shekvetebi shekveta = shekvetebiList.get(i);
                 objName = shekveta.getObieqti();
                 beerName = shekveta.getLudi();
                 dName = shekveta.getDistrib_Name();
+                beerBeckgroundColor = shekveta.getColor();
                 k30w = shekvetebiList.get(i).getK30wont();
                 k50w = shekvetebiList.get(i).getK50wont();
                 k30in = shekvetebiList.get(i).getK30in();
@@ -226,8 +229,9 @@ public class OrdersActivity extends AppCompatActivity {
             } else {
                 newGrOrder.setChk("0");
             }
-            chek = false;
+            //chek = false;
             newGrOrder.setDistrib_Name(dName);
+            newGrOrder.setColor(beerBeckgroundColor);
             groupedOrderList.add(newGrOrder);
         }
 
@@ -406,6 +410,7 @@ public class OrdersActivity extends AppCompatActivity {
                             shekveta.setDistrib_id(response.getJSONObject(i).getInt("distributor_id"));
                             shekveta.setOrder_id(response.getJSONObject(i).getInt("order_id"));
                             shekveta.setComment(response.getJSONObject(i).getString("comment"));
+                            shekveta.setColor(response.getJSONObject(i).getString("color"));
 
                             shekvetebiArrayList.add(shekveta);
 
@@ -424,8 +429,10 @@ public class OrdersActivity extends AppCompatActivity {
 
                 shekvetebiAdapter = new ExpShekvetebiAdapter(getApplicationContext(), shekvetebiArrayListGR, chBox_orderGroup.isChecked());
                 listView_shekvetebi.setAdapter(shekvetebiAdapter);
-                if (shekvetebiArrayListGR.size() > 0){
-                    listView_shekvetebi.expandGroup(0);
+                if (shekvetebiArrayListGR.size() > 0) {
+                    for (int i = 0; i < shekvetebiArrayListGR.size(); i++) {
+                        listView_shekvetebi.expandGroup(i);
+                    }
                 }
 
                 chamosatvirtia = false;
@@ -532,7 +539,27 @@ public class OrdersActivity extends AppCompatActivity {
                 k50w = 0;
                 k30 = 0;
                 k50 = 0;
+                shekvetebiArListGR.get(i).getGrHeadOrderSum().clear();
+
                 for (int j = 0; j < shekvetebiArListGR.get(i).getChilds().size(); j++) {
+                    String ludi = shekvetebiArListGR.get(i).getChilds().get(j).getLudi();
+                    exists = false;
+
+                    for (int k = 0; k < shekvetebiArListGR.get(i).getGrHeadOrderSum().size(); k++) {
+                        if (shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getLudi().equals(ludi)) {
+
+                            shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).setK30wont(shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getK30wont() + shekvetebiArListGR.get(i).getChilds().get(j).getK30wont());
+                            shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).setK50wont(shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getK50wont() + shekvetebiArListGR.get(i).getChilds().get(j).getK50wont());
+                            shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).setK30in(shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getK30in() + shekvetebiArListGR.get(i).getChilds().get(j).getK30in());
+                            shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).setK50in(shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getK50in() + shekvetebiArListGR.get(i).getChilds().get(j).getK50in());
+                            exists = true;
+                        }
+                    }
+
+                    if (!exists){
+                        shekvetebiArListGR.get(i).getGrHeadOrderSum().add(shekvetebiArListGR.get(i).getChilds().get(j));
+                    }
+
                     k30w += shekvetebiArListGR.get(i).getChilds().get(j).getK30wont();
                     k50w += shekvetebiArListGR.get(i).getChilds().get(j).getK50wont();
                     k30 += shekvetebiArListGR.get(i).getChilds().get(j).getK30in();
