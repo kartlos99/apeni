@@ -37,6 +37,7 @@ import com.example.kdiakonidze.beerapeni.adapters.ExpShekvetebiAdapter;
 import com.example.kdiakonidze.beerapeni.adapters.ShekvetebiAdapter;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.ShekvetebiGR;
+import com.example.kdiakonidze.beerapeni.models.ShekvetebiSum;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 
 import org.json.JSONArray;
@@ -176,11 +177,14 @@ public class OrdersActivity extends AppCompatActivity {
         });
     }
 
-    private ArrayList<Shekvetebi> groupOrders(ArrayList<Shekvetebi> shekvetebiList) {
+    private ArrayList<Shekvetebi> groupOrders(ArrayList<Shekvetebi> gadmocemuliShekvetebi) {
         ArrayList<Shekvetebi> groupedOrderList = new ArrayList<>();
         String objName = "", beerName = "", dName = "", beerBeckgroundColor = "#ffffff";
         int k30w = 0, k50w = 0, k30in = 0, k50in = 0;
         boolean chek = false;
+
+        ArrayList<Shekvetebi> shekvetebiList = new ArrayList<>();
+        shekvetebiList.addAll(gadmocemuliShekvetebi);
 
         if (shekvetebiList.size() > 0) {
             Shekvetebi shekveta = shekvetebiList.get(0);
@@ -521,12 +525,27 @@ public class OrdersActivity extends AppCompatActivity {
                                 break;
                             }
                         }
+                        if (exists){
+                            break;
+                        }
                     }
 
                     if (!exists) {
-                        ArrayList<Shekvetebi> newChildList = new ArrayList<>();
-                        newChildList.add(mitanebi.get(i));
-                        shekvetebiArListGR.add(new ShekvetebiGR(shekvetebiArrayList.get(i).getDistrib_Name(), newChildList));
+                        Boolean b = false;
+                        for (int j = 0; j < shekvetebiArListGR.size(); j++) {
+                            if (shekvetebiArListGR.get(j).getName().equals(mitanebi.get(i).getDistrib_Name())) {
+                                //exists = true;
+                                shekvetebiArListGR.get(j).getChilds().add(mitanebi.get(i));
+                                b = true;
+                                break;
+                            }
+                        }
+
+                        if (!b) {
+                            ArrayList<Shekvetebi> newChildList = new ArrayList<>();
+                            newChildList.add(mitanebi.get(i));
+                            shekvetebiArListGR.add(new ShekvetebiGR(shekvetebiArrayList.get(i).getDistrib_Name(), newChildList));
+                        }
                     }
                     exists = false;
                 }
@@ -547,7 +566,7 @@ public class OrdersActivity extends AppCompatActivity {
 
                     for (int k = 0; k < shekvetebiArListGR.get(i).getGrHeadOrderSum().size(); k++) {
                         if (shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getLudi().equals(ludi)) {
-
+// getGrHeadOrderSum -s rom vcvli children -ic icvleba :@@@ ???
                             shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).setK30wont(shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getK30wont() + shekvetebiArListGR.get(i).getChilds().get(j).getK30wont());
                             shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).setK50wont(shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getK50wont() + shekvetebiArListGR.get(i).getChilds().get(j).getK50wont());
                             shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).setK30in(shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getK30in() + shekvetebiArListGR.get(i).getChilds().get(j).getK30in());
@@ -557,7 +576,14 @@ public class OrdersActivity extends AppCompatActivity {
                     }
 
                     if (!exists){
-                        shekvetebiArListGR.get(i).getGrHeadOrderSum().add(shekvetebiArListGR.get(i).getChilds().get(j));
+                        ShekvetebiSum newbeerItem = new ShekvetebiSum();
+                        newbeerItem.setK30wont(shekvetebiArListGR.get(i).getChilds().get(j).getK30wont());
+                        newbeerItem.setK50wont(shekvetebiArListGR.get(i).getChilds().get(j).getK50wont());
+                        newbeerItem.setK30in(shekvetebiArListGR.get(i).getChilds().get(j).getK30in());
+                        newbeerItem.setK50in(shekvetebiArListGR.get(i).getChilds().get(j).getK50in());
+                        newbeerItem.setLudi(ludi);
+
+                        shekvetebiArListGR.get(i).getGrHeadOrderSum().add(newbeerItem);
                     }
 
                     k30w += shekvetebiArListGR.get(i).getChilds().get(j).getK30wont();

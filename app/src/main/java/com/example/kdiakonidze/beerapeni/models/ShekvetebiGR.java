@@ -9,7 +9,8 @@ import java.util.ArrayList;
 
 public class ShekvetebiGR implements Serializable{
     private String name;
-    private ArrayList<Shekvetebi> childs, grHeadOrderSum ;
+    private ArrayList<Shekvetebi> childs;
+    private ArrayList<ShekvetebiSum> grHeadOrderSum = new ArrayList<>();;
     private int k30w = 0;
     private int k50w = 0;
     private int k30 = 0;
@@ -18,7 +19,6 @@ public class ShekvetebiGR implements Serializable{
     public ShekvetebiGR(String name, ArrayList<Shekvetebi> childs) {
         this.name = name;
         this.childs = childs;
-        grHeadOrderSum = new ArrayList<>();
     }
 
     public String getName() {
@@ -69,11 +69,11 @@ public class ShekvetebiGR implements Serializable{
         this.k50 = k50;
     }
 
-    public ArrayList<Shekvetebi> getGrHeadOrderSum() {
+    public ArrayList<ShekvetebiSum> getGrHeadOrderSum() {
         return grHeadOrderSum;
     }
 
-    public void setGrHeadOrderSum(ArrayList<Shekvetebi> grHeadOrderSum) {
+    public void setGrHeadOrderSum(ArrayList<ShekvetebiSum> grHeadOrderSum) {
         this.grHeadOrderSum = grHeadOrderSum;
     }
 }

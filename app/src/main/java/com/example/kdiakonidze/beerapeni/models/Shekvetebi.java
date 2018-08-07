@@ -122,4 +122,8 @@ public class Shekvetebi implements Serializable {
     public void setColor(String color) {
         this.color = color;
     }
+
+    public void addK30(String color) {
+        this.color = color;
+    }
 }
