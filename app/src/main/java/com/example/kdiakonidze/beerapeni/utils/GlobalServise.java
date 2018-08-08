@@ -6,19 +6,27 @@ import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.MainActivity;
+import com.example.kdiakonidze.beerapeni.OrdersActivity;
 import com.example.kdiakonidze.beerapeni.models.BeerModel;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
+import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.Useri;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by k.diakonidze on 12/21/2017.
@@ -118,7 +126,7 @@ public class GlobalServise {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, error.toString()+ " | ludi sadaaa! -", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, error.toString() + " | ludi sadaaa! -", Toast.LENGTH_LONG).show();
                 MainActivity.requestCount++;
                 if (MainActivity.requestCount == 4) {
                     activityOrientationNormal();
@@ -233,7 +241,7 @@ public class GlobalServise {
         queue.add(request_users);
     }
 
-    public void attachPricesToObj(){  // ludis fasebs vawebeb tavis obieqtebs
+    private void attachPricesToObj() {  // ludis fasebs vawebeb tavis obieqtebs
         for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
             int objid = Constantebi.OBIEQTEBI.get(i).getId();
 
@@ -246,10 +254,73 @@ public class GlobalServise {
         //Toast.makeText(context, "mieba", Toast.LENGTH_LONG).show();
     }
 
-    public void activityOrientationNormal(){
+    private void activityOrientationNormal() {
         Activity activity = (Activity) context;
         activity.setRequestedOrientation(Constantebi.screenDefOrientation);
     }
 
+    public void editOrder(final Shekvetebi order, final int distID) {
+        // aq vagzavnit monacemebs chasawerad
+//        RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
+        StringRequest request_orderEdit = new StringRequest(Request.Method.POST, Constantebi.URL_INS_SHEKVETA, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
+                if (response.equals("ჩაწერილია!") || response.equals("შეკვეთა დაკორექტირდა!")) {
+                    l.onChange();
+                }
+                activityOrientationNormal();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                activityOrientationNormal();
+                Toast.makeText(context, error.getMessage() + " -", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+
+                params.put("moqmedeba", Constantebi.EDIT);
+
+                params.put("order_id", String.valueOf(order.getOrder_id()));
+
+                params.put("k30", String.valueOf(order.getK30wont()));
+                params.put("k50", String.valueOf(order.getK50wont()));
+                params.put("beer_type", String.valueOf(findBeerId(order.getLudi())));
+                params.put("comment", order.getComment());
+                params.put("distributor_id", String.valueOf(distID));
+
+                params.put("chek", order.getChk());
+
+                params.toString();
+                return params;
+            }
+        };
+
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+//        request.setRetryPolicy(mRetryPolicy);
+        queue.add(request_orderEdit);
+    }
+
+    private Integer findBeerId(String ludi) {
+        for (int i = 0; i < Constantebi.ludiList.size(); i++) {
+            if (Constantebi.ludiList.get(i).getDasaxeleba().equals(ludi)) {
+                return Constantebi.ludiList.get(i).getId();
+            }
+        }
+        return 0;
+    }
+
+    public interface vListener {
+        void onChange();
+    }
+
+    private vListener l = null;
+
+    public void setChangeListener(vListener mListener){
+        l = mListener;
+    }
 }

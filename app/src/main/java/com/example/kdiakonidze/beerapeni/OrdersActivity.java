@@ -12,6 +12,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,6 +40,7 @@ import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.ShekvetebiGR;
 import com.example.kdiakonidze.beerapeni.models.ShekvetebiSum;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +51,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RequiresApi(api = Build.VERSION_CODES.N)
-public class OrdersActivity extends AppCompatActivity {
+public class OrdersActivity extends AppCompatActivity implements GlobalServise.vListener {
 
     Button btn_setDate, btn_addOrder;
     TextView t_Tarigi;
@@ -62,7 +64,7 @@ public class OrdersActivity extends AppCompatActivity {
     ExpShekvetebiAdapter shekvetebiAdapter;
     Calendar calendar;
     String archeuli_dge;
-    static Boolean chamosatvirtia = false;
+    public static Boolean chamosatvirtia = false;
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private int screenDefOrientation;
 
@@ -243,12 +245,6 @@ public class OrdersActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-//        chamosatvirtia = true;
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         if (chamosatvirtia) {
@@ -270,9 +266,30 @@ public class OrdersActivity extends AppCompatActivity {
             if (chBox_orderGroup.isChecked()) {
                 Toast.makeText(getApplicationContext(), "მოხსენით დაჯგუფება", Toast.LENGTH_SHORT).show();
             } else {
-                Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getChild(group, child);
+                final Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getChild(group, child);
                 this.getMenuInflater().inflate(R.menu.context_menu_order, menu);
                 menu.setHeaderTitle(currOrder.getComment());
+
+                MenuItem.OnMenuItemClickListener itemLisener = new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+
+                        GlobalServise gServise = new GlobalServise(OrdersActivity.this);
+                        gServise.setChangeListener(OrdersActivity.this);
+                        gServise.editOrder(currOrder, item.getItemId());
+
+                        return true;
+                    }
+                };
+
+                for (int i = 0; i < Constantebi.USERsLIST.size(); i++) {
+                    if (Constantebi.USERsLIST.get(i).getId() != currOrder.getDistrib_id()) {
+                        menu.add(1, Constantebi.USERsLIST.get(i).getId(), i, "--> " + Constantebi.USERsLIST.get(i).getUsername()).setOnMenuItemClickListener(itemLisener);
+                    }
+                }
+
             }
         }
     }
@@ -384,7 +401,7 @@ public class OrdersActivity extends AppCompatActivity {
         queue.add(request_DelOrder);
     }
 
-    private void shekvetebis_chamotvirtva(String currentDay) {
+    public void shekvetebis_chamotvirtva(String currentDay) {
         progressDialog = ProgressDialog.show(this, "იტვირთება!", "loading!");
 
         String url = Constantebi.URL_GET_ORDERLIST + "?tarigi=" + currentDay;
@@ -525,7 +542,7 @@ public class OrdersActivity extends AppCompatActivity {
                                 break;
                             }
                         }
-                        if (exists){
+                        if (exists) {
                             break;
                         }
                     }
@@ -575,7 +592,7 @@ public class OrdersActivity extends AppCompatActivity {
                         }
                     }
 
-                    if (!exists){
+                    if (!exists) {
                         ShekvetebiSum newbeerItem = new ShekvetebiSum();
                         newbeerItem.setK30wont(shekvetebiArListGR.get(i).getChilds().get(j).getK30wont());
                         newbeerItem.setK50wont(shekvetebiArListGR.get(i).getChilds().get(j).getK50wont());
@@ -599,5 +616,10 @@ public class OrdersActivity extends AppCompatActivity {
         }
 
         return shekvetebiArListGR;
+    }
+
+    @Override
+    public void onChange() {
+        shekvetebis_chamotvirtva(archeuli_dge);
     }
 }
