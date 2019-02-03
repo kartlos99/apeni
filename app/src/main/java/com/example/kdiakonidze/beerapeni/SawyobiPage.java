@@ -43,8 +43,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.kdiakonidze.beerapeni.adapters.SawyobiAdapter;
 import com.example.kdiakonidze.beerapeni.models.Totalinout;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
-import com.example.kdiakonidze.beerapeni.utils.MyDialog;
-
 
 import org.json.JSONArray;
 import org.json.JSONException;

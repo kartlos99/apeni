@@ -1,6 +1,12 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.nfc.Tag;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,21 +29,25 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.adapters.BeerListAdapter;
 import com.example.kdiakonidze.beerapeni.models.BeerModel;
+import com.example.kdiakonidze.beerapeni.utils.ChooseColorDialog;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AddEditBeer extends AppCompatActivity {
+public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.ColorDialogListener {
 
     private TextView tTitle;
     private Button btn_beerDone, btn_uaryofa;
     private TextInputLayout eBeerName, eBeerPr;
     private ListView listViewBeer;
+    private ImageButton btnColor;
+
     private BeerListAdapter beerListAdapter;
     private String moqmedeba = "0";
     private int beerID = 0;
+    private int beerColor = Color.rgb(128, 128 ,128);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +60,7 @@ public class AddEditBeer extends AppCompatActivity {
         eBeerName = (TextInputLayout) findViewById(R.id.e_beer_name);
         eBeerPr = (TextInputLayout) findViewById(R.id.e_beer_pr);
         listViewBeer = (ListView) findViewById(R.id.listview_beer);
+        btnColor = findViewById(R.id.btn_color);
 
         beerListAdapter = new BeerListAdapter(this, Constantebi.ludiList);
         listViewBeer.setAdapter(beerListAdapter);
@@ -71,6 +83,16 @@ public class AddEditBeer extends AppCompatActivity {
                 sendDataToDB(beerID, eBeerName.getEditText().getText().toString(), eBeerPr.getEditText().getText().toString());
             }
         });
+
+        btnColor.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ChooseColorDialog colorDialog = new ChooseColorDialog();
+                colorDialog.show(getSupportFragmentManager(), String.valueOf(beerColor));
+            }
+        });
+
+        myColor(beerColor);
 
         this.registerForContextMenu(listViewBeer);
     }
@@ -104,6 +126,7 @@ public class AddEditBeer extends AppCompatActivity {
                 params.put("dasaxeleba", dasaxeleba);
                 params.put("price", price);
                 params.put("beerId", String.valueOf(beerID));
+                params.put("color", String.format("#%02X%02X%02X", Color.red(beerColor), Color.green(beerColor), Color.blue(beerColor)));
 
                 params.toString();
                 return params;
@@ -134,6 +157,8 @@ public class AddEditBeer extends AppCompatActivity {
                 btn_beerDone.setText("რედაქტირება");
                 tTitle.setText("რედაქტირება");
                 btn_uaryofa.setVisibility(View.VISIBLE);
+                beerColor = Color.parseColor(beer.getDisplayColor());
+                myColor(beerColor);
                 break;
             case R.id.cm_order_del:
                 removeBeer(beer.getId());
@@ -175,5 +200,16 @@ public class AddEditBeer extends AppCompatActivity {
         };
 
         queue.add(request_DelBeer);
+    }
+
+    @Override
+    public void myColor(int color) {
+        beerColor = color;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            btnColor.setBackgroundTintList(ColorStateList.valueOf(color));
+        }else {
+            btnColor.setBackgroundColor(color);
+        }
+
     }
 }

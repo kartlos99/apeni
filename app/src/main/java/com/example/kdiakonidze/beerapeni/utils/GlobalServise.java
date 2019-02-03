@@ -106,6 +106,7 @@ public class GlobalServise {
                             newBeer.setId(response.getJSONObject(i).getInt("id"));
                             newBeer.setDasaxeleba(response.getJSONObject(i).getString("dasaxeleba"));
                             newBeer.setFasi(response.getJSONObject(i).getDouble("fasi"));
+                            newBeer.setDisplayColor(response.getJSONObject(i).getString("color"));
 
                             Constantebi.ludiList.add(newBeer);
 

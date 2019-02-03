@@ -1,6 +1,9 @@
 package com.example.kdiakonidze.beerapeni.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +64,12 @@ public class BeerListAdapter extends BaseAdapter {
         BeerModel beerModel = (BeerModel) getItem(i);
         viewHolder.t_beerName.setText(beerModel.getDasaxeleba());
         viewHolder.t_beerPr.setText(String.valueOf(beerModel.getFasi()));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            listRowView.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(beerModel.getDisplayColor())));
+        }else {
+            listRowView.setBackgroundColor(Color.parseColor(beerModel.getDisplayColor()));
+        }
 
         return listRowView;
     }

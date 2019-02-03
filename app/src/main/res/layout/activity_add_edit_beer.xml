@@ -55,17 +55,27 @@
         android:id="@+id/e_beer_pr"
         app:layout_constraintTop_toBottomOf="@+id/e_beer_name"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_beer_done"
+        app:layout_constraintEnd_toStartOf="@id/btn_color"
+        android:layout_marginEnd="6dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="0dp">
         <EditText
             android:hint="@string/saorient_fasi"
-            android:inputType="numberSigned"
+            android:inputType="numberDecimal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </android.support.design.widget.TextInputLayout>
+
+    <ImageButton
+        android:id="@+id/btn_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp"
+        android:background="@mipmap/ic_order_chek"
+        app:layout_constraintEnd_toStartOf="@id/btn_beer_done"
+        app:layout_constraintTop_toBottomOf="@+id/e_beer_name" />
 
     <ListView
         android:id="@+id/listview_beer"
