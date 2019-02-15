@@ -1,6 +1,5 @@
 package com.example.kdiakonidze.beerapeni;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -20,7 +19,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -36,12 +34,9 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button btn_shekvetebi, btn_mitana, btn_dayRealiz, btn_objRealiz;
-    private ProgressDialog progressDialog;
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
-    private Toolbar toolbar;
     public static int requestCount = 0;
 
     @Override
@@ -51,14 +46,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Constantebi.screenDefOrientation = getRequestedOrientation();
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawerLayout);
-        navigationView = (NavigationView) findViewById(R.id.navig_view);
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.navig_view);
+        Toolbar toolbar = findViewById(R.id.tool_bar);
 
-        btn_shekvetebi = (Button) findViewById(R.id.btn_shekvetebi);
-        btn_mitana = (Button) findViewById(R.id.btn_mitana);
-        btn_dayRealiz = (Button) findViewById(R.id.btn_realiz_dge);
-        btn_objRealiz = (Button) findViewById(R.id.btn_realiz_obj);
+        Button btn_shekvetebi = findViewById(R.id.btn_shekvetebi);
+        Button btn_mitana = findViewById(R.id.btn_mitana);
+        Button btn_dayRealiz = findViewById(R.id.btn_realiz_dge);
+        Button btn_objRealiz = findViewById(R.id.btn_realiz_obj);
 
         btn_shekvetebi.setOnClickListener(MainActivity.this);
         btn_mitana.setOnClickListener(MainActivity.this);
@@ -72,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_dayRealiz.setTypeface(typeface);
 
         Typeface typeface_title = Typeface.createFromAsset(getAssets(),"fonts/alk-life-webfont.ttf");
-        TextView textView = (TextView) findViewById(R.id.textView);
+        TextView textView = findViewById(R.id.textView);
         textView.setTypeface(typeface_title);
 
         setSupportActionBar(toolbar);
@@ -83,17 +78,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                TextView t_name = (TextView) findViewById(R.id.t_nav_name);
-                TextView t_username = (TextView) findViewById(R.id.t_nav_username);
+                TextView t_name = findViewById(R.id.t_nav_name);
+                TextView t_username = findViewById(R.id.t_nav_username);
 
                 t_name.setText(Constantebi.USER_NAME);
                 if (Constantebi.USER_TYPE.equals("2")) {
-                    t_username.setText(Constantebi.USER_USERNAME + " (admin)");
+                    t_username.setText(String.format("%s (admin)", Constantebi.USER_USERNAME));
                     navigationView.getMenu().getItem(1).setEnabled(true);
                     navigationView.getMenu().getItem(3).setEnabled(true);
                     navigationView.getMenu().getItem(4).setEnabled(true);
                 } else {
-                    t_username.setText(Constantebi.USER_USERNAME + " (user)");
+                    t_username.setText(String.format("%s (user)", Constantebi.USER_USERNAME));
                     navigationView.getMenu().getItem(1).setEnabled(false);
                     navigationView.getMenu().getItem(3).setEnabled(false);
                     navigationView.getMenu().getItem(4).setEnabled(false);
@@ -152,7 +147,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Constantebi.loged_in = false;
                         File file = new File(getFilesDir(), Constantebi.USER_FILENAME);
                         if (file.exists()) {
-                            file.delete();
+                            if (!file.delete()){
+                                Toast.makeText(getApplicationContext(), R.string.msg_cantDelUserFile, Toast.LENGTH_SHORT).show();
+                            }
                         }
                         Intent loginpage = new Intent(getApplicationContext(), LoginActivity.class);
 //                        loginpage.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
@@ -203,9 +200,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View view) {
 
-                EditText eOldPass = (EditText) chPassView.findViewById(R.id.e_old_pass);
-                EditText eNewPass = (EditText) chPassView.findViewById(R.id.e_new_pass);
-                EditText eNewPass2 = (EditText) chPassView.findViewById(R.id.e_new_pass2);
+                EditText eOldPass = chPassView.findViewById(R.id.e_old_pass);
+                EditText eNewPass = chPassView.findViewById(R.id.e_new_pass);
+                EditText eNewPass2 = chPassView.findViewById(R.id.e_new_pass2);
                 if (eOldPass.getText().toString().equals(Constantebi.USER_PASS)) {
                     if (eNewPass.getText().toString().length() >= 3) {
                         if (eNewPass.getText().toString().equals(eNewPass2.getText().toString())) {
@@ -242,12 +239,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("user_id", Constantebi.USER_ID);
                 params.put("new_pass", newPass);
-
-                params.toString();
                 return params;
             }
         };

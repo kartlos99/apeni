@@ -1,5 +1,6 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AlertDialog;
@@ -17,7 +18,6 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -55,15 +55,15 @@ public class SysClearActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sys_clear);
 
-        btn_chawera = (Button) findViewById(R.id.btn_add_sysclean);
-        btn_sysclear_add = (Button) findViewById(R.id.btn_sysclear);
-        sp_sysclean = (Spinner) findViewById(R.id.spinner_sysclean);
-        list_sysclean = (ListView) findViewById(R.id.list_sys_clean);
-        e_comment = (EditText) findViewById(R.id.e_cleaning_comment);
+        btn_chawera = findViewById(R.id.btn_add_sysclean);
+        btn_sysclear_add = findViewById(R.id.btn_sysclear);
+        sp_sysclean = findViewById(R.id.spinner_sysclean);
+        list_sysclean = findViewById(R.id.list_sys_clean);
+        e_comment = findViewById(R.id.e_cleaning_comment);
         registerForContextMenu(list_sysclean);
         screenDefOrientation = getRequestedOrientation();
 
-        final SpinnerAdapter spAdapter = new ArrayAdapter<Obieqti>(this, android.R.layout.simple_list_item_1, Constantebi.OBIEQTEBI);
+        final SpinnerAdapter spAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Constantebi.OBIEQTEBI);
         sp_sysclean.setAdapter(spAdapter);
 
         get_sysCleanData();
@@ -73,7 +73,9 @@ public class SysClearActivity extends AppCompatActivity {
             public void onClick(View v) {
                 btn_chawera.setEnabled(false);
                 Obieqti obieqti = (Obieqti) spAdapter.getItem(sp_sysclean.getSelectedItemPosition());
-                insertNewCleaningInfo(obieqti.getId(), 0);
+                if (obieqti != null) {
+                    insertNewCleaningInfo(obieqti.getId(), 0);
+                }
             }
         });
 
@@ -148,7 +150,7 @@ public class SysClearActivity extends AppCompatActivity {
                     newClear.setDistr_id(Integer.valueOf(Constantebi.USER_ID));
                     newClear.setDge(0);
                     Calendar calendar = Calendar.getInstance();
-                    SimpleDateFormat mdformat = new SimpleDateFormat("yyyy:MM:dd");
+                    @SuppressLint("SimpleDateFormat") SimpleDateFormat mdformat = new SimpleDateFormat(getString(R.string.patern_date2));
 
                     newClear.setTarigi(mdformat.format(calendar.getTime()));
 
@@ -177,7 +179,7 @@ public class SysClearActivity extends AppCompatActivity {
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
 
                 params.put("id", String.valueOf(sysClId));
@@ -185,7 +187,6 @@ public class SysClearActivity extends AppCompatActivity {
                 params.put("comment", e_comment.getText().toString());
                 params.put("objID", String.valueOf(String.valueOf(objID)));
 
-                params.toString();
                 return params;
             }
         };

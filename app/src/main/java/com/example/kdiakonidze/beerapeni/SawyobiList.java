@@ -15,7 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -42,7 +41,7 @@ public class SawyobiList extends AppCompatActivity {
     private SawyobiDetailAdapter adapter;
 
     private ProgressDialog progressDialog;
-    private Boolean requestInProgres = false, requestNeeded = true;
+//    private Boolean requestInProgres = false, requestNeeded = true;
     private RequestQueue queue;
 
     private String archeuli_tarigi, chek_state;
@@ -67,7 +66,7 @@ public class SawyobiList extends AppCompatActivity {
         sawyobiDetailData = new ArrayList<>();
         queue = Volley.newRequestQueue(this);
 
-        listView = (ListView) findViewById(R.id.list_sawyobi_detaluri);
+        listView = findViewById(R.id.list_sawyobi_detaluri);
 
         archeuli_tarigi = getIntent().getStringExtra("tarigi");
         chek_state = getIntent().getStringExtra("chek");
@@ -79,7 +78,7 @@ public class SawyobiList extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                TextView t_comment = (TextView) view.findViewById(R.id.t_sawylist_row_comment);
+                TextView t_comment = view.findViewById(R.id.t_sawylist_row_comment);
                 SawyobiDetailRow row = (SawyobiDetailRow) adapter.getItem(i);
                 if (!row.getComment().isEmpty()) {
                     if (t_comment.getVisibility() == View.VISIBLE) {
@@ -160,7 +159,7 @@ public class SawyobiList extends AppCompatActivity {
                 progressDialog.dismiss();
             }
         }
-        requestInProgres = false;
+//        requestInProgres = false;
         chamosatvirtia = false;
         setRequestedOrientation(Constantebi.screenDefOrientation);
     }
@@ -256,11 +255,10 @@ public class SawyobiList extends AppCompatActivity {
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("id", id);
                 params.put("table", table);
-                params.toString();
                 return params;
             }
         };

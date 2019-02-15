@@ -1,18 +1,12 @@
 package com.example.kdiakonidze.beerapeni.fragments;
 
-import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.icu.text.SimpleDateFormat;
-import android.icu.util.Calendar;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.ContextMenu;
@@ -25,7 +19,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -39,30 +32,29 @@ import com.example.kdiakonidze.beerapeni.R;
 import com.example.kdiakonidze.beerapeni.adapters.AmonaweriAdapter;
 import com.example.kdiakonidze.beerapeni.models.Amonaweri;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
-import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by k.diakonidze on 11/15/2017.
  */
 
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class AmonaweriPageFr extends Fragment {
 
-    private View pageview;
     private TextView t_tarigi, t_in, t_out, t_balance;
     private ListView amonaweriList;
     private ProgressDialog progressDialog;
-    private Calendar calendar;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat dateFormat;
     private ArrayList<Amonaweri> amonaweriArrayList;
     private String gasagzavni_tarigi;
     private int location = -1, id = -1;
@@ -72,12 +64,12 @@ public class AmonaweriPageFr extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        pageview = inflater.inflate(R.layout.amonaweri_page_view, container, false);
-        t_balance = (TextView) pageview.findViewById(R.id.t_amon_title_balance);
-        t_in = (TextView) pageview.findViewById(R.id.t_amon_title_in);
-        t_out = (TextView) pageview.findViewById(R.id.t_amon_title_out);
-        t_tarigi = (TextView) pageview.findViewById(R.id.t_amon_title_tarigi);
-        amonaweriList = (ListView) pageview.findViewById(R.id.listview_amonaweri);
+        View pageview = inflater.inflate(R.layout.amonaweri_page_view, container, false);
+        t_balance = pageview.findViewById(R.id.t_amon_title_balance);
+        t_in = pageview.findViewById(R.id.t_amon_title_in);
+        t_out = pageview.findViewById(R.id.t_amon_title_out);
+        t_tarigi = pageview.findViewById(R.id.t_amon_title_tarigi);
+        amonaweriList = pageview.findViewById(R.id.listview_amonaweri);
         registerForContextMenu(amonaweriList);
         return pageview;
     }
@@ -91,12 +83,14 @@ public class AmonaweriPageFr extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        dateFormat = new java.text.SimpleDateFormat(getString(R.string.patern_date));
 
         amonaweriArrayList = new ArrayList<>();
-        calendar = Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, 24 + 4); // anu es dge rom bolomde chaitvalos
 
         location = getArguments().getInt("location"); // romel gverdze vart
@@ -105,7 +99,15 @@ public class AmonaweriPageFr extends Fragment {
         if (savedInstanceState != null) {
             gasagzavni_tarigi = savedInstanceState.getString("tarigi");
             amonaweriArrayList.clear();
-            amonaweriArrayList = (ArrayList<Amonaweri>) savedInstanceState.getSerializable("amonaweri");
+            Object listObj = savedInstanceState.getSerializable("amonaweri");
+            if (listObj instanceof List) {
+                for (int i = 0; i < ((List) listObj).size(); i++) {
+                    Object item = ((List) listObj).get(i);
+                    if (item instanceof Amonaweri) {
+                        amonaweriArrayList.add((Amonaweri) item);
+                    }
+                }
+            }
             if (AmonaweriActivity.grouped) {
                 amonaweriAdapter = new AmonaweriAdapter(getContext(), groupAmonaweri(amonaweriArrayList), location, true);
             } else {
@@ -135,7 +137,7 @@ public class AmonaweriPageFr extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (!AmonaweriActivity.grouped) {
-                    TextView t_comment = (TextView) view.findViewById(R.id.t_amonaweri_row_comment);
+                    TextView t_comment = view.findViewById(R.id.t_amonaweri_row_comment);
                     Amonaweri amonaweri = (Amonaweri) amonaweriAdapter.getItem(i);
                     if (!amonaweri.getComment().isEmpty()) {
                         if (t_comment.getVisibility() == View.VISIBLE) {
@@ -309,12 +311,11 @@ public class AmonaweriPageFr extends Fragment {
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("id", String.valueOf(id));
                 params.put("table", table);
                 params.put("userid", Constantebi.USER_ID);
-                params.toString();
                 return params;
             }
         };
@@ -337,7 +338,7 @@ public class AmonaweriPageFr extends Fragment {
         gasagzavni_tarigi = tarigi;
         progressDialog = ProgressDialog.show(getContext(), "იტვირთება!", "დაელოდეთ!");
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = "";
+        String url;
         if (location == 0) {
             url = Constantebi.URL_GET_AMONAWERI + "?tarigi=" + tarigi + "&objID=" + objID;
         } else {
@@ -418,13 +419,10 @@ public class AmonaweriPageFr extends Fragment {
 
             Double pr = 0.0;
             Double pay = 0.0;
-            Double bal = 0.0;
+            Double bal = rowList.get(0).getBalance();
             int k_in = 0;
             int k_out = 0;
-            int k_bal = 0;
-
-            bal = rowList.get(0).getBalance();
-            k_bal = rowList.get(0).getK_balance();
+            int k_bal = rowList.get(0).getK_balance();
 
             for (int i = 0; i < rowList.size(); i++) {
                 try {

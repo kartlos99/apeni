@@ -8,7 +8,7 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <include
             android:id="@+id/tool_bar"
@@ -33,7 +33,10 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/dasaxeleba" />
+                android:hint="@string/dasaxeleba"
+                android:autofillHints="@string/dasaxeleba"
+                tools:ignore="UnusedAttribute"
+                android:inputType="text" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -53,7 +56,10 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/sk" />
+                android:hint="@string/sk"
+                android:autofillHints="@string/sk"
+                tools:ignore="UnusedAttribute"
+                android:inputType="text" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -72,7 +78,10 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/sak_piri" />
+                android:hint="@string/sak_piri"
+                android:autofillHints="@string/sak_piri"
+                tools:ignore="UnusedAttribute"
+                android:inputType="text" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -89,7 +98,10 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/adress" />
+                android:hint="@string/adress"
+                android:autofillHints="@string/adress"
+                tools:ignore="UnusedAttribute"
+                android:inputType="text" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -107,7 +119,9 @@
                 android:inputType="phone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/tel" />
+                android:hint="@string/tel"
+                android:autofillHints="@string/tel"
+                tools:ignore="UnusedAttribute" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -125,7 +139,10 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/comment" />
+                android:hint="@string/comment"
+                android:inputType="text"
+                android:autofillHints="@string/comment"
+                tools:ignore="UnusedAttribute" />
 
         </android.support.design.widget.TextInputLayout>
 

@@ -14,7 +14,6 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -31,9 +30,9 @@ import java.util.Map;
 public class AddEditUser extends AppCompatActivity {
 
     private String reason;
-    private Toolbar toolbar;
+
     private Button btn_done;
-    private TextInputLayout e_username, e_name, e_pass, e_adress, e_tel, e_comment;
+    private EditText e_username, e_name, e_pass, e_adress, e_tel, e_comment;
     private EditText e_pass_conf;
     private CheckBox ch_Box_admin, ch_Box_passchange;
 
@@ -45,31 +44,31 @@ public class AddEditUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_user);
 
-        toolbar = (Toolbar) findViewById(R.id.tool_bar_userpage);
-        e_username = (TextInputLayout) findViewById(R.id.e_user_username);
-        e_name = (TextInputLayout) findViewById(R.id.e_user_name);
-        e_adress = (TextInputLayout) findViewById(R.id.e_user_adress);
-        e_tel = (TextInputLayout) findViewById(R.id.e_user_tel);
-        e_comment = (TextInputLayout) findViewById(R.id.e_user_comment);
-        e_pass = (TextInputLayout) findViewById(R.id.e_user_pass);
-        e_pass_conf = (EditText) findViewById(R.id.e_user_pass_conf);
+        Toolbar toolbar = findViewById(R.id.tool_bar_userpage);
+        e_username = ((TextInputLayout) findViewById(R.id.e_user_username)).getEditText();
+        e_name = ((TextInputLayout) findViewById(R.id.e_user_name)).getEditText();
+        e_adress = ((TextInputLayout) findViewById(R.id.e_user_adress)).getEditText();
+        e_tel = ((TextInputLayout) findViewById(R.id.e_user_tel)).getEditText();
+        e_comment = ((TextInputLayout) findViewById(R.id.e_user_comment)).getEditText();
+        e_pass = ((TextInputLayout) findViewById(R.id.e_user_pass)).getEditText();
+        e_pass_conf = findViewById(R.id.e_user_pass_conf);
 
-        btn_done = (Button) findViewById(R.id.btn_user_reg);
-        ch_Box_admin = (CheckBox) findViewById(R.id.checkBox_user_admin);
-        ch_Box_passchange = (CheckBox) findViewById(R.id.checkbox_user_chpass);
+        btn_done = findViewById(R.id.btn_user_reg);
+        ch_Box_admin = findViewById(R.id.checkBox_user_admin);
+        ch_Box_passchange = findViewById(R.id.checkbox_user_chpass);
 
         reason = getIntent().getStringExtra(Constantebi.REASON);
 
         if (reason.equals(Constantebi.EDIT)) {
             editedUser = (Useri) getIntent().getSerializableExtra("user");
             if (editedUser != null) {
-                e_username.getEditText().setText(editedUser.getUsername());
-                e_name.getEditText().setText(editedUser.getName());
-                e_pass.getEditText().setText(editedUser.getPass());
+                e_username.setText(editedUser.getUsername());
+                e_name.setText(editedUser.getName());
+                e_pass.setText(editedUser.getPass());
                 e_pass_conf.setText(editedUser.getPass());
-                e_adress.getEditText().setText(editedUser.getAdress());
-                e_tel.getEditText().setText(editedUser.getTel());
-                e_comment.getEditText().setText(editedUser.getComment());
+                e_adress.setText(editedUser.getAdress());
+                e_tel.setText(editedUser.getTel());
+                e_comment.setText(editedUser.getComment());
                 if (editedUser.getType() == 2) {
                     ch_Box_admin.setChecked(true);
                 } else {
@@ -124,35 +123,35 @@ public class AddEditUser extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_del_user) {
-            delRecord(editedUser.getId(), "users");
+            delRecord(editedUser.getId());
         }
 
         return super.onOptionsItemSelected(item);
     }
 
     private Boolean checkCondition() {
-        if (e_username.getEditText().getText().length() < 3) {
+        if (e_username.getText().length() < 3) {
             e_username.setError("min 3 symbol");
             return false;
         } else {
             e_username.setError("");
         }
 
-        if (e_name.getEditText().getText().length() < 3) {
+        if (e_name.getText().length() < 3) {
             e_name.setError("min 3 symbol");
             return false;
         } else {
             e_name.setError("");
         }
 
-        if ((reason.equals(Constantebi.CREATE_USER) || (reason.equals(Constantebi.EDIT) && ch_Box_passchange.isChecked())) && (e_pass.getEditText().getText().length() < 3)) {
+        if ((reason.equals(Constantebi.CREATE_USER) || (reason.equals(Constantebi.EDIT) && ch_Box_passchange.isChecked())) && (e_pass.getText().length() < 3)) {
             e_pass.setError("min 3 symbol");
             return false;
         } else {
             e_pass.setError("");
         }
 
-        if ((reason.equals(Constantebi.CREATE_USER) || (reason.equals(Constantebi.EDIT) && ch_Box_passchange.isChecked())) && !e_pass.getEditText().getText().toString().equals(e_pass_conf.getText().toString())) {
+        if ((reason.equals(Constantebi.CREATE_USER) || (reason.equals(Constantebi.EDIT) && ch_Box_passchange.isChecked())) && !e_pass.getText().toString().equals(e_pass_conf.getText().toString())) {
             e_pass.setError("not confirmed!");
             return false;
         } else {
@@ -185,7 +184,7 @@ public class AddEditUser extends AppCompatActivity {
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
 
                 if (moqmedeba.equals(Constantebi.EDIT)) {
@@ -194,16 +193,15 @@ public class AddEditUser extends AppCompatActivity {
                 }
                 params.put("moqmedeba", moqmedeba);
 
-                params.put("username", e_username.getEditText().getText().toString());
-                params.put("name", e_name.getEditText().getText().toString());
-                params.put("adress", e_adress.getEditText().getText().toString());
-                params.put("tel", e_tel.getEditText().getText().toString());
-                params.put("comment", e_comment.getEditText().getText().toString());
-                params.put("pass", e_pass.getEditText().getText().toString());
+                params.put("username", e_username.getText().toString());
+                params.put("name", e_name.getText().toString());
+                params.put("adress", e_adress.getText().toString());
+                params.put("tel", e_tel.getText().toString());
+                params.put("comment", e_comment.getText().toString());
+                params.put("pass", e_pass.getText().toString());
                 params.put("type", userType);
                 params.put("maker", Constantebi.USER_ID);
 
-                params.toString();
                 return params;
             }
         };
@@ -211,7 +209,7 @@ public class AddEditUser extends AppCompatActivity {
         queue.add(request);
     }
 
-    private void delRecord(final int id, final String table) {
+    private void delRecord(final int id) {
         RequestQueue queue = Volley.newRequestQueue(this);
 
         StringRequest request_DelOrder = new StringRequest(Request.Method.POST, Constantebi.URL_DEL_RECORD, new Response.Listener<String>() {
@@ -237,11 +235,10 @@ public class AddEditUser extends AppCompatActivity {
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("id", String.valueOf(id));
-                params.put("table", table);
-                params.toString();
+                params.put("table", "users");
                 return params;
             }
         };

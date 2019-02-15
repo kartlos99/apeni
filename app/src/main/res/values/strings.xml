@@ -63,7 +63,7 @@
     <string name="drois_archeva">თარიღის შეცვლა</string>
     <string name="zveli_paroli">ძველი პაროლი</string>
     <string name="axali_paroli">ახალი პაროლი</string>
-    <string name="curr_version">v 1.02</string>
+    <string name="curr_version">v 1.05</string>
     <string name="back">უკან</string>
     <string name="forward">წინ</string>
     <string name="sachuqari">საჩუქარი</string>
@@ -79,4 +79,19 @@
     <string name="_30_n30">30\n30</string>
     <string name="ganmarteba1">* (+ x ) ობიექტებზე დატოვებული კასრები</string>
     <string name="choose_color">ფერის არჩევა</string>
+    <string name="patern_datetime">yyyy-MM-dd HH:mm</string>
+    <string name="patern_date">yyyy-MM-dd</string>
+    <string name="patern_date2">yyyy:MM:dd</string>
+    <string name="davalianeba">დავალიანება</string>
+    <string name="kasri">კასრი</string>
+    <string name="price">ღირებულება</string>
+    <string name="taken">აღებული</string>
+    <string name="msg_noUserFile">can\'t find users file</string>
+    <string name="msg_cantDelUserFile">can\'t delete users file</string>
+    <string name="msg_enterKasrQuantity">შეავსეთ კასრების რაოდენობა</string>
+    <string name="msg_orderAlreadyExist">ამ ობიექტზე უკვე არსებობს შეკვეთა! გთხოვთ განაახლოთ არსებული შეკვეთა</string>
+    <string name="beerColor">ფერი</string>
+    <string name="list">სია</string>
+    <string name="logo">ლოგო</string>
+    <string name="litri">ლიტრი</string>
 </resources>

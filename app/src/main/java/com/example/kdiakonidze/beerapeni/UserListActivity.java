@@ -24,7 +24,7 @@ public class UserListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
 
-        userslistView = (ListView) findViewById(R.id.listview_users);
+        userslistView = findViewById(R.id.listview_users);
 
         userListAdapter = new UserListAdapter(this, Constantebi.USERsLIST);
         userslistView.setAdapter(userListAdapter);

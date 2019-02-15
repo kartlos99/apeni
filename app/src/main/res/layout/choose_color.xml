@@ -8,7 +8,7 @@
         android:id="@+id/img_show_color"
         android:layout_width="match_parent"
         android:background="#3ac"
-
+        android:contentDescription="@string/choose_color"
         android:layout_height="200dp" />
 
     <SeekBar

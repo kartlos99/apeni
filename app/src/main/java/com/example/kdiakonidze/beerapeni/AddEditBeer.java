@@ -1,26 +1,22 @@
 package com.example.kdiakonidze.beerapeni;
 
-import android.app.Dialog;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.nfc.Tag;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -40,26 +36,26 @@ public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.
 
     private TextView tTitle;
     private Button btn_beerDone, btn_uaryofa;
-    private TextInputLayout eBeerName, eBeerPr;
-    private ListView listViewBeer;
+    private EditText eBeerName, eBeerPr;
     private ImageButton btnColor;
 
     private BeerListAdapter beerListAdapter;
-    private String moqmedeba = "0";
     private int beerID = 0;
-    private int beerColor = Color.rgb(128, 128 ,128);
+    private int beerColor = Color.rgb(128, 128, 128);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_edit_beer);
 
-        tTitle = (TextView) findViewById(R.id.t_addedit_beer);
-        btn_beerDone = (Button) findViewById(R.id.btn_beer_done);
-        btn_uaryofa = (Button) findViewById(R.id.btn_beer_uaryofa);
-        eBeerName = (TextInputLayout) findViewById(R.id.e_beer_name);
-        eBeerPr = (TextInputLayout) findViewById(R.id.e_beer_pr);
-        listViewBeer = (ListView) findViewById(R.id.listview_beer);
+        tTitle = findViewById(R.id.t_addedit_beer);
+        btn_beerDone = findViewById(R.id.btn_beer_done);
+        btn_uaryofa = findViewById(R.id.btn_beer_uaryofa);
+        TextInputLayout tiBeerName = findViewById(R.id.e_beer_name);
+        TextInputLayout tiBeerPr = findViewById(R.id.e_beer_pr);
+        eBeerName = tiBeerName.getEditText();
+        eBeerPr = tiBeerPr.getEditText();
+        ListView listViewBeer = findViewById(R.id.listview_beer);
         btnColor = findViewById(R.id.btn_color);
 
         beerListAdapter = new BeerListAdapter(this, Constantebi.ludiList);
@@ -69,8 +65,8 @@ public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.
             @Override
             public void onClick(View view) {
                 beerID = 0;
-                eBeerName.getEditText().setText("");
-                eBeerPr.getEditText().setText("");
+                eBeerName.setText("");
+                eBeerPr.setText("");
                 btn_beerDone.setText("+");
                 tTitle.setText("ახალი ლუდის დამატება");
                 btn_uaryofa.setVisibility(View.INVISIBLE);
@@ -80,7 +76,7 @@ public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.
         btn_beerDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendDataToDB(beerID, eBeerName.getEditText().getText().toString(), eBeerPr.getEditText().getText().toString());
+                sendDataToDB(beerID, eBeerName.getText().toString(), eBeerPr.getText().toString());
             }
         });
 
@@ -103,8 +99,8 @@ public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.
         StringRequest request = new StringRequest(Request.Method.POST, Constantebi.URL_INS_BEER, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Toast.makeText(getApplicationContext(), response+" +", Toast.LENGTH_SHORT).show();
-                if (response.equals("ჩაწერილია!") || response.equals("განახლებულია!")){
+                Toast.makeText(getApplicationContext(), response + " +", Toast.LENGTH_SHORT).show();
+                if (response.equals("ჩაწერილია!") || response.equals("განახლებულია!")) {
                     GlobalServise globalServise = new GlobalServise(getApplicationContext());
                     globalServise.get_Prises();
                     globalServise.get_BeerList();
@@ -120,7 +116,7 @@ public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
 
                 params.put("dasaxeleba", dasaxeleba);
@@ -128,7 +124,6 @@ public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.
                 params.put("beerId", String.valueOf(beerID));
                 params.put("color", String.format("#%02X%02X%02X", Color.red(beerColor), Color.green(beerColor), Color.blue(beerColor)));
 
-                params.toString();
                 return params;
             }
         };
@@ -151,8 +146,8 @@ public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.
         switch (item.getItemId()) {
 
             case R.id.cm_order_edit:
-                eBeerName.getEditText().setText(beer.getDasaxeleba());
-                eBeerPr.getEditText().setText(String.valueOf(beer.getFasi()));
+                eBeerName.setText(beer.getDasaxeleba());
+                eBeerPr.setText(String.valueOf(beer.getFasi()));
                 beerID = beer.getId();
                 btn_beerDone.setText("რედაქტირება");
                 tTitle.setText("რედაქტირება");
@@ -191,10 +186,9 @@ public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("beerId", String.valueOf(beerId));
-                params.toString();
                 return params;
             }
         };
@@ -207,9 +201,8 @@ public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.
         beerColor = color;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             btnColor.setBackgroundTintList(ColorStateList.valueOf(color));
-        }else {
+        } else {
             btnColor.setBackgroundColor(color);
         }
-
     }
 }

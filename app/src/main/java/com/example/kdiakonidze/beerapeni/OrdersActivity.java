@@ -1,32 +1,28 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.icu.text.SimpleDateFormat;
+import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -35,7 +31,6 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.adapters.ExpShekvetebiAdapter;
-import com.example.kdiakonidze.beerapeni.adapters.ShekvetebiAdapter;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.ShekvetebiGR;
 import com.example.kdiakonidze.beerapeni.models.ShekvetebiSum;
@@ -45,12 +40,14 @@ import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
+
 public class OrdersActivity extends AppCompatActivity implements GlobalServise.vListener {
 
     Button btn_setDate, btn_addOrder;
@@ -64,8 +61,8 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
     ExpShekvetebiAdapter shekvetebiAdapter;
     Calendar calendar;
     String archeuli_dge;
-    public static Boolean chamosatvirtia = false;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    static Boolean chamosatvirtia = false;
+    SimpleDateFormat dateFormat;
     private int screenDefOrientation;
 
     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
@@ -74,7 +71,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
             calendar.set(year, month, day);
             calendar.add(Calendar.HOUR, 4);
             archeuli_dge = dateFormat.format(calendar.getTime());
-            btn_setDate.setText("თარიღი: " + archeuli_dge + " ");
+            btn_setDate.setText(String.format("თარიღი: %s ", archeuli_dge));
             shekvetebis_chamotvirtva(archeuli_dge);
         }
     };
@@ -86,17 +83,18 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
         super.onSaveInstanceState(outState);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @SuppressLint("SimpleDateFormat")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders);
+        dateFormat = new SimpleDateFormat(getString(R.string.patern_date));
 
-        chBox_orderGroup = (CheckBox) findViewById(R.id.checkbox_order_group);
-        listView_shekvetebi = (ExpandableListView) findViewById(R.id.list_shekvetebi);
-        t_Tarigi = (TextView) findViewById(R.id.t_tarigi);
-        btn_setDate = (Button) findViewById(R.id.btn_setdate);
-        btn_addOrder = (Button) findViewById(R.id.btn_addOrder);
+        chBox_orderGroup = findViewById(R.id.checkbox_order_group);
+        listView_shekvetebi = findViewById(R.id.list_shekvetebi);
+        t_Tarigi = findViewById(R.id.t_tarigi);
+        btn_setDate = findViewById(R.id.btn_setdate);
+        btn_addOrder = findViewById(R.id.btn_addOrder);
 
         shekvetebiArrayList = new ArrayList<>();
         shekvetebiArrayListGR = new ArrayList<>();
@@ -108,19 +106,27 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
         if (savedInstanceState != null) {
             archeuli_dge = savedInstanceState.getString("tarigi");
             shekvetebiArrayList.clear();
-            shekvetebiArrayList = (ArrayList<Shekvetebi>) savedInstanceState.getSerializable("order_list");
-            if (chBox_orderGroup.isChecked()) {
-                shekvetebiAdapter = new ExpShekvetebiAdapter(getApplicationContext(), expandOrders(groupOrders(shekvetebiArrayList)), true);
-            } else {
-                shekvetebiAdapter = new ExpShekvetebiAdapter(getApplicationContext(), expandOrders(shekvetebiArrayList), false);
+            Object ordListObj = savedInstanceState.getSerializable("order_list");
+            if (ordListObj instanceof List) {
+                for (int i = 0; i < ((List) ordListObj).size(); i++) {
+                    Object item = ((List) ordListObj).get(i);
+                    if (item instanceof Shekvetebi) {
+                        shekvetebiArrayList.add((Shekvetebi) item);
+                    }
+                }
             }
+            shekvetebiAdapter = new ExpShekvetebiAdapter(
+                    getApplicationContext(),
+                    (chBox_orderGroup.isChecked() ? expandOrders(groupOrders(shekvetebiArrayList)) : expandOrders(shekvetebiArrayList)),
+                    chBox_orderGroup.isChecked()
+            );
             listView_shekvetebi.setAdapter(shekvetebiAdapter);
         } else {
             archeuli_dge = dateFormat.format(calendar.getTime());
             chamosatvirtia = true;
         }
 
-        btn_setDate.setText("თარიღი: " + archeuli_dge + " ");
+        btn_setDate.setText(String.format("თარიღი: %s ", archeuli_dge));
 
         btn_setDate.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -148,12 +154,8 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
 
         chBox_orderGroup.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
-                    shekvetebiAdapter.reNewData(expandOrders(groupOrders(shekvetebiArrayList)), b);
-                } else {
-                    shekvetebiAdapter.reNewData(expandOrders(shekvetebiArrayList), b);
-                }
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                shekvetebiAdapter.reNewData((checked ? expandOrders(groupOrders(shekvetebiArrayList)) : expandOrders(shekvetebiArrayList)), checked);
             }
         });
 
@@ -164,7 +166,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
                 if (!chBox_orderGroup.isChecked()) {
                     //  Toast.makeText(getApplicationContext(), "მოხსენით დაჯგუფება", Toast.LENGTH_SHORT).show();
-                    TextView t_comment = (TextView) view.findViewById(R.id.t_orderlist_row_comment);
+                    TextView t_comment = view.findViewById(R.id.t_orderlist_row_comment);
                     Shekvetebi shekvetebi = (Shekvetebi) shekvetebiAdapter.getChild(i, i1);
                     if (!shekvetebi.getComment().isEmpty()) {
                         if (t_comment.getVisibility() == View.VISIBLE) {
@@ -181,12 +183,12 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
 
     private ArrayList<Shekvetebi> groupOrders(ArrayList<Shekvetebi> gadmocemuliShekvetebi) {
         ArrayList<Shekvetebi> groupedOrderList = new ArrayList<>();
-        String objName = "", beerName = "", dName = "", beerBeckgroundColor = "#ffffff";
+        String objName = "", beerName = "", dName = "", beerBeckgroundColor = String.format("#%02X%02X%02X", Color.red(Color.WHITE), Color.green(Color.WHITE), Color.blue(Color.WHITE));
         int k30w = 0, k50w = 0, k30in = 0, k50in = 0;
         boolean chek = false;
 
-        ArrayList<Shekvetebi> shekvetebiList = new ArrayList<>();
-        shekvetebiList.addAll(gadmocemuliShekvetebi);
+        ArrayList<Shekvetebi> shekvetebiList = new ArrayList<>(gadmocemuliShekvetebi);
+//        shekvetebiList.addAll(gadmocemuliShekvetebi);
 
         if (shekvetebiList.size() > 0) {
             Shekvetebi shekveta = shekvetebiList.get(0);
@@ -314,17 +316,20 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                 }
                 if (exist) {
                     Intent intent_editOrder;
-                    if ((currOrder.getK30wont() == 0) && (currOrder.getK50wont() == 0)) { // mitana
+                    if ((currOrder.getK30in() > 0) || (currOrder.getK50in() > 0)) { // mitana
                         intent_editOrder = new Intent(getApplicationContext(), AddDeliveryActivity.class);
                         intent_editOrder.putExtra("id", currOrder.getOrder_id());
                         intent_editOrder.putExtra("operacia", Constantebi.MITANA);
                         intent_editOrder.putExtra("tarigi", archeuli_dge);
-                    } else { // shekveta
+                        intent_editOrder.putExtra(Constantebi.REASON, Constantebi.EDIT);
+                        startActivity(intent_editOrder);
+                    }
+                    if ((currOrder.getK30wont() > 0) || (currOrder.getK50wont() > 0)) { // shekveta
                         intent_editOrder = new Intent(getApplicationContext(), AddOrderActivity.class);
                         intent_editOrder.putExtra("obj", currOrder);
+                        intent_editOrder.putExtra(Constantebi.REASON, Constantebi.EDIT);
+                        startActivity(intent_editOrder);
                     }
-                    intent_editOrder.putExtra(Constantebi.REASON, Constantebi.EDIT);
-                    startActivity(intent_editOrder);
                 } else {
                     Toast.makeText(getApplicationContext(), "ჩანაწერს ვერ დაარედაქტირებთ,\nობიექტი '" + currOrder.getObieqti() + "' წაშლილია!", Toast.LENGTH_SHORT).show();
                 }
@@ -336,11 +341,10 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                 builder.setPositiveButton("დიახ", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if ((currOrder.getK30wont() == 0) && (currOrder.getK50wont() == 0)) {
-                            removeRecord(currOrder.getOrder_id(), Constantebi.MITANA);
-                        } else {
+                        if ((currOrder.getK30wont() > 0) || (currOrder.getK50wont() > 0))
                             removeRecord(currOrder.getOrder_id(), Constantebi.ORDER);
-                        }
+                        if ((currOrder.getK30in() > 0) || (currOrder.getK50in() > 0))
+                            removeRecord(currOrder.getOrder_id(), Constantebi.MITANA);
                     }
                 }).setNegativeButton("არა", new DialogInterface.OnClickListener() {
                     @Override
@@ -387,12 +391,11 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
                 params.put("id", String.valueOf(id));
                 params.put("table", table);
                 params.put("userid", Constantebi.USER_ID);
-                params.toString();
                 return params;
             }
         };
@@ -480,7 +483,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
 
         if (shekvetebiArrayList.size() > 0) {
             boolean exists = false;
-            int k30w = 0, k50w = 0, k30 = 0, k50 = 0;
+            int k30w, k50w, k30, k50;
 
             if (chBox_orderGroup.isChecked()) {
 
@@ -504,8 +507,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
 
             } else {
 
-                int order = 0;
-                ArrayList<Shekvetebi> childList = new ArrayList<>();
+                int order;
                 ArrayList<Shekvetebi> mitanebi = new ArrayList<>();
 
                 for (int i = 0; i < shekvetebiArrayList.size(); i++) {

@@ -1,20 +1,16 @@
 package com.example.kdiakonidze.beerapeni;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.icu.text.SimpleDateFormat;
-import android.icu.util.Calendar;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,31 +30,27 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.kdiakonidze.beerapeni.adapters.AmonaweriAdapter;
 import com.example.kdiakonidze.beerapeni.adapters.MyPagesAdapter;
 import com.example.kdiakonidze.beerapeni.fragments.AmonaweriPageFr;
-import com.example.kdiakonidze.beerapeni.models.Amonaweri;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
+//@RequiresApi(api = Build.VERSION_CODES.N)
 public class AmonaweriActivity extends AppCompatActivity {
 
     private Calendar calendar;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private String archeuli_dge, gasagzavni_tarigi, title_0 = "დავალიანება", title_1 = "კასრი";
+    private SimpleDateFormat dateFormat;
+    private String archeuli_dge, title_0 = "დავალიანება", title_1 = "კასრი";
     private Button btn_setDate;
     private Obieqti currObieqti;
     private TextView t_objInfo;
-    private ViewPager viewPager;
     private TabLayout tabLayout;
-    private Toolbar toolbar;
-    private CheckBox chk_gr_amonaweri;
     FragmentManager fragmentManager;
     MyPagesAdapter pagerAdapter;
 
@@ -74,14 +66,14 @@ public class AmonaweriActivity extends AppCompatActivity {
             btn_setDate.setText(archeuli_dge);
 
             calendar.add(Calendar.HOUR, 24);
-            gasagzavni_tarigi = dateFormat.format(calendar.getTime());
+            String gasagzavni_tarigi = dateFormat.format(calendar.getTime());
 
             AmonaweriPageFr fragmentM = (AmonaweriPageFr) pagerAdapter.getFragmentM();
             AmonaweriPageFr fragmentK = (AmonaweriPageFr) pagerAdapter.getFragmentK();
             fragmentM.setNewData(gasagzavni_tarigi, currObieqti.getId());
             fragmentK.setNewData(gasagzavni_tarigi, currObieqti.getId());
 
-            t_objInfo.setText(currObieqti.getDasaxeleba() + "\nთარიღი " + archeuli_dge);
+            t_objInfo.setText(String.format("%s\nთარიღი %s", currObieqti.getDasaxeleba(), archeuli_dge));
         }
     };
 
@@ -93,26 +85,32 @@ public class AmonaweriActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
     }
 
+    @SuppressLint("SimpleDateFormat")
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_amonaweri);
+        dateFormat = new java.text.SimpleDateFormat(getString(R.string.patern_date));
 
-        t_objInfo = (TextView) findViewById(R.id.t_p4_objInfo);
-        btn_setDate = (Button) findViewById(R.id.btn_p4_tarigi);
-        viewPager = (ViewPager) findViewById(R.id.viewpager_amonaweri);
-        tabLayout = (TabLayout) findViewById(R.id.tabs_amonaweri);
-        toolbar = (Toolbar) findViewById(R.id.tool_bar_amonaw);
-        chk_gr_amonaweri = (CheckBox) findViewById(R.id.chk_gr_amonaweri);
+        t_objInfo = findViewById(R.id.t_p4_objInfo);
+        btn_setDate = findViewById(R.id.btn_p4_tarigi);
+        tabLayout = findViewById(R.id.tabs_amonaweri);
+        ViewPager viewPager = findViewById(R.id.viewpager_amonaweri);
+        Toolbar toolbar = findViewById(R.id.tool_bar_amonaw);
+        CheckBox chk_gr_amonaweri = findViewById(R.id.chk_gr_amonaweri);
 
         calendar = Calendar.getInstance();
         calendar.add(Calendar.HOUR, 4);
 
         Intent i = getIntent();
         Bundle importedBundle = i.getExtras();
-        currObieqti = (Obieqti) importedBundle.getSerializable("obieqti");
-        toolbar.setTitle(currObieqti.getDasaxeleba());
+        if (importedBundle != null) {
+            currObieqti = (Obieqti) importedBundle.getSerializable("obieqti");
+            if (currObieqti != null) {
+                toolbar.setTitle(currObieqti.getDasaxeleba());
+            }
+        }
 
         toolbar.inflateMenu(R.menu.nav_menu);
         setSupportActionBar(toolbar);
@@ -127,7 +125,7 @@ public class AmonaweriActivity extends AppCompatActivity {
             grouped = true;
         }
 
-        t_objInfo.setText(currObieqti.getDasaxeleba() + "\nთარიღი " + archeuli_dge);
+        t_objInfo.setText(String.format("%s\nთარიღი %s", currObieqti.getDasaxeleba(), archeuli_dge));
 
         btn_setDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,8 +143,15 @@ public class AmonaweriActivity extends AppCompatActivity {
         viewPager.setAdapter(pagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout.getTabAt(0).setText(title_0);
-        tabLayout.getTabAt(1).setText(title_1);
+        setTabsTitle(title_0, title_1);
+//        TabLayout.Tab tab0 = tabLayout.getTabAt(0);
+//        TabLayout.Tab tab1 = tabLayout.getTabAt(1);
+//        if (tab0 != null && tab1 != null) {
+//            tab0.setText(title_0);
+//            tab1.setText(title_1);
+//            tabLayout.getTabAt(0).setText(title_0);
+//            tabLayout.getTabAt(1).setText(title_1);
+//        }
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -241,7 +246,7 @@ public class AmonaweriActivity extends AppCompatActivity {
                 // aq modis davalianebis chamonaTvali yvela obieqtistvis
 
                 if (response.length() > 0) {
-                    Integer davalianebaM = 0, davalianebaK = 0;
+                    Integer davalianebaM, davalianebaK;
 
                     for (int i = 0; i < response.length(); i++) {
                         try {
@@ -253,8 +258,9 @@ public class AmonaweriActivity extends AppCompatActivity {
 
                                 title_0 = "დავალიანება\n" + davalianebaM;
                                 title_1 = "კასრი\n" + davalianebaK;
-                                tabLayout.getTabAt(0).setText(title_0);
-                                tabLayout.getTabAt(1).setText(title_1);
+                                setTabsTitle(title_0, title_1);
+//                                tabLayout.getTabAt(0).setText(title_0);
+//                                tabLayout.getTabAt(1).setText(title_1);
                             }
                         } catch (JSONException excep) {
                             excep.printStackTrace();
@@ -279,6 +285,17 @@ public class AmonaweriActivity extends AppCompatActivity {
 
         requestCount++;
         queue.add(request_davalianeba);
+    }
+
+    private void setTabsTitle(String title_0, String title_1) {
+        TabLayout.Tab tab0 = tabLayout.getTabAt(0);
+        TabLayout.Tab tab1 = tabLayout.getTabAt(1);
+        if (tab0 != null && tab1 != null) {
+            tab0.setText(title_0);
+            tab1.setText(title_1);
+//            tabLayout.getTabAt(0).setText(title_0);
+//            tabLayout.getTabAt(1).setText(title_1);
+        }
     }
 
 }

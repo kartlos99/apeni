@@ -78,14 +78,11 @@
                 android:id="@+id/t_k30"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:text="@string/_30litri"
-                app:layout_constraintHorizontal_chainStyle="spread_inside"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/guideline4"
+                app:layout_constraintEnd_toStartOf="@id/guideline4"
                 android:layout_margin="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintHorizontal_bias="0.51"
                 app:layout_constraintTop_toBottomOf="@+id/btn_beerleft" />
 
             <Button
@@ -111,7 +108,9 @@
                 app:layout_constraintRight_toLeftOf="@+id/btn_k30_inc"
                 app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintTop_toTopOf="@+id/btn_k30_dec"
-                android:layout_marginTop="0dp" />
+                android:layout_marginTop="0dp"
+                android:autofillHints="@string/default_0"
+                tools:ignore="UnusedAttribute" />
 
             <Button
                 android:id="@+id/btn_k30_inc"
@@ -163,7 +162,9 @@
                 app:layout_constraintRight_toLeftOf="@+id/btn_k50_inc"
                 android:layout_marginTop="0dp"
                 android:layout_marginLeft="0dp"
-                android:layout_marginRight="0dp" />
+                android:layout_marginRight="0dp"
+                android:autofillHints="@string/default_0"
+                tools:ignore="UnusedAttribute" />
 
             <Button
                 android:id="@+id/btn_k50_inc"
@@ -263,6 +264,9 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteY="310dp"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:layout_editor_absoluteX="0dp"
+        android:autofillHints="@string/comment"
+        tools:ignore="UnusedAttribute"
+        android:inputType="text" />
 
 </android.support.constraint.ConstraintLayout>

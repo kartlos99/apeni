@@ -27,7 +27,7 @@
     <TextView
         android:id="@+id/t_k30wont_orderlist"
         android:layout_weight="9"
-        android:text="ლიტრი"
+        android:text="@string/litri"
         android:textSize="@dimen/textsize_3"
         android:layout_marginBottom="4dp"
         android:textAlignment="center"

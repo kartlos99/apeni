@@ -7,8 +7,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,7 +16,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,7 +33,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RetryPolicy;
@@ -53,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SawyobiPage extends AppCompatActivity implements View.OnClickListener {
@@ -63,8 +62,8 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
     private String sK30Count = "0", sK50Count = "0", sK30Count_Kout = "0", sK50Count_Kout = "0";
     private Calendar calendar;
     private TextView t_beerType, t_empty30, t_empty50;
-    private CardView cardView_chamotana, cardView_wageba, cardView_nashti_full, cardView_nashti_empty;
-    private TextInputLayout t_comment;
+//    private CardView cardView_chamotana, cardView_wageba, cardView_nashti_full, cardView_nashti_empty;
+    private EditText t_comment;
     private NonScrollListView nonScrollistView;
     private ProgressDialog progressDialog;
     private Boolean requestInProgres = false, requestNeeded = true;
@@ -74,8 +73,8 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
     private ScrollView scrollView_sawy;
 
     String archeuli_tarigi, archeuli_dro;
-    SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat timeFormat;
+    SimpleDateFormat dateFormat;
     private int beerIndex = 0, beerId = 0, int_emptyK30 = 0, int_emptyK50 = 0, k30at_obj = 0, k50at_obj = 0;
     private ArrayList<Totalinout> totalinfo;
     private SawyobiAdapter sawyobiAdapter;
@@ -132,7 +131,7 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("comment", t_comment.getEditText().getText().toString());
+        outState.putString("comment", t_comment.getText().toString());
         outState.putString("tarigi", archeuli_tarigi);
         outState.putString("dro", archeuli_dro);
         outState.putInt("beer", beerIndex);
@@ -157,10 +156,13 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         eK50Count_Kout.setText(sK50Count_Kout);
     }
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sawyobi_page);
+        dateFormat = new SimpleDateFormat(getString(R.string.patern_date));
+        timeFormat = new SimpleDateFormat(getString(R.string.patern_datetime));
 
         initialization();
 
@@ -183,13 +185,22 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         setSupportActionBar(toolbar);
 
         if (savedInstanceState != null) {
-            totalinfo = (ArrayList<Totalinout>) savedInstanceState.getSerializable("data_array");
+//            totalinfo = (ArrayList<Totalinout>) savedInstanceState.getSerializable("data_array");
+            Object listObj = savedInstanceState.getSerializable("data_array");
+            if (listObj instanceof List) {
+                for (int i = 0; i < ((List) listObj).size(); i++) {
+                    Object item = ((List) listObj).get(i);
+                    if (item instanceof Totalinout) {
+                        totalinfo.add((Totalinout) item);
+                    }
+                }
+            }
             sawyobiAdapter = new SawyobiAdapter(getApplicationContext(), totalinfo);
             nonScrollistView.setAdapter(sawyobiAdapter);
             beerIndex = savedInstanceState.getInt("beer");
             t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba());
             beerId = Constantebi.ludiList.get(beerIndex).getId();
-            t_comment.getEditText().setText(savedInstanceState.getString("comment"));
+            t_comment.setText(savedInstanceState.getString("comment"));
             archeuli_tarigi = savedInstanceState.getString("tarigi");
             archeuli_dro = savedInstanceState.getString("dro");
 
@@ -265,7 +276,7 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
             public void onClick(View view) {
                 if (chamotana().equals("1") || wageba().equals("1")) {
                     btn_chawera.setEnabled(false);
-                    sendDataToDB(0, chamotana(), wageba(), chek_cindition());
+                    sendDataToDB(chamotana(), wageba(), chek_cindition());
                 }
             }
         });
@@ -318,36 +329,36 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
     }
 
     private void initialization() {
-        toolbar = (Toolbar) findViewById(R.id.tool_bar);
-        cardView_nashti_full = (CardView) findViewById(R.id.card_nashti_savse);
-        cardView_nashti_empty = (CardView) findViewById(R.id.card_nashti_carieli);
-        cardView_chamotana = (CardView) findViewById(R.id.card_chamotana);
-        cardView_wageba = (CardView) findViewById(R.id.card_wageba);
-        t_beerType = (TextView) cardView_chamotana.findViewById(R.id.t_ludisDasaxeleba);
-        t_comment = (TextInputLayout) findViewById(R.id.t_mitana_comment);
-        btn_chawera = (Button) findViewById(R.id.btn_sawyobi_chawera);
-        btn_changeDate = (Button) findViewById(R.id.btn_change_date);
-        btn_beerleft = (Button) cardView_chamotana.findViewById(R.id.btn_beerleft);
-        btn_beerright = (Button) cardView_chamotana.findViewById(R.id.btn_beerright);
-        btnK30dec = (Button) cardView_chamotana.findViewById(R.id.btn_k30_dec);
-        btnK30inc = (Button) cardView_chamotana.findViewById(R.id.btn_k30_inc);
-        btnK50dec = (Button) cardView_chamotana.findViewById(R.id.btn_k50_dec);
-        btnK50inc = (Button) cardView_chamotana.findViewById(R.id.btn_k50_inc);
-        btnK30dec_Kout = (Button) cardView_wageba.findViewById(R.id.btn_k30_dec);
-        btnK30inc_Kout = (Button) cardView_wageba.findViewById(R.id.btn_k30_inc);
-        btnK50dec_Kout = (Button) cardView_wageba.findViewById(R.id.btn_k50_dec);
-        btnK50inc_Kout = (Button) cardView_wageba.findViewById(R.id.btn_k50_inc);
-        eK30Count = (EditText) cardView_chamotana.findViewById(R.id.edit_K30Count);
-        eK50Count = (EditText) cardView_chamotana.findViewById(R.id.edit_K50Count);
-        eK30Count_Kout = (EditText) cardView_wageba.findViewById(R.id.edit_K30Count);
-        eK50Count_Kout = (EditText) cardView_wageba.findViewById(R.id.edit_K50Count);
-        t_empty30 = (TextView) cardView_nashti_empty.findViewById(R.id.t_empty_k30);
-        t_empty50 = (TextView) cardView_nashti_empty.findViewById(R.id.t_empty_k50);
-        constrCarieliBox = (ConstraintLayout) findViewById(R.id.constr_carieli_box);
-        scrollView_sawy = (ScrollView) findViewById(R.id.scrool_sawyobi);
-        nonScrollistView = (NonScrollListView) cardView_nashti_full.findViewById(R.id.list_forNashtebi);
-        checkSawyobi = (CheckBox) findViewById(R.id.checkBox_sawyobi);
-        btn_emptyK_list = (Button) findViewById(R.id.btn_emptyK_list);
+        toolbar = findViewById(R.id.tool_bar);
+        CardView cardView_nashti_full = findViewById(R.id.card_nashti_savse);
+        CardView cardView_nashti_empty = findViewById(R.id.card_nashti_carieli);
+        CardView cardView_chamotana = findViewById(R.id.card_chamotana);
+        CardView cardView_wageba = findViewById(R.id.card_wageba);
+        t_beerType = cardView_chamotana.findViewById(R.id.t_ludisDasaxeleba);
+        t_comment = ((TextInputLayout) findViewById(R.id.t_mitana_comment)).getEditText();
+        btn_chawera = findViewById(R.id.btn_sawyobi_chawera);
+        btn_changeDate = findViewById(R.id.btn_change_date);
+        btn_beerleft = cardView_chamotana.findViewById(R.id.btn_beerleft);
+        btn_beerright = cardView_chamotana.findViewById(R.id.btn_beerright);
+        btnK30dec = cardView_chamotana.findViewById(R.id.btn_k30_dec);
+        btnK30inc = cardView_chamotana.findViewById(R.id.btn_k30_inc);
+        btnK50dec = cardView_chamotana.findViewById(R.id.btn_k50_dec);
+        btnK50inc = cardView_chamotana.findViewById(R.id.btn_k50_inc);
+        btnK30dec_Kout = cardView_wageba.findViewById(R.id.btn_k30_dec);
+        btnK30inc_Kout = cardView_wageba.findViewById(R.id.btn_k30_inc);
+        btnK50dec_Kout = cardView_wageba.findViewById(R.id.btn_k50_dec);
+        btnK50inc_Kout = cardView_wageba.findViewById(R.id.btn_k50_inc);
+        eK30Count = cardView_chamotana.findViewById(R.id.edit_K30Count);
+        eK50Count = cardView_chamotana.findViewById(R.id.edit_K50Count);
+        eK30Count_Kout = cardView_wageba.findViewById(R.id.edit_K30Count);
+        eK50Count_Kout = cardView_wageba.findViewById(R.id.edit_K50Count);
+        t_empty30 = cardView_nashti_empty.findViewById(R.id.t_empty_k30);
+        t_empty50 = cardView_nashti_empty.findViewById(R.id.t_empty_k50);
+        constrCarieliBox = findViewById(R.id.constr_carieli_box);
+        scrollView_sawy = findViewById(R.id.scrool_sawyobi);
+        nonScrollistView = cardView_nashti_full.findViewById(R.id.list_forNashtebi);
+        checkSawyobi = findViewById(R.id.checkBox_sawyobi);
+        btn_emptyK_list = findViewById(R.id.btn_emptyK_list);
 
         cardView_wageba.findViewById(R.id.btn_beerleft).setVisibility(View.GONE);
         cardView_wageba.findViewById(R.id.btn_beerright).setVisibility(View.GONE);
@@ -401,7 +412,7 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         return String.valueOf(ii);
     }
 
-    private void sendDataToDB(final Integer editId, final String sChamotana, final String sWageba, final String chek) {
+    private void sendDataToDB(final String sChamotana, final String sWageba, final String chek) {
         //RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
 
         // kasrebis chamotana da gagzavna sawyobidan
@@ -421,15 +432,15 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
 
-                params.put("id", editId.toString());
+                params.put("id", "0");
                 params.put("chamotana", sChamotana);
                 params.put("wageba", sWageba);
 
                 params.put("distributor_id", Constantebi.USER_ID);
-                params.put("comment", t_comment.getEditText().getText().toString());
+                params.put("comment", t_comment.getText().toString());
 
                 params.put("beer_type", String.valueOf(String.valueOf(beerId)));
 
@@ -444,7 +455,6 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
                 params.put("set_tarigi", archeuli_dro);
                 params.put("chek", chek);
 
-                params.toString();
                 return params;
             }
         };
@@ -533,8 +543,8 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
     }
 
     private void vizualizacia() {
-        t_empty30.setText("30ლ : " + int_emptyK30 + " (+" + k30at_obj + ")");
-        t_empty50.setText("50ლ : " + int_emptyK50 + " (+" + k50at_obj + ")");
+        t_empty30.setText(String.format("30ლ : %s (+%s)", int_emptyK30, k30at_obj));
+        t_empty50.setText(String.format("50ლ : %s (+%s)", int_emptyK50, k50at_obj));
     }
 
     private void dasasruli() {
@@ -606,7 +616,6 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
                 // aq modis davalianebis chamonaTvali yvela obieqtistvis
 
                 if (response.length() > 0) {
-                    Integer davalianebaM = 0, davalianebaK = 0;
 
                     for (int i = 0; i < response.length(); i++) {
                         try {
@@ -643,6 +652,5 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
 //        requestCount++;
         queue.add(request_davalianeba);
     }
-
 
 }

@@ -20,7 +20,7 @@
 
     <TextView
         android:id="@+id/t_davalianebaM"
-        android:textColor="#f95588"
+        android:textColor="@color/important_info_color"
         android:textAlignment="center"
         android:textStyle="bold"
         android:textSize="@dimen/textsize_3"
@@ -33,7 +33,7 @@
 
     <TextView
         android:id="@+id/t_davalianebaK"
-        android:textColor="#f95588"
+        android:textColor="@color/important_info_color"
         android:textStyle="bold"
         android:textAlignment="center"
         android:textSize="@dimen/textsize_3"
@@ -152,15 +152,11 @@
                         android:id="@+id/t_k30"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:text="@string/_30litri"
                         android:textSize="@dimen/plius_minus_TextSize"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintRight_toLeftOf="@+id/guideline4"
                         android:layout_margin="8dp"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintHorizontal_bias="0.51"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/guideline4"
                         app:layout_constraintTop_toBottomOf="@+id/btn_beerleft" />
 
                     <Button
@@ -180,10 +176,12 @@
                         android:layout_height="wrap_content"
                         android:inputType="number"
                         android:hint="@string/default_0"
+                        android:autofillHints="@string/default_0"
                         android:textAlignment="center"
                         app:layout_constraintLeft_toRightOf="@+id/btn_k30_dec"
                         app:layout_constraintRight_toLeftOf="@+id/btn_k30_inc"
-                        app:layout_constraintTop_toTopOf="@+id/btn_k30_dec" />
+                        app:layout_constraintTop_toTopOf="@+id/btn_k30_dec"
+                        tools:ignore="UnusedAttribute" />
 
                     <Button
                         android:id="@+id/btn_k30_inc"
@@ -203,7 +201,6 @@
                         android:id="@+id/t_k50"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:text="@string/_50litri"
                         android:textSize="@dimen/plius_minus_TextSize"
                         android:layout_margin="8dp"
@@ -230,9 +227,11 @@
                         android:textAlignment="center"
                         android:inputType="number"
                         android:hint="@string/default_0"
+                        android:autofillHints="@string/default_0"
                         app:layout_constraintTop_toTopOf="@+id/btn_k50_dec"
                         app:layout_constraintLeft_toRightOf="@+id/btn_k50_dec"
-                        app:layout_constraintRight_toLeftOf="@+id/btn_k50_inc" />
+                        app:layout_constraintRight_toLeftOf="@+id/btn_k50_inc"
+                        tools:ignore="UnusedAttribute" />
 
                     <Button
                         android:id="@+id/btn_k50_inc"
@@ -297,15 +296,11 @@
                         android:id="@+id/t_k30_KasriOut"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
                         android:text="@string/_30litri"
                         android:textSize="@dimen/plius_minus_TextSize"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintRight_toLeftOf="@+id/guideline_KasriOut"
                         android:layout_margin="8dp"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintHorizontal_bias="0.51"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/guideline_KasriOut"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <Button
@@ -328,7 +323,9 @@
                         android:textAlignment="center"
                         app:layout_constraintLeft_toRightOf="@+id/btn_k30_dec_KasriOut"
                         app:layout_constraintRight_toLeftOf="@+id/btn_k30_inc_KasriOut"
-                        app:layout_constraintTop_toTopOf="@+id/btn_k30_dec_KasriOut" />
+                        app:layout_constraintTop_toTopOf="@+id/btn_k30_dec_KasriOut"
+                        android:autofillHints="@string/default_0"
+                        tools:ignore="UnusedAttribute" />
 
                     <Button
                         android:id="@+id/btn_k30_inc_KasriOut"
@@ -375,9 +372,11 @@
                         android:textAlignment="center"
                         android:inputType="number"
                         android:hint="@string/default_0"
+                        android:autofillHints="@string/default_0"
                         app:layout_constraintTop_toTopOf="@+id/btn_k50_dec_KasriOut"
                         app:layout_constraintLeft_toRightOf="@+id/btn_k50_dec_KasriOut"
-                        app:layout_constraintRight_toLeftOf="@+id/btn_k50_inc_KasriOut" />
+                        app:layout_constraintRight_toLeftOf="@+id/btn_k50_inc_KasriOut"
+                        tools:ignore="UnusedAttribute" />
 
                     <Button
                         android:id="@+id/btn_k50_inc_KasriOut"
@@ -430,22 +429,23 @@
                         android:ems="8"
                         android:inputType="numberDecimal"
                         android:hint="@string/default_0"
+                        android:autofillHints="@string/default_0"
                         android:textAlignment="center"
                         android:layout_marginTop="8dp"
-                        app:layout_constraintTop_toTopOf="parent"
                         android:layout_marginRight="8dp"
-                        app:layout_constraintRight_toRightOf="parent"
                         android:layout_marginLeft="8dp"
-                        app:layout_constraintLeft_toLeftOf="parent"
                         android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp" />
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        tools:ignore="UnusedAttribute" />
 
                     <TextView
                         android:textSize="@dimen/textsize_4"
-                        android:text="₾"
+                        android:text="@string/lari"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/e_TakeMoney"
-
                         android:layout_marginTop="12dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -503,7 +503,10 @@
                 <EditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/comment" />
+                    android:autofillHints="@string/comment"
+                    android:hint="@string/comment"
+                    tools:ignore="UnusedAttribute"
+                    android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
 
             <Button
@@ -520,10 +523,6 @@
 
         </android.support.constraint.ConstraintLayout>
 
-
     </ScrollView>
-
-
-
 
 </android.support.constraint.ConstraintLayout>

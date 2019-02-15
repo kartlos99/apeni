@@ -96,9 +96,9 @@
                 android:id="@+id/btn_emptyK_list"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:text="სია"
+                android:text="@string/list"
                 android:textSize="@dimen/textsize_2"
-                android:height="12px"
+                android:height="12dp"
                 android:background="#00008088"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -230,7 +230,9 @@
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/comment" />
+                android:hint="@string/comment"
+                android:inputType="text"
+                tools:ignore="Autofill" />
         </android.support.design.widget.TextInputLayout>
 
         <Button

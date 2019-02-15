@@ -1,18 +1,14 @@
 package com.example.kdiakonidze.beerapeni;
 
-import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.JsonReader;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -33,7 +29,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -48,10 +43,10 @@ public class LoginActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-        btn_login = (Button) findViewById(R.id.btn_login);
-        e_username = (EditText) findViewById(R.id.e_login_username);
-        e_password = (EditText) findViewById(R.id.e_input_password);
-        chk_remember = (CheckBox) findViewById(R.id.chk_damimaxsovre);
+        btn_login = findViewById(R.id.btn_login);
+        e_username = findViewById(R.id.e_login_username);
+        e_password = findViewById(R.id.e_input_password);
+        chk_remember = findViewById(R.id.chk_damimaxsovre);
 
         File file = new File(getFilesDir(),Constantebi.USER_FILENAME);
         if(file.exists()){
@@ -90,7 +85,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 btn_login.setEnabled(true);
-                String name = "";
 
                 if (response.equals("uaryofa")) {
                     Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
@@ -128,13 +122,10 @@ public class LoginActivity extends AppCompatActivity {
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-
                 params.put("username", username);
                 params.put("password", password);
-
-                params.toString();
                 return params;
             }
         };
@@ -157,7 +148,7 @@ public class LoginActivity extends AppCompatActivity {
 
 //        StringBuilder stringBuilder = new StringBuilder();
 //        String line;
-        BufferedReader reader = null;
+        BufferedReader reader;
         String username = "";
         String pass = "";
 
@@ -170,7 +161,8 @@ public class LoginActivity extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(), line, Toast.LENGTH_SHORT).show();
 //            }
         } catch (FileNotFoundException e) {
-
+            e.printStackTrace();
+            Toast.makeText(getApplicationContext(), R.string.msg_noUserFile, Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         }

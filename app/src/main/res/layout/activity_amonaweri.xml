@@ -16,7 +16,6 @@
         android:id="@+id/t_p4_objInfo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="TextView"
         android:visibility="gone"
         android:textSize="@dimen/textsize_3"
         app:layout_constraintRight_toLeftOf="@+id/btn_p4_tarigi"

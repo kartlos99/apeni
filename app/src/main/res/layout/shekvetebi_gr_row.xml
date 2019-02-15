@@ -9,7 +9,8 @@
     <TextView
         android:id="@+id/t_distrib_name"
         android:layout_margin="6dp"
-        android:paddingLeft="22dp"
+        android:paddingStart="22dp"
+        android:paddingEnd="0dp"
         android:textColor="@color/colorForText"
         android:textSize="@dimen/textsize_3"
         android:layout_width="wrap_content"

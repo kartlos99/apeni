@@ -20,6 +20,7 @@
         android:id="@+id/t_amon_list_in"
         android:textAlignment="textEnd"
         android:paddingEnd="6dp"
+        android:paddingStart="2dp"
         android:background="@color/color_orderCol"
         android:layout_weight="5"
         android:layout_width="0dp"
@@ -29,6 +30,7 @@
         android:id="@+id/t_amon_list_out"
         android:textAlignment="textEnd"
         android:paddingEnd="6dp"
+        android:paddingStart="2dp"
         android:layout_weight="5"
         android:layout_width="0dp"
         android:layout_height="wrap_content" />
@@ -37,6 +39,7 @@
         android:id="@+id/t_amon_list_balance"
         android:textAlignment="textEnd"
         android:paddingEnd="4dp"
+        android:paddingStart="2dp"
         android:background="@color/color_orderCol"
         android:layout_weight="5"
         android:layout_width="0dp"

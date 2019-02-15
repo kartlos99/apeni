@@ -1,22 +1,18 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.pm.ActivityInfo;
-import android.icu.text.SimpleDateFormat;
-import android.icu.util.Calendar;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -35,20 +31,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
-@RequiresApi(api = Build.VERSION_CODES.N)
 public class DaySaleActivity extends AppCompatActivity {
 
     private int screenDefOrientation, k30empty = 0, k50empty = 0;
     private ArrayList<SaleInfo> salesDay;
     private Double takeMoney = 0.0;
     private Calendar calendar;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat dateFormat;
     private String archeuli_dge;
-    private Button btn_setDate, btn_back, btn_fwd;
-    private TextView tTarigi, t_k30count, t_k50count, t_laricount, t_takeMoney;
+    private Button btn_setDate;
+    private TextView t_k30count, t_k50count, t_laricount, t_takeMoney;
     //    private ListView saleslistView;
     private DaySalesAdapter salesAdapter;
     private ProgressDialog progressDialog;
@@ -78,29 +76,30 @@ public class DaySaleActivity extends AppCompatActivity {
         outState.putBoolean("progress", requestInProgres);
         outState.putInt("distrId", sp_distr.getSelectedItemPosition());
         outState.putDouble("takemoney", takeMoney);
-        outState.putInt("k30e",k30empty);
-        outState.putInt("k50e",k50empty);
+        outState.putInt("k30e", k30empty);
+        outState.putInt("k50e", k50empty);
         super.onSaveInstanceState(outState);
     }
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_day_sale);
+        dateFormat = new SimpleDateFormat(getString(R.string.patern_date));
         screenDefOrientation = getRequestedOrientation();
 
         queue = Volley.newRequestQueue(this);
 
-        btn_setDate = (Button) findViewById(R.id.btn_tarigi);
-        btn_back = (Button) findViewById(R.id.btn_day_back);
-        btn_fwd = (Button) findViewById(R.id.btn_day_forward);
-        tTarigi = (TextView) findViewById(R.id.t_tarigi);
-        t_k30count = (TextView) findViewById(R.id.t_p3_k30_count);
-        t_k50count = (TextView) findViewById(R.id.t_p3_k50_count);
-        t_laricount = (TextView) findViewById(R.id.t_p3_lari_count);
-        t_takeMoney = (TextView) findViewById(R.id.t_agebuli_tanxa);
-        sp_distr = (Spinner) findViewById(R.id.sp_distributori);
-        nonScrolSaleslistView = (NonScrollListView) findViewById(R.id.sales_list1);
+        btn_setDate = findViewById(R.id.btn_tarigi);
+        Button btn_back = findViewById(R.id.btn_day_back);
+        Button btn_fwd = findViewById(R.id.btn_day_forward);
+        t_k30count = findViewById(R.id.t_p3_k30_count);
+        t_k50count = findViewById(R.id.t_p3_k50_count);
+        t_laricount = findViewById(R.id.t_p3_lari_count);
+        t_takeMoney = findViewById(R.id.t_agebuli_tanxa);
+        sp_distr = findViewById(R.id.sp_distributori);
+        nonScrolSaleslistView = findViewById(R.id.sales_list1);
 
         salesDay = new ArrayList<>();
 
@@ -112,18 +111,18 @@ public class DaySaleActivity extends AppCompatActivity {
         for (int i = 0; i < Constantebi.USERsLIST.size(); i++) {
             distributors.add(Constantebi.USERsLIST.get(i).getName());
         }
-        SpinnerAdapter spAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, distributors);
+        SpinnerAdapter spAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, distributors);
         sp_distr.setAdapter(spAdapter);
 
-        if (Constantebi.USER_TYPE.equals(Constantebi.USER_TYPE_user)){
+        if (Constantebi.USER_TYPE.equals(Constantebi.USER_TYPE_user)) {
             int index = 0;
             for (int i = 0; i < Constantebi.USERsLIST.size(); i++) {
-                if(Constantebi.USERsLIST.get(i).getUsername().equals(Constantebi.USER_USERNAME)){
+                if (Constantebi.USERsLIST.get(i).getUsername().equals(Constantebi.USER_USERNAME)) {
                     index = i;
                     distr_id = String.valueOf(Constantebi.USERsLIST.get(i).getId());
                 }
             }
-            sp_distr.setSelection(index+1);
+            sp_distr.setSelection(index + 1);
             sp_distr.setEnabled(false);
         }
 
@@ -135,7 +134,15 @@ public class DaySaleActivity extends AppCompatActivity {
                 progressDialog = ProgressDialog.show(this, "იტვირთება!", "დაელოდეთ!");
             }
             salesDay.clear();
-            salesDay = (ArrayList<SaleInfo>) savedInstanceState.getSerializable("sales_list");
+            Object listObj = savedInstanceState.getSerializable("sales_list");
+            if (listObj instanceof List) {
+                for (int i = 0; i < ((List) listObj).size(); i++) {
+                    Object item = ((List) listObj).get(i);
+                    if (item instanceof SaleInfo) {
+                        salesDay.add((SaleInfo) item);
+                    }
+                }
+            }
             salesAdapter = new DaySalesAdapter(getApplicationContext(), salesDay);
             nonScrolSaleslistView.setAdapter(salesAdapter);
             takeMoney = savedInstanceState.getDouble("takemoney");
@@ -156,7 +163,6 @@ public class DaySaleActivity extends AppCompatActivity {
         }
 
         btn_setDate.setText(archeuli_dge);
-        tTarigi.setText("დღიური რეალიზაცია");//\nთარიღი " + archeuli_dge);
 
         sp_distr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -189,25 +195,25 @@ public class DaySaleActivity extends AppCompatActivity {
             }
         });
 
-        btn_back.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener btnBackFF = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                calendar.add(Calendar.DAY_OF_MONTH, -1);
+                switch (view.getId()) {
+                    case R.id.btn_day_back:
+                        calendar.add(Calendar.DAY_OF_MONTH, -1);
+                        break;
+                    case R.id.btn_day_forward:
+                        calendar.add(Calendar.DAY_OF_MONTH, 1);
+                        break;
+                }
                 archeuli_dge = dateFormat.format(calendar.getTime());
                 btn_setDate.setText(archeuli_dge);
                 getsales(archeuli_dge, distr_id);
             }
-        });
+        };
 
-        btn_fwd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                calendar.add(Calendar.DAY_OF_MONTH, 1);
-                archeuli_dge = dateFormat.format(calendar.getTime());
-                btn_setDate.setText(archeuli_dge);
-                getsales(archeuli_dge, distr_id);
-            }
-        });
+        btn_back.setOnClickListener(btnBackFF);
+        btn_fwd.setOnClickListener(btnBackFF);
 
     }
 
@@ -284,12 +290,11 @@ public class DaySaleActivity extends AppCompatActivity {
             pr += salesDay.get(i).getPr();
         }
 
-        t_k30count.setText(String.valueOf(k3)+"\n"+String.valueOf(k30empty));
-        t_k50count.setText(String.valueOf(k5)+"\n"+String.valueOf(k50empty));
+        t_k30count.setText(String.format("%s\n%s", k3, k30empty));
+        t_k50count.setText(String.format("%s\n%s", k5, k50empty));
         t_laricount.setText(String.valueOf(pr));
 
         t_takeMoney.setText(String.valueOf(takeMoney));
     }
-
 
 }

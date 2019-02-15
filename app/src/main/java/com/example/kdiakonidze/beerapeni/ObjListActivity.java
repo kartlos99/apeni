@@ -18,7 +18,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,12 +26,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.adapters.ObjListAdapter;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
-import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,7 +48,7 @@ public class ObjListActivity extends AppCompatActivity {
         final Intent passed_i = getIntent();
         mdebareoba = passed_i.getIntExtra("mdebareoba", 0);
 
-        searchView = (SearchView) findViewById(R.id.searchV_objlist);
+        searchView = findViewById(R.id.searchV_objlist);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -68,7 +65,7 @@ public class ObjListActivity extends AppCompatActivity {
 
         objListAdapter = new ObjListAdapter(this, Constantebi.OBIEQTEBI);
 
-        objlistView = (ListView) findViewById(R.id.objListView);
+        objlistView = findViewById(R.id.objListView);
         objlistView.setAdapter(objListAdapter);
 
         objlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -76,19 +73,18 @@ public class ObjListActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (mdebareoba.equals(Constantebi.MDEBAREOBA_SHEKVETA)) {
 
-                    Bundle bundleO = passed_i.getExtras().getBundle("objINorder");
-                    ArrayList<Shekvetebi> shekvetebiArrayList = (ArrayList<Shekvetebi>) bundleO.getSerializable("data");
-
-
-                        Intent intent = new Intent(getApplicationContext(), AddOrderActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable("obieqti", (Serializable) objListAdapter.getItem(i));
-                        bundle.putSerializable("orderArray", shekvetebiArrayList);
-                        intent.putExtra(Constantebi.REASON, Constantebi.NEW_ORDER);
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-
-
+                    Intent intent = new Intent(getApplicationContext(), AddOrderActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("obieqti", (Serializable) objListAdapter.getItem(i));
+                    if (passed_i.getExtras() != null) {
+                        Bundle bundleO = passed_i.getExtras().getBundle("objINorder");
+                        if (bundleO != null) {
+                            bundle.putSerializable("orderArray", bundleO.getSerializable("data"));
+                        }
+                    }
+                    intent.putExtra(Constantebi.REASON, Constantebi.NEW_ORDER);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }
                 if (mdebareoba.equals(Constantebi.MDEBAREOBA_MITANA)) {
                     Intent intent = new Intent(getApplicationContext(), AddDeliveryActivity.class);
@@ -151,17 +147,12 @@ public class ObjListActivity extends AppCompatActivity {
             case R.id.cm_info:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 View infoView = getLayoutInflater().inflate(R.layout.obj_info_dialog, null);
-                TextView tDasaxeleba = (TextView) infoView.findViewById(R.id.t_d_dasaxeleba);
-                TextView tSakPiri = (TextView) infoView.findViewById(R.id.t_d_sakpiri);
-                TextView tComment = (TextView) infoView.findViewById(R.id.t_d_comment);
+                TextView tDasaxeleba = infoView.findViewById(R.id.t_d_dasaxeleba);
+                TextView tSakPiri = infoView.findViewById(R.id.t_d_sakpiri);
+                TextView tComment = infoView.findViewById(R.id.t_d_comment);
 
-                tDasaxeleba.setText("ობიექტი: "
-                        + obieqti.getDasaxeleba() + "\n    "
-                        + obieqti.getSk() + "\n    "
-                        + obieqti.getAdress() );
-                tSakPiri.setText("საკ.პირი: "
-                        + obieqti.getSakpiri() + "\n    "
-                        + obieqti.getTel()
+                tDasaxeleba.setText(String.format("ობიექტი: %s\n    %s\n    %s", obieqti.getDasaxeleba(), obieqti.getSk(), obieqti.getAdress()));
+                tSakPiri.setText(String.format("საკ.პირი: %s\n    %s", obieqti.getSakpiri(), obieqti.getTel())
                 );
                 tComment.setText(obieqti.getComment());
 
@@ -208,12 +199,9 @@ public class ObjListActivity extends AppCompatActivity {
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-
                 params.put("obj_id", String.valueOf(id));
-
-                params.toString();
                 return params;
             }
         };

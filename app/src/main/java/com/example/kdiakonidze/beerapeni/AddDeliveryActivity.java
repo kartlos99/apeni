@@ -1,14 +1,16 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.PersistableBundle;
+
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,7 +20,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
+//import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -43,7 +45,7 @@ import java.util.Map;
 
 public class AddDeliveryActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextView t_deliveryInfo, t_beerType, t_davalanebaM, t_davalanebaK, t_ludi_in, t_1title, t_2title, t_3title;
+    private TextView t_deliveryInfo, t_beerType, t_davalanebaM, t_davalanebaK, t_ludi_in, t_2title, t_3title;
     private EditText eK30Count, eK50Count, eK30Count_Kout, eK50Count_Kout, eTakeMoney;
     private Button btn_Done, btnBeerLeft, btnBeerRight, btnK30dec, btnK30inc, btnK50dec, btnK50inc, btnK30dec_Kout, btnK30inc_Kout, btnK50dec_Kout, btnK50inc_Kout, btn_changeDate;
     private CardView cardView_mitana, cardView_kout, cardView_mout;
@@ -56,12 +58,20 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
     private Obieqti currObieqti;
     Calendar calendar;
     String archeuli_tarigi;
-    SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat timeFormat;
+    SimpleDateFormat dateFormat;
 
     private int editingId = 0;
     private Integer beerIndex = 0, beerId = 0;
     private String reason, operacia;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (currObieqti != null) {
+            priceCalculation();
+        }
+    }
 
     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -79,7 +89,9 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("comment", t_comment.getEditText().getText().toString());
+        if (t_comment.getEditText() != null) {
+            outState.putString("comment", t_comment.getEditText().getText().toString());
+        }
         outState.putString("dro", archeuli_tarigi);
         outState.putInt("beer", beerIndex);
         outState.putSerializable("obieqti", currObieqti);
@@ -91,10 +103,14 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_delivery);
+
+        dateFormat = new SimpleDateFormat(getString(R.string.patern_date));
+        timeFormat = new SimpleDateFormat(getString(R.string.patern_datetime));
         initial_findviews();
 
         calendar = Calendar.getInstance();
@@ -104,7 +120,9 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         if (savedInstanceState != null) {
 
             currObieqti = (Obieqti) savedInstanceState.getSerializable("obieqti");
-            t_comment.getEditText().setText(savedInstanceState.getString("comment"));
+            if (t_comment.getEditText() != null) {
+                t_comment.getEditText().setText(savedInstanceState.getString("comment"));
+            }
             archeuli_tarigi = savedInstanceState.getString("dro");
             btn_changeDate.setText(archeuli_tarigi);
             sawyobi = savedInstanceState.getBoolean("sawy");
@@ -113,21 +131,24 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             if (sawyobi) {
                 t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba());
             } else {
-                t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+                t_beerType.setText(String.format("%s\n%s", Constantebi.ludiList.get(beerIndex).getDasaxeleba(), currObieqti.getFasebi().get(beerIndex)));
             }
             beerId = Constantebi.ludiList.get(beerIndex).getId();
-            priceCalculation();
         }
 
         Intent i = getIntent();
         reason = i.getStringExtra(Constantebi.REASON);
         if (reason.equals(Constantebi.CREATE)) {
             Bundle importedBundle = i.getExtras();
-            currObieqti = (Obieqti) importedBundle.getSerializable("obieqti");
-            t_deliveryInfo.setText(currObieqti.getDasaxeleba());
-            t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
-            beerId = Constantebi.ludiList.get(beerIndex).getId();
-            get_davalianeba();
+            if (importedBundle != null) {
+                currObieqti = (Obieqti) importedBundle.getSerializable("obieqti");
+                if (currObieqti != null) {
+                    t_deliveryInfo.setText(currObieqti.getDasaxeleba());
+                    t_beerType.setText(String.format("%s\n%s", Constantebi.ludiList.get(beerIndex).getDasaxeleba(), currObieqti.getFasebi().get(beerIndex)));
+                }
+                beerId = Constantebi.ludiList.get(beerIndex).getId();
+                get_davalianeba();
+            }
         } else {
             operacia = i.getStringExtra("operacia");
             editingId = i.getIntExtra("id", 0);
@@ -165,9 +186,13 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 t_3title.setVisibility(View.GONE);
                 cardView_kout.setVisibility(View.GONE);
                 cardView_mout.setVisibility(View.GONE);
-                Bundle bundle = i.getExtras().getBundle("data");
-                row = (SawyobiDetailRow) bundle.getSerializable("edit_row");
-                showRow(row);
+                if (i.getExtras() != null) {
+                    Bundle bundle = i.getExtras().getBundle("data");
+                    row = (SawyobiDetailRow) (bundle != null ? bundle.getSerializable("edit_row") : null);
+                    if (row != null) {
+                        showRow(row);
+                    }
+                }
                 sawyobi = true;
             }
             if (operacia.equals(Constantebi.SAWYOBIDAN_GATANA)) {
@@ -175,9 +200,13 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 t_3title.setVisibility(View.GONE);
                 cardView_mitana.setVisibility(View.GONE);
                 cardView_mout.setVisibility(View.GONE);
-                Bundle bundle = i.getExtras().getBundle("data");
-                row = (SawyobiDetailRow) bundle.getSerializable("edit_row");
-                showRow(row);
+                if (i.getExtras() != null) {
+                    Bundle bundle = i.getExtras().getBundle("data");
+                    row = (SawyobiDetailRow) (bundle != null ? bundle.getSerializable("edit_row") : null);
+                    if (row != null) {
+                        showRow(row);
+                    }
+                }
                 sawyobi = true;
             }
 
@@ -203,7 +232,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 if (sawyobi) {
                     t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba());
                 } else {
-                    t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+                    t_beerType.setText(String.format("%s\n%s", Constantebi.ludiList.get(beerIndex).getDasaxeleba(), currObieqti.getFasebi().get(beerIndex)));
                     priceCalculation();
                 }
             }
@@ -220,7 +249,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 if (sawyobi) {
                     t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba());
                 } else {
-                    t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
+                    t_beerType.setText(String.format("%s\n%s", Constantebi.ludiList.get(beerIndex).getDasaxeleba(), currObieqti.getFasebi().get(beerIndex)));
                     priceCalculation();
                 }
             }
@@ -282,7 +311,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         chk_sachuqari.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(!sawyobi) {
+                if (!sawyobi) {
                     priceCalculation();
                     if (t_comment.getEditText().getText().toString().equals("") && b) {
                         t_comment.getEditText().setText("საჩუქრად!");
@@ -297,11 +326,12 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
 
     private void showRow(SawyobiDetailRow row) {
         chk_sachuqari.setVisibility(View.INVISIBLE);
-        t_comment.getEditText().setText(row.getComment());
+        if (t_comment.getEditText() != null)
+            t_comment.getEditText().setText(row.getComment());
         beerId = row.getLudisID();
 
         if (beerId != 0) {
-            t_1title.setText("ჩამოტანა");
+            t_ludi_in.setText("ჩამოტანა");
             eK30Count.setText(String.valueOf(row.getK30()));
             eK50Count.setText(String.valueOf(row.getK50()));
             for (int i = 0; i < Constantebi.ludiList.size(); i++) {
@@ -320,9 +350,9 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         archeuli_tarigi = row.getTarigi();
         btn_changeDate.setText(archeuli_tarigi);
 
-        if(row.getChek().equals("1")){
+        if (row.getChek().equals("1")) {
             chk_ptichka.setChecked(true);
-        }else {
+        } else {
             chk_ptichka.setChecked(false);
         }
 
@@ -349,7 +379,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
 
                             eK30Count.setText(response.getJSONObject(0).getString("kasri30"));
                             eK50Count.setText(response.getJSONObject(0).getString("kasri50"));
-                            t_comment.getEditText().setText(response.getJSONObject(0).getString("comment"));
+                            if (t_comment.getEditText() != null)
+                                t_comment.getEditText().setText(response.getJSONObject(0).getString("comment"));
                             beerId = response.getJSONObject(0).getInt("ludis_id");
 
                             for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
@@ -362,11 +393,10 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                                     beerIndex = i;
                                 }
                             }
-
-                            t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba() + "\n" + currObieqti.getFasebi().get(beerIndex));
-                            if (response.getJSONObject(0).getString("chek").equals("1")){
+                            t_beerType.setText(String.format("%s\n%s", Constantebi.ludiList.get(beerIndex).getDasaxeleba(), currObieqti.getFasebi().get(beerIndex)));
+                            if (response.getJSONObject(0).getString("chek").equals("1")) {
                                 chk_ptichka.setChecked(true);
-                            }else {
+                            } else {
                                 chk_ptichka.setChecked(false);
                             }
 
@@ -431,7 +461,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         if (!chk_sachuqari.isChecked()) {
             fasi = Integer.valueOf(k30) * 30 * currObieqti.getFasebi().get(beerIndex) + Integer.valueOf(k50) * 50 * currObieqti.getFasebi().get(beerIndex);
         }
-        t_ludi_in.setText(getResources().getString(R.string.ludis_shetana) + " (" + String.valueOf(fasi) + "₾)");
+        t_ludi_in.setText(String.format("%s (%s \u20BE )", getResources().getString(R.string.ludis_shetana), String.valueOf(fasi)));
+        Log.d("PrCalc:", String.format("%s %s f-%s", k30, k50, fasi));
     }
 
     private void get_davalianeba() {
@@ -445,7 +476,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 // aq modis davalianebis chamonaTvali yvela obieqtistvis
 
                 if (response.length() > 0) {
-                    Integer davalianebaM = 0, davalianebaK = 0;
+                    int davalianebaM = 0, davalianebaK = 0;
 
                     for (int i = 0; i < response.length(); i++) {
                         try {
@@ -456,8 +487,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                                         + response.getJSONObject(i).getInt("k50in") - response.getJSONObject(i).getInt("k50out");
                             }
 
-                            t_davalanebaM.setText("დავალიანება\n" + davalianebaM);
-                            t_davalanebaK.setText("კასრი\n" + davalianebaK);
+                            t_davalanebaM.setText(String.format("%s%n%s", getString(R.string.davalianeba), davalianebaM));
+                            t_davalanebaK.setText(String.format("%s%n%s", getString(R.string.kasri), davalianebaK));
 
                         } catch (JSONException excep) {
                             excep.printStackTrace();
@@ -479,42 +510,42 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void initial_findviews() {
-        btnBeerLeft = (Button) findViewById(R.id.btn_beerleft);
-        btnBeerRight = (Button) findViewById(R.id.btn_beerright);
-        btn_Done = (Button) findViewById(R.id.btn_beerInputDone);
-        btn_changeDate = (Button) findViewById(R.id.btn_change_date);
+        btnBeerLeft = findViewById(R.id.btn_beerleft);
+        btnBeerRight = findViewById(R.id.btn_beerright);
+        btn_Done = findViewById(R.id.btn_beerInputDone);
+        btn_changeDate = findViewById(R.id.btn_change_date);
 
-        btnK30dec = (Button) findViewById(R.id.btn_k30_dec);
-        btnK30inc = (Button) findViewById(R.id.btn_k30_inc);
-        btnK50dec = (Button) findViewById(R.id.btn_k50_dec);
-        btnK50inc = (Button) findViewById(R.id.btn_k50_inc);
-        btnK30dec_Kout = (Button) findViewById(R.id.btn_k30_dec_KasriOut);
-        btnK30inc_Kout = (Button) findViewById(R.id.btn_k30_inc_KasriOut);
-        btnK50dec_Kout = (Button) findViewById(R.id.btn_k50_dec_KasriOut);
-        btnK50inc_Kout = (Button) findViewById(R.id.btn_k50_inc_KasriOut);
+        btnK30dec = findViewById(R.id.btn_k30_dec);
+        btnK30inc = findViewById(R.id.btn_k30_inc);
+        btnK50dec = findViewById(R.id.btn_k50_dec);
+        btnK50inc = findViewById(R.id.btn_k50_inc);
+        btnK30dec_Kout = findViewById(R.id.btn_k30_dec_KasriOut);
+        btnK30inc_Kout = findViewById(R.id.btn_k30_inc_KasriOut);
+        btnK50dec_Kout = findViewById(R.id.btn_k50_dec_KasriOut);
+        btnK50inc_Kout = findViewById(R.id.btn_k50_inc_KasriOut);
 
-        eK30Count = (EditText) findViewById(R.id.edit_K30Count);
-        eK50Count = (EditText) findViewById(R.id.edit_K50Count);
-        eK30Count_Kout = (EditText) findViewById(R.id.edit_K30Count_KasriOut);
-        eK50Count_Kout = (EditText) findViewById(R.id.edit_K50Count_KasriOut);
-        eTakeMoney = (EditText) findViewById(R.id.e_TakeMoney);
+        eK30Count = findViewById(R.id.edit_K30Count);
+        eK50Count = findViewById(R.id.edit_K50Count);
+        eK30Count_Kout = findViewById(R.id.edit_K30Count_KasriOut);
+        eK50Count_Kout = findViewById(R.id.edit_K50Count_KasriOut);
+        eTakeMoney = findViewById(R.id.e_TakeMoney);
 
-        t_beerType = (TextView) findViewById(R.id.t_ludisDasaxeleba);
-        t_deliveryInfo = (TextView) findViewById(R.id.t_DeliveryInfo);
-        t_davalanebaM = (TextView) findViewById(R.id.t_davalianebaM);
-        t_davalanebaK = (TextView) findViewById(R.id.t_davalianebaK);
-        t_ludi_in = (TextView) findViewById(R.id.t_mitana_ludi);
-        t_comment = (TextInputLayout) findViewById(R.id.t_mitana_comment);
+        t_beerType = findViewById(R.id.t_ludisDasaxeleba);
+        t_deliveryInfo = findViewById(R.id.t_DeliveryInfo);
+        t_davalanebaM = findViewById(R.id.t_davalianebaM);
+        t_davalanebaK = findViewById(R.id.t_davalianebaK);
+        t_ludi_in = findViewById(R.id.t_mitana_ludi);
+        t_comment = findViewById(R.id.t_mitana_comment);
 
-        t_1title = (TextView) findViewById(R.id.t_mitana_ludi);
-        t_2title = (TextView) findViewById(R.id.t_wamogebuliKasrebi);
-        t_3title = (TextView) findViewById(R.id.textView2);
+//        t_1title = findViewById(R.id.t_mitana_ludi);
+        t_2title = findViewById(R.id.t_wamogebuliKasrebi);
+        t_3title = findViewById(R.id.textView2);
 
-        cardView_mitana = (CardView) findViewById(R.id.cardView_add_Beer1);
-        cardView_kout = (CardView) findViewById(R.id.cardView_TakeKasri);
-        cardView_mout = (CardView) findViewById(R.id.card_tanxa);
-        chk_sachuqari = (CheckBox) findViewById(R.id.ckbox_sachuqari);
-        chk_ptichka = (CheckBox) findViewById(R.id.mitanis_ptichka);
+        cardView_mitana = findViewById(R.id.cardView_add_Beer1);
+        cardView_kout = findViewById(R.id.cardView_TakeKasri);
+        cardView_mout = findViewById(R.id.card_tanxa);
+        chk_sachuqari = findViewById(R.id.ckbox_sachuqari);
+        chk_ptichka = findViewById(R.id.mitanis_ptichka);
     }
 
     private String pliusMinusText(String stringNaomber, boolean oper) {
@@ -582,7 +613,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 Toast.makeText(getApplicationContext(), "მონაცემები ჩაწერილია! " + response, Toast.LENGTH_SHORT).show();
                 if (!sawyobi) {
                     OrdersActivity.chamosatvirtia = true; // mitanas rom davakreqtirebt, amit mixvdebarom ganaaxlos shekvetebis gverdi
-                }else {
+                } else {
                     SawyobiList.chamosatvirtia = true;
                 }
                 setRequestedOrientation(Constantebi.screenDefOrientation);
@@ -597,7 +628,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
 
                 params.put("id", editId.toString());
@@ -610,9 +641,9 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                     } else {
                         params.put("chamotana", "1");
                     }
-                    if(chk_ptichka.isChecked()){
+                    if (chk_ptichka.isChecked()) {
                         params.put("chek", "1");
-                    }else {
+                    } else {
                         params.put("chek", "0");
                     }
                 } else {
@@ -628,7 +659,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 }
 
                 params.put("distributor_id", Constantebi.USER_ID);
-                params.put("comment", t_comment.getEditText().getText().toString());
+                if (t_comment.getEditText() != null)
+                    params.put("comment", t_comment.getEditText().getText().toString());
 
                 params.put("beer_type", String.valueOf(beerId));
                 // *********
@@ -642,7 +674,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 params.put("tanxa", eTakeMoney.getText().toString());
                 params.put("set_tarigi", archeuli_tarigi);
 
-                params.toString();
+//                params.toString();
                 return params;
             }
         };
@@ -656,11 +688,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         if (eTakeMoney.getText().toString().equals("0")) {
             eTakeMoney.setText("");
         }
-        if (eTakeMoney.getText().toString().equals("")) {
-            return "0";
-        } else {
-            return "1";
-        }
+        return (eTakeMoney.getText().toString().equals("") ? "0" : "1");
     }
 
     private String chekKout() {
@@ -670,11 +698,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         if (eK50Count_Kout.getText().toString().equals("0")) {
             eK50Count_Kout.setText("");
         }
-        if (eK30Count_Kout.getText().toString().equals("") && eK50Count_Kout.getText().toString().equals("")) {
-            return "0";
-        } else {
-            return "1";
-        }
+        return (eK30Count_Kout.getText().toString().equals("") && eK50Count_Kout.getText().toString().equals("") ? "0" : "1");
     }
 
     private String chekMitana() {
@@ -684,10 +708,6 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         if (eK50Count.getText().toString().equals("0")) {
             eK50Count.setText("");
         }
-        if (eK30Count.getText().toString().equals("") && eK50Count.getText().toString().equals("")) {
-            return "0";
-        } else {
-            return "1";
-        }
+        return (eK30Count.getText().toString().equals("") && eK50Count.getText().toString().equals("") ? "0" : "1");
     }
 }
