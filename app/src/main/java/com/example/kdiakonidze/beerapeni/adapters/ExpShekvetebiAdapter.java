@@ -22,8 +22,7 @@ import java.util.ArrayList;
 public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
     private ArrayList<ShekvetebiGR> shekvetebiArListGR;
     private LayoutInflater inflater;
-    private ViewHolder viewHolder;
-    private Boolean grouped = false;
+    private Boolean grouped;
     private Context context;
 
     public ExpShekvetebiAdapter(Context context, ArrayList<ShekvetebiGR> shekvetebiSorce, Boolean grouped) {
@@ -72,45 +71,51 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean b, View convertView, ViewGroup viewGroup) {
 
-        if (convertView == null){
+        if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.shekvetebi_gr_row, null);
         }
 
-        TextView title = (TextView) convertView.findViewById(R.id.t_distrib_name);
-        TextView t_ksum = (TextView) convertView.findViewById(R.id.t_kwont);
+        TextView title = convertView.findViewById(R.id.t_distrib_name);
+        TextView t_ksum = convertView.findViewById(R.id.t_kwont);
         title.setText(shekvetebiArListGR.get(groupPosition).getName());
         //t_ksum.setText(shekvetebiArListGR.get(groupPosition).getK30w() + " / " +shekvetebiArListGR.get(groupPosition).getK50w() + "   |   " +shekvetebiArListGR.get(groupPosition).getK30() + " / " +shekvetebiArListGR.get(groupPosition).getK50());
-        String summingData = "";
+//        String summingData = "";
+        StringBuilder sBuilder = new StringBuilder();
         for (int i = 0; i < shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().size(); i++) {
-            summingData += shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getLudi()
-                    + " : " + shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30wont()
-                    + "/" + shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50wont()
-                    + " | " + shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30in()
-                    + "/" + shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50in();
-            summingData += "\n";
+            sBuilder.append(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getLudi());
+            sBuilder.append(" : ");
+            sBuilder.append(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30wont());
+            sBuilder.append("/");
+            sBuilder.append(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50wont());
+            sBuilder.append(" | ");
+            sBuilder.append(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30in());
+            sBuilder.append("/");
+            sBuilder.append(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50in());
+            sBuilder.append("\n");
         }
-        t_ksum.setText(summingData);
+        t_ksum.setText(sBuilder.toString());
         return convertView;
     }
 
     @Override
     public View getChildView(int i, int i1, boolean b, View convertView, ViewGroup viewGroup) {
         View listRowView;
+        ViewHolder viewHolder;
 
         if (convertView == null) {
             listRowView = inflater.inflate(R.layout.shekvetebi_row, null);
             viewHolder = new ViewHolder();
 
-            viewHolder.t_obieqti = (TextView) listRowView.findViewById(R.id.t_obieqti_orderlist);
-            viewHolder.t_ludi = (TextView) listRowView.findViewById(R.id.t_ludi_orderlist);
-            viewHolder.t_k30in = (TextView) listRowView.findViewById(R.id.t_k30in_orderlist);
-            viewHolder.t_k50in = (TextView) listRowView.findViewById(R.id.t_k50in_orderlist);
-            viewHolder.t_k30wont = (TextView) listRowView.findViewById(R.id.t_k30wont_orderlist);
-            viewHolder.t_k50wont = (TextView) listRowView.findViewById(R.id.t_k50wont_orderlist);
-            viewHolder.t_distributor = (TextView) listRowView.findViewById(R.id.t_shek_list_distrib);
-            viewHolder.t_comment = (TextView) listRowView.findViewById(R.id.t_orderlist_row_comment);
-            viewHolder.ln_row = (LinearLayout) listRowView.findViewById(R.id.linear_order_row);
+            viewHolder.t_obieqti = listRowView.findViewById(R.id.t_obieqti_orderlist);
+            viewHolder.t_ludi = listRowView.findViewById(R.id.t_ludi_orderlist);
+            viewHolder.t_k30in = listRowView.findViewById(R.id.t_k30in_orderlist);
+            viewHolder.t_k50in = listRowView.findViewById(R.id.t_k50in_orderlist);
+            viewHolder.t_k30wont = listRowView.findViewById(R.id.t_k30wont_orderlist);
+            viewHolder.t_k50wont = listRowView.findViewById(R.id.t_k50wont_orderlist);
+            viewHolder.t_distributor = listRowView.findViewById(R.id.t_shek_list_distrib);
+            viewHolder.t_comment = listRowView.findViewById(R.id.t_orderlist_row_comment);
+            viewHolder.ln_row = listRowView.findViewById(R.id.linear_order_row);
 
             listRowView.setTag(viewHolder);
         } else {
@@ -118,7 +123,7 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
             viewHolder = (ViewHolder) listRowView.getTag();
         }
 
-        Shekvetebi shekveta = (Shekvetebi) getChild(i,i1);
+        Shekvetebi shekveta = (Shekvetebi) getChild(i, i1);
         ShekvetebiGR gr = (ShekvetebiGR) getGroup(i);
 
         if (grouped) {
@@ -128,36 +133,41 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
             viewHolder.t_distributor.setVisibility(View.VISIBLE);
             if (!shekveta.getDistrib_Name().equals(gr.getName())) {
                 viewHolder.t_distributor.setText(shekveta.getDistrib_Name());
-            }else {
+            } else {
                 viewHolder.t_distributor.setText("");
             }
         }
         viewHolder.t_obieqti.setText(shekveta.getObieqti());
         viewHolder.t_ludi.setText(shekveta.getLudi());
-        viewHolder.t_k30wont.setText("" + shekveta.getK30wont());
-        viewHolder.t_k50wont.setText("" + shekveta.getK50wont());
-        viewHolder.t_k30in.setText("" + shekveta.getK30in());
-        viewHolder.t_k50in.setText("" + shekveta.getK50in());
+        viewHolder.t_k30wont.setText(String.format("%s", shekveta.getK30wont()));
+        viewHolder.t_k50wont.setText(String.format("%s", shekveta.getK50wont()));
+        viewHolder.t_k30in.setText(String.format("%s", shekveta.getK30in()));
+        viewHolder.t_k50in.setText(String.format("%s", shekveta.getK50in()));
         viewHolder.t_comment.setText(shekveta.getComment());
+
+        viewHolder.t_k30wont.setTextColor(shekveta.getK30wont() == 0 ? context.getResources().getColor(R.color.not_imp_color) : Color.BLACK);
+        viewHolder.t_k50wont.setTextColor(shekveta.getK50wont() == 0 ? context.getResources().getColor(R.color.not_imp_color) : Color.BLACK);
+        viewHolder.t_k30in.setTextColor(shekveta.getK30in() == 0 ? context.getResources().getColor(R.color.not_imp_color) : Color.BLACK);
+        viewHolder.t_k50in.setTextColor(shekveta.getK50in() == 0 ? context.getResources().getColor(R.color.not_imp_color) : Color.BLACK);
 
         if (grouped) {
             if (shekveta.getK30in() + shekveta.getK50in() < shekveta.getK30wont() + shekveta.getK50wont()) {
                 viewHolder.ln_row.setBackgroundColor(context.getResources().getColor(R.color.color_orderRed));
-            }else {
+            } else {
                 viewHolder.ln_row.setBackgroundColor(Color.TRANSPARENT);
             }
             viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
-            viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 
             if (shekveta.getChk().equals("1")) {
-                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(R.drawable.circle,0,0,0);
-            }else {
+                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(R.drawable.circle, 0, 0, 0);
+            } else {
                 viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
-                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
             viewHolder.t_ludi.setBackgroundColor(Color.parseColor(shekveta.getColor()));
 
-        }else {
+        } else {
             viewHolder.t_ludi.setBackgroundColor(Color.TRANSPARENT);
             viewHolder.ln_row.setBackgroundColor(Color.TRANSPARENT);
             if (shekveta.getChk().equals("1")) {
@@ -166,16 +176,16 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
 //                Drawable drawable = context.getResources().getDrawable(R.drawable.ic_order_circle);
 //                Drawable dr = new ScaleDrawable(drawable,0,8,8).getDrawable();
 //                dr.setBounds(0,0,8,8);
-                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(R.drawable.circle,0,0,0);
-            }else {
+                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(R.drawable.circle, 0, 0, 0);
+            } else {
                 viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
-                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
 
-            if(!shekveta.getComment().isEmpty()){
-                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_icon,0,0,0);
-            }else {
-                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            if (!shekveta.getComment().isEmpty()) {
+                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_icon, 0, 0, 0);
+            } else {
+                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
             listRowView.setBackgroundColor(Color.parseColor(shekveta.getColor()));
         }

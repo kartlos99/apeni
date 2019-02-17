@@ -1,10 +1,12 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -76,7 +78,19 @@ public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.
         btn_beerDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendDataToDB(beerID, eBeerName.getText().toString(), eBeerPr.getText().toString());
+                if (eBeerName.getText().toString().isEmpty() || eBeerPr.getText().toString().isEmpty()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(AddEditBeer.this);
+                    builder.setMessage(R.string.fields_request2);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {}
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.setTitle(getString(R.string.feel_empty_fields));
+                    alertDialog.show();
+                }else {
+                    sendDataToDB(beerID, eBeerName.getText().toString(), eBeerPr.getText().toString());
+                }
             }
         });
 

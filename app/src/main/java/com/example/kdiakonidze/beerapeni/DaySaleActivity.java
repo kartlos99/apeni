@@ -30,6 +30,7 @@ import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -104,7 +105,7 @@ public class DaySaleActivity extends AppCompatActivity {
         salesDay = new ArrayList<>();
 
         calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR, 4);
+//        calendar.add(Calendar.HOUR, 4);
 
         final ArrayList<String> distributors = new ArrayList<>();
         distributors.add("ყველა");
@@ -292,9 +293,10 @@ public class DaySaleActivity extends AppCompatActivity {
 
         t_k30count.setText(String.format("%s\n%s", k3, k30empty));
         t_k50count.setText(String.format("%s\n%s", k5, k50empty));
-        t_laricount.setText(String.valueOf(pr));
+        DecimalFormat df = new DecimalFormat("#0.00");
+        t_laricount.setText(df.format(pr));
 
-        t_takeMoney.setText(String.valueOf(takeMoney));
+        t_takeMoney.setText(df.format(takeMoney));
     }
 
 }

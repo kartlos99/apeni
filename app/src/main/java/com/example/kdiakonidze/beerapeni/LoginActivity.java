@@ -117,6 +117,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 btn_login.setEnabled(true);
+                error.printStackTrace();
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 Toast.makeText(getApplicationContext(), error.toString()+" შეცდომა login -ze" , Toast.LENGTH_SHORT).show();
             }

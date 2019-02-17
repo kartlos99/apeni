@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -44,6 +45,8 @@ import java.util.Calendar;
 //@RequiresApi(api = Build.VERSION_CODES.N)
 public class AmonaweriActivity extends AppCompatActivity {
 
+    private static final int CALL_PERMISSION_REQUEST = 101;
+    private String phoneNumber;
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
     private String archeuli_dge, title_0 = "დავალიანება", title_1 = "კასრი";
@@ -202,21 +205,8 @@ public class AmonaweriActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.menu_call) {
-            Toast.makeText(this, currObieqti.getTel(), Toast.LENGTH_LONG).show();
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:" + currObieqti.getTel()));
-
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return true;
-            }
-            startActivity(callIntent);
+            phoneNumber = currObieqti.getTel();
+            dialTo(phoneNumber);
         }
 
         if (item.getItemId() == R.id.m_edit_obj) {
@@ -295,6 +285,25 @@ public class AmonaweriActivity extends AppCompatActivity {
             tab1.setText(title_1);
 //            tabLayout.getTabAt(0).setText(title_0);
 //            tabLayout.getTabAt(1).setText(title_1);
+        }
+    }
+
+    private void dialTo(String phoneNumber) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AmonaweriActivity.this, new String[]{Manifest.permission.CALL_PHONE}, CALL_PERMISSION_REQUEST);
+        } else {
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:" + phoneNumber));
+            startActivity(callIntent);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == CALL_PERMISSION_REQUEST) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
+                dialTo(phoneNumber);
+            }
         }
     }
 

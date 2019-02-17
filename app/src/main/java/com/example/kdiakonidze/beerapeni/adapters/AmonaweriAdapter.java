@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.kdiakonidze.beerapeni.R;
 import com.example.kdiakonidze.beerapeni.models.Amonaweri;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -23,9 +24,8 @@ import java.util.ArrayList;
 public class AmonaweriAdapter extends BaseAdapter {
     private ArrayList<Amonaweri> amonaweriList;
     private LayoutInflater layoutInflater;
-    private ViewHolderAmo viewHolder;
-    private int location = -1;
-    private Boolean grouped = true;
+    private int location;
+    private Boolean grouped;
     Context context;
 
     public AmonaweriAdapter(Context context, ArrayList<Amonaweri> amonaweriList, int location, Boolean isGrouped) {
@@ -54,16 +54,17 @@ public class AmonaweriAdapter extends BaseAdapter {
     @Override
     public View getView(int i, View convertView, ViewGroup viewGroup) {
         View listRowView;
+        ViewHolderAmo viewHolder;
 
         if (convertView == null) {
             listRowView = layoutInflater.inflate(R.layout.amonaweri_list_row, null);
             viewHolder = new ViewHolderAmo();
 
-            viewHolder.t_p1 = (TextView) listRowView.findViewById(R.id.t_amon_list_tarigi);
-            viewHolder.t_p2 = (TextView) listRowView.findViewById(R.id.t_amon_list_in);
-            viewHolder.t_p3 = (TextView) listRowView.findViewById(R.id.t_amon_list_out);
-            viewHolder.t_p4 = (TextView) listRowView.findViewById(R.id.t_amon_list_balance);
-            viewHolder.t_comment = (TextView) listRowView.findViewById(R.id.t_amonaweri_row_comment);
+            viewHolder.t_p1 = listRowView.findViewById(R.id.t_amon_list_tarigi);
+            viewHolder.t_p2 = listRowView.findViewById(R.id.t_amon_list_in);
+            viewHolder.t_p3 = listRowView.findViewById(R.id.t_amon_list_out);
+            viewHolder.t_p4 = listRowView.findViewById(R.id.t_amon_list_balance);
+            viewHolder.t_comment = listRowView.findViewById(R.id.t_amonaweri_row_comment);
 
             listRowView.setTag(viewHolder);
         } else {
@@ -74,18 +75,19 @@ public class AmonaweriAdapter extends BaseAdapter {
         Amonaweri currItem = (Amonaweri) getItem(i);
         viewHolder.t_p1.setText(currItem.getTarigi());
         if (location == 0) {
+            DecimalFormat df = new DecimalFormat("#0.00");
             if (currItem.getPrice() == 0) {
                 viewHolder.t_p2.setText("-");
             } else {
-                viewHolder.t_p2.setText(String.valueOf(currItem.getPrice()));
+                viewHolder.t_p2.setText(df.format(currItem.getPrice()));
             }
             if (currItem.getPay() == 0) {
                 viewHolder.t_p3.setText("-");
             }else {
-                viewHolder.t_p3.setText(String.valueOf(currItem.getPay()));
+                viewHolder.t_p3.setText(df.format(currItem.getPay()));
             }
 
-            viewHolder.t_p4.setText(String.valueOf(currItem.getBalance()));
+            viewHolder.t_p4.setText(df.format(currItem.getBalance()));
         }
         if (location == 1) {
             if (currItem.getK_in() == 0) {

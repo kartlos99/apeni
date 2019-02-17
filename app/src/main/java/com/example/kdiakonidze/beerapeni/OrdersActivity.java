@@ -12,6 +12,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,7 +70,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
             calendar.set(year, month, day);
-            calendar.add(Calendar.HOUR, 4);
+//            calendar.add(Calendar.HOUR, 4);
             archeuli_dge = dateFormat.format(calendar.getTime());
             btn_setDate.setText(String.format("თარიღი: %s ", archeuli_dge));
             shekvetebis_chamotvirtva(archeuli_dge);
@@ -101,7 +102,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
         screenDefOrientation = getRequestedOrientation();
 
         calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR, 4);
+//        calendar.add(Calendar.HOUR, 4);
 
         if (savedInstanceState != null) {
             archeuli_dge = savedInstanceState.getString("tarigi");
