@@ -5,9 +5,9 @@ package com.example.kdiakonidze.beerapeni.models;
  */
 
 public class BeerModel {
-    int id;
-    String dasaxeleba, displayColor;
-    Double fasi;
+    private int id;
+    private String dasaxeleba, displayColor;
+    private Double fasi;
 
     public String getDisplayColor() {
         return displayColor;

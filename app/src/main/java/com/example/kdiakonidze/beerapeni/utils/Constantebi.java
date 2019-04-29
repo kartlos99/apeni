@@ -16,34 +16,37 @@ import java.util.ArrayList;
  */
 
 public class Constantebi {
-    public static String URL_GET_OBIEQTS =  "http://apeni.ge/andr_app_links/get_obieqts.php";
-    public static String URL_GET_ORDERLIST = "http://apeni.ge/andr_app_links/get_shekvetebi.php";
-    public static String URL_GET_LUDILIST = "http://apeni.ge/andr_app_links/get_ludi_list.php";
-    public static String URL_INS_SHEKVETA = "http://apeni.ge/andr_app_links/insert_shekvetebi.php";
-    public static String URL_INS_LUDISSHETANA = "http://apeni.ge/andr_app_links/insert_ludis_shetana_v2.php";
-    public static String URL_INS_TAKEMONEY = "http://apeni.ge/andr_app_links/insert_moneyoutput.php";
-    public static String URL_INS_TAKEKASRI = "http://apeni.ge/andr_app_links/insert_kasrioutput.php";
-    public static String URL_GET_DAVALIANEBA = "http://apeni.ge/andr_app_links/get_davalianeba.php";
-    public static String URL_GET_FASEBI = " http://apeni.ge/andr_app_links/get_fasebi.php";
-    public static String URL_GET_SALEDAY =  "http://apeni.ge/andr_app_links/view_sale_day_v2.php";
-    public static String URL_GET_AMONAWERI = "http://apeni.ge/andr_app_links/get_amonaweri_m.php";
-    public static String URL_GET_AMONAWERI_K = "http://apeni.ge/andr_app_links/get_amonaweri_k.php";
-    public static String URL_INS_AXALI_OBIEQTI = "http://apeni.ge/andr_app_links/insert_axali_obieqti.php";
-    public static String URL_LOGIN =        "http://apeni.ge/andr_app_links/login.php";
-    public static String URL_DEL_OBJ =      "http://apeni.ge/andr_app_links/del_obj.php";
-    public static String URL_INS_AXALI_USERI = "http://apeni.ge/andr_app_links/insert_axali_momxmarebeli.php";
-    public static String URL_GET_USERS =    "http://apeni.ge/andr_app_links/get_users.php";
-    public static String URL_DEL_ORDER =    "http://apeni.ge/andr_app_links/del_order.php";
-    public static String URL_DEL_BEER =     "http://apeni.ge/andr_app_links/del_beer.php";
-    public static String URL_INS_BEER =     "http://apeni.ge/andr_app_links/insert_beer.php";
-    public static String URL_DEL_RECORD =   "http://apeni.ge/andr_app_links/del_record_v2.php";
-    public static String URL_GET_RECORD =   "http://apeni.ge/andr_app_links/get_record.php";
-    public static String URL_GET_SYSCLEAN = "http://apeni.ge/andr_app_links/get_cleaning.php";
-    public static String URL_INS_SYSCLEAN = "http://apeni.ge/andr_app_links/ins_cleaning.php";
-    public static String URL_CH_PASS =      "http://apeni.ge/andr_app_links/ch_pass.php";
-    public static String URL_GET_NASHTI =   "http://apeni.ge/andr_app_links/get_nashtebi.php";
-    public static String URL_INS_SAWYOBI =  "http://apeni.ge/andr_app_links/sawyobi.php";
-    public static String URL_GET_SAWY_DETAIL=  "http://apeni.ge/andr_app_links/sawyobi_detail_list.php";
+
+    private static String HOST = "http://apeni.ge/tbilisi/andr_app_links/";
+
+    public static String URL_GET_OBIEQTS = HOST + "get_obieqts.php";
+    public static String URL_GET_ORDERLIST = HOST + "get_shekvetebi.php";
+    public static String URL_GET_LUDILIST = HOST + "get_ludi_list.php";
+    public static String URL_INS_SHEKVETA = HOST + "insert_shekvetebi.php";
+    public static String URL_INS_LUDISSHETANA = HOST + "insert_ludis_shetana_v2.php";
+    public static String URL_INS_TAKEMONEY = HOST + "insert_moneyoutput.php";
+    public static String URL_INS_TAKEKASRI = HOST + "insert_kasrioutput.php";
+    public static String URL_GET_DAVALIANEBA = HOST + "get_davalianeba.php";
+    public static String URL_GET_FASEBI = HOST + "get_fasebi.php";
+    public static String URL_GET_SALEDAY =  HOST + "view_sale_day_v2.php";
+    public static String URL_GET_AMONAWERI = HOST + "get_amonaweri_m.php";
+    public static String URL_GET_AMONAWERI_K = HOST + "get_amonaweri_k.php";
+    public static String URL_INS_AXALI_OBIEQTI = HOST + "insert_axali_obieqti.php";
+    public static String URL_LOGIN =        HOST + "login.php";
+    public static String URL_DEL_OBJ =      HOST + "del_obj.php";
+    public static String URL_INS_AXALI_USERI = HOST + "insert_axali_momxmarebeli.php";
+    public static String URL_GET_USERS =    HOST + "get_users.php";
+    public static String URL_DEL_ORDER =    HOST + "del_order.php";
+    public static String URL_DEL_BEER =     HOST + "del_beer.php";
+    public static String URL_INS_BEER =     HOST + "insert_beer.php";
+    public static String URL_DEL_RECORD =   HOST + "del_record_v2.php";
+    public static String URL_GET_RECORD =   HOST + "get_record.php";
+    public static String URL_GET_SYSCLEAN = HOST + "get_cleaning.php";
+    public static String URL_INS_SYSCLEAN = HOST + "ins_cleaning.php";
+    public static String URL_CH_PASS =      HOST + "ch_pass.php";
+    public static String URL_GET_NASHTI =   HOST + "get_nashtebi.php";
+    public static String URL_INS_SAWYOBI =  HOST + "sawyobi.php";
+    public static String URL_GET_SAWY_DETAIL = HOST + "sawyobi_detail_list.php";
 
     public static String USER_USERNAME = "";
     public static String USER_NAME = "";
@@ -82,4 +85,5 @@ public class Constantebi {
     public static int screenDefOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_USER;
 
     public static Boolean loged_in = false;
+    public static Float ACCURACY = 0.001f;
 }

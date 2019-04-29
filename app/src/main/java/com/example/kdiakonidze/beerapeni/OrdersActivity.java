@@ -185,7 +185,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
     private ArrayList<Shekvetebi> groupOrders(ArrayList<Shekvetebi> gadmocemuliShekvetebi) {
         ArrayList<Shekvetebi> groupedOrderList = new ArrayList<>();
         String objName = "", beerName = "", dName = "", beerBeckgroundColor = String.format("#%02X%02X%02X", Color.red(Color.WHITE), Color.green(Color.WHITE), Color.blue(Color.WHITE));
-        int k30w = 0, k50w = 0, k30in = 0, k50in = 0;
+        float k30w = 0, k50w = 0, k30in = 0, k50in = 0;
         boolean chek = false;
 
         ArrayList<Shekvetebi> shekvetebiList = new ArrayList<>(gadmocemuliShekvetebi);
@@ -425,10 +425,10 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                             Shekvetebi shekveta = new Shekvetebi(
                                     response.getJSONObject(i).getString("obieqti"),
                                     response.getJSONObject(i).getString("dasaxeleba"),
-                                    response.getJSONObject(i).getInt("in_30"),
-                                    response.getJSONObject(i).getInt("in_50"),
-                                    response.getJSONObject(i).getInt("wont_30"),
-                                    response.getJSONObject(i).getInt("wont_50")
+                                    (float)response.getJSONObject(i).getDouble("in_30"),
+                                    (float)response.getJSONObject(i).getDouble("in_50"),
+                                    (float)response.getJSONObject(i).getDouble("wont_30"),
+                                    (float)response.getJSONObject(i).getDouble("wont_50")
                             );
                             shekveta.setChk(response.getJSONObject(i).getString("chk"));
                             shekveta.setDistrib_Name(response.getJSONObject(i).getString("name"));
@@ -508,13 +508,13 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
 
             } else {
 
-                int order;
+                float order;
                 ArrayList<Shekvetebi> mitanebi = new ArrayList<>();
 
                 for (int i = 0; i < shekvetebiArrayList.size(); i++) {
                     order = shekvetebiArrayList.get(i).getK30wont() + shekvetebiArrayList.get(i).getK50wont();
 
-                    if (order > 0) {
+                    if (order > Constantebi.ACCURACY) {
                         for (int j = 0; j < shekvetebiArListGR.size(); j++) {
                             if (shekvetebiArListGR.get(j).getName().equals(shekvetebiArrayList.get(i).getDistrib_Name())) {
                                 exists = true;

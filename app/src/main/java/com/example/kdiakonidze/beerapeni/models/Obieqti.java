@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class Obieqti implements Serializable {
     private String dasaxeleba, adress, tel, comment, sk, sakpiri, chek;
     private Integer id, valiM, valiK30, valiK50;
-    private ArrayList<Double> fasebi = new ArrayList<>();
+    private ArrayList<Float> fasebi = new ArrayList<>();
 
     public Obieqti(String dasaxeleba) {
         this.dasaxeleba = dasaxeleba;
@@ -29,11 +29,11 @@ public class Obieqti implements Serializable {
         return id;
     }
 
-    public ArrayList<Double> getFasebi() {
+    public ArrayList<Float> getFasebi() {
         return fasebi;
     }
 
-    public void setFasebi(ArrayList<Double> fasebi) {
+    public void setFasebi(ArrayList<Float> fasebi) {
         this.fasebi = fasebi;
     }
 

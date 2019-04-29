@@ -7,11 +7,11 @@ import java.io.Serializable;
  */
 
 public class SaleInfo implements Serializable {
-    String beerName;
-    Double pr;
-    int litraji, k30, k50;
+    private String beerName;
+    private float pr, k30, k50;
+    private int litraji;
 
-    public SaleInfo(String beerName, Double pr, int litraji, int k30, int k50) {
+    public SaleInfo(String beerName, float pr, int litraji, float k30, float k50) {
         this.beerName = beerName;
         this.pr = pr;
         this.litraji = litraji;
@@ -23,7 +23,7 @@ public class SaleInfo implements Serializable {
         return beerName;
     }
 
-    public Double getPr() {
+    public float getPr() {
         return pr;
     }
 
@@ -31,11 +31,11 @@ public class SaleInfo implements Serializable {
         return litraji;
     }
 
-    public int getK30() {
+    public float getK30() {
         return k30;
     }
 
-    public int getK50() {
+    public float getK50() {
         return k50;
     }
 }

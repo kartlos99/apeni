@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.kdiakonidze.beerapeni.R;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
+import com.example.kdiakonidze.beerapeni.utils.MyUtil;
 
 import java.util.ArrayList;
 import java.util.zip.Inflater;
@@ -89,29 +90,29 @@ public class ShekvetebiAdapter extends BaseAdapter {
         }
         viewHolder.t_obieqti.setText(shekveta.getObieqti());
         viewHolder.t_ludi.setText(shekveta.getLudi());
-        viewHolder.t_k30wont.setText("" + shekveta.getK30wont());
-        viewHolder.t_k50wont.setText("" + shekveta.getK50wont());
-        viewHolder.t_k30in.setText("" + shekveta.getK30in());
-        viewHolder.t_k50in.setText("" + shekveta.getK50in());
+        viewHolder.t_k30wont.setText(MyUtil.floatToSmartStr(shekveta.getK30wont()));
+        viewHolder.t_k50wont.setText(MyUtil.floatToSmartStr(shekveta.getK50wont()));
+        viewHolder.t_k30in.setText(MyUtil.floatToSmartStr(shekveta.getK30in()));
+        viewHolder.t_k50in.setText(MyUtil.floatToSmartStr(shekveta.getK50in()));
         viewHolder.t_comment.setText(shekveta.getComment());
 
         if (grouped) {
             if (shekveta.getK30in() + shekveta.getK50in() < shekveta.getK30wont() + shekveta.getK50wont()) {
                 viewHolder.ln_row.setBackgroundColor(context.getResources().getColor(R.color.color_orderRed));
-            }else {
+            } else {
                 viewHolder.ln_row.setBackgroundColor(Color.TRANSPARENT);
             }
             viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
-            viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
 
             if (shekveta.getChk().equals("1")) {
-                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_order_circle,0,0,0);
-            }else {
+                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_order_circle, 0, 0, 0);
+            } else {
                 viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
-                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
 
-        }else {
+        } else {
             viewHolder.ln_row.setBackgroundColor(Color.TRANSPARENT);
             if (shekveta.getChk().equals("1")) {
 //                viewHolder.t_obieqti.setBackgroundColor(context.getResources().getColor(R.color.colorCardview_2));
@@ -119,19 +120,18 @@ public class ShekvetebiAdapter extends BaseAdapter {
 //                Drawable drawable = context.getResources().getDrawable(R.drawable.ic_order_circle);
 //                Drawable dr = new ScaleDrawable(drawable,0,8,8).getDrawable();
 //                dr.setBounds(0,0,8,8);
-                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_order_circle,0,0,0);
-            }else {
+                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_order_circle, 0, 0, 0);
+            } else {
                 viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
-                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+                viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
 
-            if(!shekveta.getComment().isEmpty()){
-                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_icon,0,0,0);
-            }else {
-                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
+            if (!shekveta.getComment().isEmpty()) {
+                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_icon, 0, 0, 0);
+            } else {
+                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
         }
-
 
 
         listRowView.setBackgroundColor(Color.blue(45));

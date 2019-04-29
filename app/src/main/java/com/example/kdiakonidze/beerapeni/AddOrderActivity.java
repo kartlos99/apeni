@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -26,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.MyUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,28 +129,28 @@ public class AddOrderActivity extends AppCompatActivity {
         btnK30dec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                eK30Count.setText(pliusMinusText(eK30Count.getText().toString(), false));
+                eK30Count.setText(MyUtil.pliusMinusText(eK30Count.getText().toString(), getString(R.string.minusi)));
             }
         });
 
         btnK30inc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                eK30Count.setText(pliusMinusText(eK30Count.getText().toString(), true));
+                eK30Count.setText(MyUtil.pliusMinusText(eK30Count.getText().toString(), getString(R.string.pliusi)));
             }
         });
 
         btnK50dec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                eK50Count.setText(pliusMinusText(eK50Count.getText().toString(), false));
+                eK50Count.setText(MyUtil.pliusMinusText(eK50Count.getText().toString(), getString(R.string.minusi)));
             }
         });
 
         btnK50inc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                eK50Count.setText(pliusMinusText(eK50Count.getText().toString(), true));
+                eK50Count.setText(MyUtil.pliusMinusText(eK50Count.getText().toString(), getString(R.string.pliusi)));
             }
         });
 
@@ -179,14 +181,19 @@ public class AddOrderActivity extends AppCompatActivity {
         btn_newOrderDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Boolean olredyInList = false;
+                boolean olredyInList = false;
 
                 if (reason.equals(Constantebi.NEW_ORDER)) {
                     for (int i = 0; i < shekvetebiArrayList.size(); i++) {
                         if (shekvetebiArrayList.get(i).getObieqti().equals(currObieqti.getDasaxeleba()) && shekvetebiArrayList.get(i).getLudi().equals(Constantebi.ludiList.get(beertype).getDasaxeleba())) {
+                            Log.d("obieq",currObieqti.getDasaxeleba());
+                            Log.d("ludi",shekvetebiArrayList.get(i).getLudi());
+                            Log.d("wontSUM", String.valueOf(shekvetebiArrayList.get(i).getK30wont() + shekvetebiArrayList.get(i).getK50wont()));
+                            Log.d("inSUM", String.valueOf(shekvetebiArrayList.get(i).getK30in() + shekvetebiArrayList.get(i).getK50in()));
                             if (shekvetebiArrayList.get(i).getK30wont() + shekvetebiArrayList.get(i).getK50wont() > shekvetebiArrayList.get(i).getK30in() + shekvetebiArrayList.get(i).getK50in()) {
                                 olredyInList = true;
                             }
+                            Log.d("in_list", String.valueOf(olredyInList));
                         }
                     }
                 }
@@ -195,8 +202,8 @@ public class AddOrderActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), R.string.msg_orderAlreadyExist, Toast.LENGTH_LONG).show();
                     onBackPressed();
                 } else {
-                    if ( (eK30Count.getText().toString().equals("0") || eK30Count.getText().toString().isEmpty())
-                            && (eK50Count.getText().toString().equals("0") || eK50Count.getText().toString().isEmpty()) ) {
+                    if ((eK30Count.getText().toString().equals("0") || eK30Count.getText().toString().isEmpty())
+                            && (eK50Count.getText().toString().equals("0") || eK50Count.getText().toString().isEmpty())) {
                         Toast.makeText(getApplicationContext(), R.string.msg_enterKasrQuantity, Toast.LENGTH_LONG).show();
                     } else {
                         sendDataToDB();
@@ -218,8 +225,8 @@ public class AddOrderActivity extends AppCompatActivity {
 
     private void shevseba(Shekvetebi shekveta) {
         e_comment.setText(shekveta.getComment());
-        eK30Count.setText(String.valueOf(shekveta.getK30wont()));
-        eK50Count.setText(String.valueOf(shekveta.getK50wont()));
+        eK30Count.setText(MyUtil.floatToSmartStr(shekveta.getK30wont()));
+        eK50Count.setText(MyUtil.floatToSmartStr(shekveta.getK50wont()));
         if (shekveta.getChk().equals("1")) {
             chBox_orderChek.setChecked(true);
         } else {
@@ -245,23 +252,6 @@ public class AddOrderActivity extends AppCompatActivity {
             }
         }
         return 0;
-    }
-
-    private String pliusMinusText(String stringNaomber, boolean oper) {
-        // oper   (true = +) (false = -)
-        if (stringNaomber.equals("")) {
-            stringNaomber = "0";
-        }
-        int ii = Integer.valueOf(stringNaomber);
-
-        if (oper) {
-            ii++;
-        } else {
-            if (ii > 0) {
-                ii--;
-            }
-        }
-        return String.valueOf(ii);
     }
 
     private void sendDataToDB() {

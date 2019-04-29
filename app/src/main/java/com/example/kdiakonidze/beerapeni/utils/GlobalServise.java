@@ -155,13 +155,13 @@ public class GlobalServise {
 
                         for (int i = 0; i < response.length(); i++) {
                             if (objid == response.getJSONObject(i).getInt("obj_id")) {
-                                objPrice.getFasebi().add(response.getJSONObject(i).getDouble("fasi"));
+                                objPrice.getFasebi().add( Float.valueOf(response.getJSONObject(i).getString("fasi")) );
                             } else {
                                 Constantebi.FASEBI.add(objPrice);
 
                                 objid = response.getJSONObject(i).getInt("obj_id");
                                 objPrice = new PeerObjPrice(objid);
-                                objPrice.getFasebi().add(response.getJSONObject(i).getDouble("fasi"));
+                                objPrice.getFasebi().add( Float.valueOf(response.getJSONObject(i).getString("fasi")));
                             }
                         }
                         Constantebi.FASEBI.add(objPrice);

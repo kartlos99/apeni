@@ -357,13 +357,13 @@ public class AmonaweriPageFr extends Fragment {
                             Amonaweri amonaweri = new Amonaweri();
                             amonaweri.setTarigi(response.getJSONObject(i).getString("dt"));
                             if (location == 0) {
-                                amonaweri.setPrice(response.getJSONObject(i).getDouble("pr"));
-                                amonaweri.setPay(response.getJSONObject(i).getDouble("pay"));
-                                amonaweri.setBalance(response.getJSONObject(i).getDouble("bal"));
+                                amonaweri.setPrice( (float) response.getJSONObject(i).getDouble("pr"));
+                                amonaweri.setPay( (float) response.getJSONObject(i).getDouble("pay"));
+                                amonaweri.setBalance( (float) response.getJSONObject(i).getDouble("bal"));
                             } else {
-                                amonaweri.setK_in(response.getJSONObject(i).getInt("k_in"));
-                                amonaweri.setK_out(response.getJSONObject(i).getInt("k_out"));
-                                amonaweri.setK_balance(response.getJSONObject(i).getInt("bal"));
+                                amonaweri.setK_in( (float) response.getJSONObject(i).getDouble("k_in"));
+                                amonaweri.setK_out( (float) response.getJSONObject(i).getDouble("k_out"));
+                                amonaweri.setK_balance( (float) response.getJSONObject(i).getDouble("bal"));
                             }
                             amonaweri.setId(response.getJSONObject(i).getInt("id"));
                             amonaweri.setComment(response.getJSONObject(i).getString("comment"));
@@ -417,12 +417,12 @@ public class AmonaweriPageFr extends Fragment {
                 e.printStackTrace();
             }
 
-            Double pr = 0.0;
-            Double pay = 0.0;
-            Double bal = rowList.get(0).getBalance();
-            int k_in = 0;
-            int k_out = 0;
-            int k_bal = rowList.get(0).getK_balance();
+            float pr = 0.0f;
+            float pay = 0.0f;
+            float bal = rowList.get(0).getBalance();
+            float k_in = 0.0f;
+            float k_out = 0.0f;
+            float k_bal = rowList.get(0).getK_balance();
 
             for (int i = 0; i < rowList.size(); i++) {
                 try {

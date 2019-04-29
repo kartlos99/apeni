@@ -2,6 +2,7 @@ package com.example.kdiakonidze.beerapeni.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.example.kdiakonidze.beerapeni.R;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.ShekvetebiGR;
+import com.example.kdiakonidze.beerapeni.utils.MyUtil;
 
 import java.util.ArrayList;
 
@@ -85,13 +87,13 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
         for (int i = 0; i < shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().size(); i++) {
             sBuilder.append(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getLudi());
             sBuilder.append(" : ");
-            sBuilder.append(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30wont());
-            sBuilder.append("/");
-            sBuilder.append(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50wont());
+            sBuilder.append(MyUtil.floatToSmartStr(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30wont()));
+            sBuilder.append(" / ");
+            sBuilder.append(MyUtil.floatToSmartStr(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50wont()));
             sBuilder.append(" | ");
-            sBuilder.append(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30in());
-            sBuilder.append("/");
-            sBuilder.append(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50in());
+            sBuilder.append(MyUtil.floatToSmartStr(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30in()));
+            sBuilder.append(" / ");
+            sBuilder.append(MyUtil.floatToSmartStr(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50in()));
             sBuilder.append("\n");
         }
         t_ksum.setText(sBuilder.toString());
@@ -139,10 +141,10 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
         }
         viewHolder.t_obieqti.setText(shekveta.getObieqti());
         viewHolder.t_ludi.setText(shekveta.getLudi());
-        viewHolder.t_k30wont.setText(String.format("%s", shekveta.getK30wont()));
-        viewHolder.t_k50wont.setText(String.format("%s", shekveta.getK50wont()));
-        viewHolder.t_k30in.setText(String.format("%s", shekveta.getK30in()));
-        viewHolder.t_k50in.setText(String.format("%s", shekveta.getK50in()));
+        viewHolder.t_k30wont.setText(MyUtil.floatToSmartStr(shekveta.getK30wont()));
+        viewHolder.t_k50wont.setText(MyUtil.floatToSmartStr(shekveta.getK50wont()));
+        viewHolder.t_k30in.setText(MyUtil.floatToSmartStr(shekveta.getK30in()));
+        viewHolder.t_k50in.setText(MyUtil.floatToSmartStr(shekveta.getK50in()));
         viewHolder.t_comment.setText(shekveta.getComment());
 
         viewHolder.t_k30wont.setTextColor(shekveta.getK30wont() == 0 ? context.getResources().getColor(R.color.not_imp_color) : Color.BLACK);
@@ -151,7 +153,7 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
         viewHolder.t_k50in.setTextColor(shekveta.getK50in() == 0 ? context.getResources().getColor(R.color.not_imp_color) : Color.BLACK);
 
         if (grouped) {
-            if (shekveta.getK30in() + shekveta.getK50in() < shekveta.getK30wont() + shekveta.getK50wont()) {
+            if (Float.compare(shekveta.getK30in() + shekveta.getK50in() , shekveta.getK30wont() + shekveta.getK50wont()) < 0 ) {
                 viewHolder.ln_row.setBackgroundColor(context.getResources().getColor(R.color.color_orderRed));
             } else {
                 viewHolder.ln_row.setBackgroundColor(Color.TRANSPARENT);

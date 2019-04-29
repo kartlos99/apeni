@@ -2,9 +2,6 @@ package com.example.kdiakonidze.beerapeni.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.kdiakonidze.beerapeni.R;
 import com.example.kdiakonidze.beerapeni.models.Amonaweri;
+import com.example.kdiakonidze.beerapeni.utils.MyUtil;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -93,14 +91,14 @@ public class AmonaweriAdapter extends BaseAdapter {
             if (currItem.getK_in() == 0) {
                 viewHolder.t_p2.setText("-");
             } else {
-                viewHolder.t_p2.setText(String.valueOf(currItem.getK_in()));
+                viewHolder.t_p2.setText(MyUtil.floatToSmartStr(currItem.getK_in()));
             }
             if (currItem.getK_out() == 0) {
                 viewHolder.t_p3.setText("-");
             } else {
-                viewHolder.t_p3.setText(String.valueOf(currItem.getK_out()));
+                viewHolder.t_p3.setText(MyUtil.floatToSmartStr(currItem.getK_out()));
             }
-            viewHolder.t_p4.setText(String.valueOf(currItem.getK_balance()));
+            viewHolder.t_p4.setText(MyUtil.floatToSmartStr(currItem.getK_balance()));
         }
 
         viewHolder.t_comment.setText(currItem.getComment());

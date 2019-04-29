@@ -21,6 +21,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +42,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.example.kdiakonidze.beerapeni.adapters.SawyobiAdapter;
 import com.example.kdiakonidze.beerapeni.models.Totalinout;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.MyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,7 +61,7 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
     private Toolbar toolbar;
     private Button btn_chawera, btn_beerleft, btn_beerright, btnK30dec, btnK30inc, btnK50dec, btnK50inc, btnK30dec_Kout, btnK30inc_Kout, btnK50dec_Kout, btnK50inc_Kout, btn_changeDate, btn_emptyK_list;
     private EditText eK30Count, eK50Count, eK30Count_Kout, eK50Count_Kout;
-    private String sK30Count = "0", sK50Count = "0", sK30Count_Kout = "0", sK50Count_Kout = "0";
+    private String sK30Count = "", sK50Count = "", sK30Count_Kout = "", sK50Count_Kout = "";
     private Calendar calendar;
     private TextView t_beerType, t_empty30, t_empty50;
 //    private CardView cardView_chamotana, cardView_wageba, cardView_nashti_full, cardView_nashti_empty;
@@ -75,7 +77,8 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
     String archeuli_tarigi, archeuli_dro;
     SimpleDateFormat timeFormat;
     SimpleDateFormat dateFormat;
-    private int beerIndex = 0, beerId = 0, int_emptyK30 = 0, int_emptyK50 = 0, k30at_obj = 0, k50at_obj = 0;
+    private int beerIndex = 0, beerId = 0;
+    private float int_emptyK30 = 0, int_emptyK50 = 0, k30at_obj = 0, k50at_obj = 0;
     private ArrayList<Totalinout> totalinfo;
     private SawyobiAdapter sawyobiAdapter;
 
@@ -114,16 +117,16 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.btn_k30_dec:
-                    eK30Count_Kout.setText(pliusMinusText(eK30Count_Kout.getText().toString(), false));
+                    eK30Count_Kout.setText(MyUtil.pliusMinusText(eK30Count_Kout.getText().toString(), getString(R.string.minusi)));
                     break;
                 case R.id.btn_k30_inc:
-                    eK30Count_Kout.setText(pliusMinusText(eK30Count_Kout.getText().toString(), true));
+                    eK30Count_Kout.setText(MyUtil.pliusMinusText(eK30Count_Kout.getText().toString(), getString(R.string.pliusi)));
                     break;
                 case R.id.btn_k50_dec:
-                    eK50Count_Kout.setText(pliusMinusText(eK50Count_Kout.getText().toString(), false));
+                    eK50Count_Kout.setText(MyUtil.pliusMinusText(eK50Count_Kout.getText().toString(), getString(R.string.minusi)));
                     break;
                 case R.id.btn_k50_inc:
-                    eK50Count_Kout.setText(pliusMinusText(eK50Count_Kout.getText().toString(), true));
+                    eK50Count_Kout.setText(MyUtil.pliusMinusText(eK50Count_Kout.getText().toString(), getString(R.string.pliusi)));
                     break;
             }
         }
@@ -140,10 +143,10 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         outState.putString("k50", eK50Count.getText().toString());
         outState.putString("k30out", eK30Count_Kout.getText().toString());
         outState.putString("k50out", eK50Count_Kout.getText().toString());
-        outState.putInt("empty30", int_emptyK30);
-        outState.putInt("empty50", int_emptyK50);
-        outState.putInt("k30at", k30at_obj);
-        outState.putInt("k50at", k50at_obj);
+        outState.putFloat("empty30", int_emptyK30);
+        outState.putFloat("empty50", int_emptyK50);
+        outState.putFloat("k30at", k30at_obj);
+        outState.putFloat("k50at", k50at_obj);
         super.onSaveInstanceState(outState);
     }
 
@@ -184,6 +187,8 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         toolbar.setTitle(R.string.sawyobi);
         setSupportActionBar(toolbar);
 
+        totalinfo = new ArrayList<>();
+
         if (savedInstanceState != null) {
 //            totalinfo = (ArrayList<Totalinout>) savedInstanceState.getSerializable("data_array");
             Object listObj = savedInstanceState.getSerializable("data_array");
@@ -210,10 +215,10 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
             sK50Count_Kout = savedInstanceState.getString("k50out");
 
             //Toast.makeText(this, savedInstanceState.getString("k30") + " " + savedInstanceState.getString("k30out"), Toast.LENGTH_SHORT).show();
-            int_emptyK30 = savedInstanceState.getInt("empty30");
-            int_emptyK50 = savedInstanceState.getInt("empty50");
-            k30at_obj = savedInstanceState.getInt("k30at");
-            k50at_obj = savedInstanceState.getInt("k50at");
+            int_emptyK30 = savedInstanceState.getFloat("empty30");
+            int_emptyK50 = savedInstanceState.getFloat("empty50");
+            k30at_obj = savedInstanceState.getFloat("k30at");
+            k50at_obj = savedInstanceState.getFloat("k50at");
             vizualizacia();
             Date date1 = calendar.getTime();
             try {
@@ -227,7 +232,6 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         } else {
             t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba());
             beerId = Constantebi.ludiList.get(beerIndex).getId();
-            totalinfo = new ArrayList<>();
             archeuli_tarigi = dateFormat.format(calendar.getTime());
             archeuli_dro = timeFormat.format(calendar.getTime());
             calendar.add(Calendar.HOUR, 24);
@@ -369,47 +373,30 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_k30_dec:
-                eK30Count.setText(pliusMinusText(eK30Count.getText().toString(), false));
+                eK30Count.setText(MyUtil.pliusMinusText(eK30Count.getText().toString(), getString(R.string.minusi)));
                 break;
             case R.id.btn_k30_inc:
-                eK30Count.setText(pliusMinusText(eK30Count.getText().toString(), true));
+                eK30Count.setText(MyUtil.pliusMinusText(eK30Count.getText().toString(), getString(R.string.pliusi)));
                 break;
             case R.id.btn_k50_dec:
-                eK50Count.setText(pliusMinusText(eK50Count.getText().toString(), false));
+                eK50Count.setText(MyUtil.pliusMinusText(eK50Count.getText().toString(), getString(R.string.minusi)));
                 break;
             case R.id.btn_k50_inc:
-                eK50Count.setText(pliusMinusText(eK50Count.getText().toString(), true));
+                eK50Count.setText(MyUtil.pliusMinusText(eK50Count.getText().toString(), getString(R.string.pliusi)));
                 break;
             case R.id.btn_k30_dec_KasriOut:
-                eK30Count_Kout.setText(pliusMinusText(eK30Count_Kout.getText().toString(), false));
+                eK30Count_Kout.setText(MyUtil.pliusMinusText(eK30Count_Kout.getText().toString(), getString(R.string.minusi)));
                 break;
             case R.id.btn_k30_inc_KasriOut:
-                eK30Count_Kout.setText(pliusMinusText(eK30Count_Kout.getText().toString(), true));
+                eK30Count_Kout.setText(MyUtil.pliusMinusText(eK30Count_Kout.getText().toString(), getString(R.string.pliusi)));
                 break;
             case R.id.btn_k50_dec_KasriOut:
-                eK50Count_Kout.setText(pliusMinusText(eK50Count_Kout.getText().toString(), false));
+                eK50Count_Kout.setText(MyUtil.pliusMinusText(eK50Count_Kout.getText().toString(), getString(R.string.minusi)));
                 break;
             case R.id.btn_k50_inc_KasriOut:
-                eK50Count_Kout.setText(pliusMinusText(eK50Count_Kout.getText().toString(), true));
+                eK50Count_Kout.setText(MyUtil.pliusMinusText(eK50Count_Kout.getText().toString(), getString(R.string.pliusi)));
                 break;
         }
-    }
-
-    private String pliusMinusText(String stringNaomber, boolean oper) {
-        // oper   (true = +) (false = -)
-        if (stringNaomber.equals("")) {
-            stringNaomber = "0";
-        }
-        int ii = Integer.valueOf(stringNaomber);
-
-        if (oper) {
-            ii++;
-        } else {
-            if (ii > 0) {
-                ii--;
-            }
-        }
-        return String.valueOf(ii);
     }
 
     private void sendDataToDB(final String sChamotana, final String sWageba, final String chek) {
@@ -442,7 +429,7 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
                 params.put("distributor_id", Constantebi.USER_ID);
                 params.put("comment", t_comment.getText().toString());
 
-                params.put("beer_type", String.valueOf(String.valueOf(beerId)));
+                params.put("beer_type", String.valueOf(beerId));
 
                 // chamotanili ksrebi
                 params.put("k30", eK30Count.getText().toString());
@@ -481,10 +468,10 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
 
                         for (int i = 0; i < response.length(); i++) {
                             String dasaxeleba = response.getJSONObject(i).getString("ludis_id"); // 0 - carieli kasrebi, sxva ludis saxeli iqneba
-                            int k30s = response.getJSONObject(i).getInt("k30s");
-                            int k50s = response.getJSONObject(i).getInt("k50s");
-                            int k30r = response.getJSONObject(i).getInt("k30r");
-                            int k50r = response.getJSONObject(i).getInt("k50r");
+                            float k30s = (float) response.getJSONObject(i).getDouble("k30s");
+                            float k50s = (float) response.getJSONObject(i).getDouble("k50s");
+                            float k30r = (float) response.getJSONObject(i).getDouble("k30r");
+                            float k50r = (float) response.getJSONObject(i).getDouble("k50r");
 
                             if (dasaxeleba.equals("0")) {
                                 int_emptyK30 = k30r - k30s;
@@ -543,8 +530,8 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
     }
 
     private void vizualizacia() {
-        t_empty30.setText(String.format("30ლ : %s (+%s)", int_emptyK30, k30at_obj));
-        t_empty50.setText(String.format("50ლ : %s (+%s)", int_emptyK50, k50at_obj));
+        t_empty30.setText(String.format("30ლ :\n%s (+%s)", MyUtil.floatToSmartStr(int_emptyK30), MyUtil.floatToSmartStr(k30at_obj)));
+        t_empty50.setText(String.format("50ლ :\n%s (+%s)", MyUtil.floatToSmartStr(int_emptyK50), MyUtil.floatToSmartStr(k50at_obj)));
     }
 
     private void dasasruli() {

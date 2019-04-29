@@ -33,6 +33,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.models.SawyobiDetailRow;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.MyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,7 +70,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
     protected void onResume() {
         super.onResume();
         if (currObieqti != null) {
-            priceCalculation();
+            priceCalculation(eK30Count.getText().toString(), eK50Count.getText().toString());
         }
     }
 
@@ -233,7 +234,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                     t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba());
                 } else {
                     t_beerType.setText(String.format("%s\n%s", Constantebi.ludiList.get(beerIndex).getDasaxeleba(), currObieqti.getFasebi().get(beerIndex)));
-                    priceCalculation();
+                    priceCalculation(eK30Count.getText().toString(), eK50Count.getText().toString());
                 }
             }
         });
@@ -250,7 +251,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                     t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba());
                 } else {
                     t_beerType.setText(String.format("%s\n%s", Constantebi.ludiList.get(beerIndex).getDasaxeleba(), currObieqti.getFasebi().get(beerIndex)));
-                    priceCalculation();
+                    priceCalculation(eK30Count.getText().toString(), eK50Count.getText().toString());
                 }
             }
         });
@@ -312,7 +313,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (!sawyobi) {
-                    priceCalculation();
+                    priceCalculation(eK30Count.getText().toString(), eK50Count.getText().toString());
                     if (t_comment.getEditText().getText().toString().equals("") && b) {
                         t_comment.getEditText().setText("საჩუქრად!");
                     }
@@ -332,8 +333,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
 
         if (beerId != 0) {
             t_ludi_in.setText("ჩამოტანა");
-            eK30Count.setText(String.valueOf(row.getK30()));
-            eK50Count.setText(String.valueOf(row.getK50()));
+            eK30Count.setText(MyUtil.floatToSmartStr(row.getK30()));
+            eK50Count.setText(MyUtil.floatToSmartStr(row.getK50()));
             for (int i = 0; i < Constantebi.ludiList.size(); i++) {
                 if (Constantebi.ludiList.get(i).getId() == beerId) {
                     beerIndex = i;
@@ -342,8 +343,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             t_beerType.setText(Constantebi.ludiList.get(beerIndex).getDasaxeleba());
         } else {
             t_2title.setText("წაღება");
-            eK30Count_Kout.setText(String.valueOf(row.getK30()));
-            eK50Count_Kout.setText(String.valueOf(row.getK50()));
+            eK30Count_Kout.setText(MyUtil.floatToSmartStr(row.getK30()));
+            eK50Count_Kout.setText(MyUtil.floatToSmartStr(row.getK50()));
             chk_ptichka.setVisibility(View.INVISIBLE);
         }
 
@@ -377,8 +378,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                     if (operacia.equals(Constantebi.MITANA)) {
                         try {
 
-                            eK30Count.setText(response.getJSONObject(0).getString("kasri30"));
-                            eK50Count.setText(response.getJSONObject(0).getString("kasri50"));
+                            eK30Count.setText(MyUtil.floatToSmartStr(Float.valueOf(response.getJSONObject(0).getString("kasri30"))));
+                            eK50Count.setText(MyUtil.floatToSmartStr(Float.valueOf(response.getJSONObject(0).getString("kasri50"))));
                             if (t_comment.getEditText() != null)
                                 t_comment.getEditText().setText(response.getJSONObject(0).getString("comment"));
                             beerId = response.getJSONObject(0).getInt("ludis_id");
@@ -408,8 +409,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
 
                     if (operacia.equals(Constantebi.K_OUT)) {
                         try {
-                            eK30Count_Kout.setText(response.getJSONObject(0).getString("kasri30"));
-                            eK50Count_Kout.setText(response.getJSONObject(0).getString("kasri50"));
+                            eK30Count_Kout.setText(MyUtil.floatToSmartStr(Float.valueOf(response.getJSONObject(0).getString("kasri30"))));
+                            eK50Count_Kout.setText(MyUtil.floatToSmartStr(Float.valueOf(response.getJSONObject(0).getString("kasri50"))));
                             t_comment.getEditText().setText(response.getJSONObject(0).getString("comment"));
 
                             for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
@@ -447,22 +448,17 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         queue.add(request_Record);
     }
 
-    private void priceCalculation() {
-        String k30 = eK30Count.getText().toString();
-        String k50 = eK50Count.getText().toString();
-        if (k30.equals("")) {
-            k30 = "0";
-        }
-        if (k50.equals("")) {
-            k50 = "0";
-        }
+    private void priceCalculation(String k30text, String k50text) {
+        float k30v, k50v;
+        k30v = k30text.isEmpty() ? 0 : Float.parseFloat(k30text);
+        k50v = k50text.isEmpty() ? 0 : Float.parseFloat(k50text);
 
-        double fasi = 0.0;
+        float fasi = 0.0f;
         if (!chk_sachuqari.isChecked()) {
-            fasi = Integer.valueOf(k30) * 30 * currObieqti.getFasebi().get(beerIndex) + Integer.valueOf(k50) * 50 * currObieqti.getFasebi().get(beerIndex);
+            fasi = (k30v * 30 * currObieqti.getFasebi().get(beerIndex)) + (k50v * 50 * currObieqti.getFasebi().get(beerIndex));
         }
-        t_ludi_in.setText(String.format("%s (%s \u20BE )", getResources().getString(R.string.ludis_shetana), String.valueOf(fasi)));
-        Log.d("PrCalc:", String.format("%s %s f-%s", k30, k50, fasi));
+        t_ludi_in.setText(String.format("%s (%s \u20BE )", getResources().getString(R.string.ludis_shetana), MyUtil.floatToSmartStr(fasi)));
+        Log.d("PrCalc:", String.format("%s %s f-%s", k30v, k50v, fasi));
     }
 
     private void get_davalianeba() {
@@ -548,53 +544,36 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         chk_ptichka = findViewById(R.id.mitanis_ptichka);
     }
 
-    private String pliusMinusText(String stringNaomber, boolean oper) {
-        // oper   (true = +) (false = -)
-        if (stringNaomber.equals("")) {
-            stringNaomber = "0";
-        }
-        int ii = Integer.valueOf(stringNaomber);
-
-        if (oper) {
-            ii++;
-        } else {
-            if (ii > 0) {
-                ii--;
-            }
-        }
-        return String.valueOf(ii);
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_k30_dec:
-                eK30Count.setText(pliusMinusText(eK30Count.getText().toString(), false));
+                eK30Count.setText(MyUtil.pliusMinusText(eK30Count.getText().toString(), getString(R.string.minusi)));
                 break;
             case R.id.btn_k30_inc:
-                eK30Count.setText(pliusMinusText(eK30Count.getText().toString(), true));
+                eK30Count.setText(MyUtil.pliusMinusText(eK30Count.getText().toString(), getString(R.string.pliusi)));
                 break;
             case R.id.btn_k50_dec:
-                eK50Count.setText(pliusMinusText(eK50Count.getText().toString(), false));
+                eK50Count.setText(MyUtil.pliusMinusText(eK50Count.getText().toString(), getString(R.string.minusi)));
                 break;
             case R.id.btn_k50_inc:
-                eK50Count.setText(pliusMinusText(eK50Count.getText().toString(), true));
+                eK50Count.setText(MyUtil.pliusMinusText(eK50Count.getText().toString(), getString(R.string.pliusi)));
                 break;
             case R.id.btn_k30_dec_KasriOut:
-                eK30Count_Kout.setText(pliusMinusText(eK30Count_Kout.getText().toString(), false));
+                eK30Count_Kout.setText(MyUtil.pliusMinusText(eK30Count_Kout.getText().toString(), getString(R.string.minusi)));
                 break;
             case R.id.btn_k30_inc_KasriOut:
-                eK30Count_Kout.setText(pliusMinusText(eK30Count_Kout.getText().toString(), true));
+                eK30Count_Kout.setText(MyUtil.pliusMinusText(eK30Count_Kout.getText().toString(), getString(R.string.pliusi)));
                 break;
             case R.id.btn_k50_dec_KasriOut:
-                eK50Count_Kout.setText(pliusMinusText(eK50Count_Kout.getText().toString(), false));
+                eK50Count_Kout.setText(MyUtil.pliusMinusText(eK50Count_Kout.getText().toString(), getString(R.string.minusi)));
                 break;
             case R.id.btn_k50_inc_KasriOut:
-                eK50Count_Kout.setText(pliusMinusText(eK50Count_Kout.getText().toString(), true));
+                eK50Count_Kout.setText(MyUtil.pliusMinusText(eK50Count_Kout.getText().toString(), getString(R.string.pliusi)));
                 break;
         }
         if (!sawyobi)
-            priceCalculation();
+            priceCalculation(eK30Count.getText().toString(), eK50Count.getText().toString());
     }
 
     private void sendDataToDB(final Integer editId, final String sMitana, final String sKout, final String sMout, final Boolean sawyobi) {

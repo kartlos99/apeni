@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.kdiakonidze.beerapeni.R;
 import com.example.kdiakonidze.beerapeni.models.SawyobiDetailRow;
+import com.example.kdiakonidze.beerapeni.utils.MyUtil;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,8 +26,8 @@ public class SawyobiDetailAdapter extends BaseAdapter {
     private ArrayList<SawyobiDetailRow> mydata;
     private LayoutInflater inflater;
     private ViewHolder viewHolder;
-    SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
     public SawyobiDetailAdapter(Context context, ArrayList<SawyobiDetailRow> mydata) {
         this.mydata = mydata;
@@ -61,10 +62,10 @@ public class SawyobiDetailAdapter extends BaseAdapter {
             viewHolder.t_tarigi = (TextView) listRowView.findViewById(R.id.t_tarigi_sawylist);
             viewHolder.t_distributor = (TextView) listRowView.findViewById(R.id.t_distrib);
             viewHolder.t_ludi = (TextView) listRowView.findViewById(R.id.t_ludi_sawylist);
-            viewHolder.t_k30in= (TextView) listRowView.findViewById(R.id.t_k30in_sawylist);
-            viewHolder.t_k50in= (TextView) listRowView.findViewById(R.id.t_k50in_sawylist);
-            viewHolder.t_k30out= (TextView) listRowView.findViewById(R.id.t_k30out_sawylist);
-            viewHolder.t_k50out= (TextView) listRowView.findViewById(R.id.t_k50out_sawylist);
+            viewHolder.t_k30in = (TextView) listRowView.findViewById(R.id.t_k30in_sawylist);
+            viewHolder.t_k50in = (TextView) listRowView.findViewById(R.id.t_k50in_sawylist);
+            viewHolder.t_k30out = (TextView) listRowView.findViewById(R.id.t_k30out_sawylist);
+            viewHolder.t_k50out = (TextView) listRowView.findViewById(R.id.t_k50out_sawylist);
             viewHolder.t_comment = (TextView) listRowView.findViewById(R.id.t_sawylist_row_comment);
 
             listRowView.setTag(viewHolder);
@@ -84,34 +85,34 @@ public class SawyobiDetailAdapter extends BaseAdapter {
 
         viewHolder.t_tarigi.setText(shortDate);
         viewHolder.t_ludi.setText(row.getLudi());
-        if (row.getLudi().equals("-")){
-            viewHolder.t_k30out.setText("" + row.getK30());
-            viewHolder.t_k50out.setText("" + row.getK50());
+        if (row.getLudi().equals("-")) {
+            viewHolder.t_k30out.setText(MyUtil.floatToSmartStr(row.getK30()));
+            viewHolder.t_k50out.setText(MyUtil.floatToSmartStr(row.getK50()));
             viewHolder.t_k30in.setText("");
             viewHolder.t_k50in.setText("");
-        }else{
+        } else {
             viewHolder.t_k30out.setText("");
             viewHolder.t_k50out.setText("");
-            viewHolder.t_k30in.setText("" + row.getK30());
-            viewHolder.t_k50in.setText("" + row.getK50());
+            viewHolder.t_k30in.setText(MyUtil.floatToSmartStr(row.getK30()));
+            viewHolder.t_k50in.setText(MyUtil.floatToSmartStr(row.getK50()));
         }
         viewHolder.t_comment.setText(row.getComment());
         viewHolder.t_distributor.setText(row.getDistributor());
 
 
-            viewHolder.ln_row.setBackgroundColor(Color.TRANSPARENT);
-            if (row.getChek().equals("1")) {
-                viewHolder.t_tarigi.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_order_circle,0,0,0);
-            }else {
-                viewHolder.t_tarigi.setBackgroundColor(Color.TRANSPARENT);
-                viewHolder.t_tarigi.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-            }
+        viewHolder.ln_row.setBackgroundColor(Color.TRANSPARENT);
+        if (row.getChek().equals("1")) {
+            viewHolder.t_tarigi.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_order_circle, 0, 0, 0);
+        } else {
+            viewHolder.t_tarigi.setBackgroundColor(Color.TRANSPARENT);
+            viewHolder.t_tarigi.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
 
-            if(!row.getComment().isEmpty()){
-                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_icon,0,0,0);
-            }else {
-                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
-            }
+        if (!row.getComment().isEmpty()) {
+            viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_icon, 0, 0, 0);
+        } else {
+            viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        }
 
 
         return listRowView;

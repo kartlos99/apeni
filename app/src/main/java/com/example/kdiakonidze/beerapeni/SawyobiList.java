@@ -109,8 +109,8 @@ public class SawyobiList extends AppCompatActivity {
                             String tarigi = response.getJSONObject(i).getString("tarigi");
                             String name = response.getJSONObject(i).getString("name");
                             String ludi = response.getJSONObject(i).getString("ludi");
-                            int k30 = response.getJSONObject(i).getInt("kasri30");
-                            int k50 = response.getJSONObject(i).getInt("kasri50");
+                            float k30 = (float) response.getJSONObject(i).getDouble("kasri30");
+                            float k50 = (float) response.getJSONObject(i).getDouble("kasri50");
                             String comment = response.getJSONObject(i).getString("comment");
                             String chek = response.getJSONObject(i).getString("chek");
                             String recID = response.getJSONObject(i).getString("id");

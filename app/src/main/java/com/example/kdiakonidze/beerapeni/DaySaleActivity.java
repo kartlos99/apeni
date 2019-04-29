@@ -26,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.adapters.DaySalesAdapter;
 import com.example.kdiakonidze.beerapeni.models.SaleInfo;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.MyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,9 +41,10 @@ import java.util.List;
 
 public class DaySaleActivity extends AppCompatActivity {
 
-    private int screenDefOrientation, k30empty = 0, k50empty = 0;
+    private int screenDefOrientation;
+    private float k30empty = 0.0f, k50empty = 0.0f;
     private ArrayList<SaleInfo> salesDay;
-    private Double takeMoney = 0.0;
+    private float takeMoney = 0.0f;
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
     private String archeuli_dge;
@@ -76,9 +78,9 @@ public class DaySaleActivity extends AppCompatActivity {
         outState.putSerializable("sales_list", salesDay);
         outState.putBoolean("progress", requestInProgres);
         outState.putInt("distrId", sp_distr.getSelectedItemPosition());
-        outState.putDouble("takemoney", takeMoney);
-        outState.putInt("k30e", k30empty);
-        outState.putInt("k50e", k50empty);
+        outState.putFloat("takemoney", takeMoney);
+        outState.putFloat("k30e", k30empty);
+        outState.putFloat("k50e", k50empty);
         super.onSaveInstanceState(outState);
     }
 
@@ -146,9 +148,9 @@ public class DaySaleActivity extends AppCompatActivity {
             }
             salesAdapter = new DaySalesAdapter(getApplicationContext(), salesDay);
             nonScrolSaleslistView.setAdapter(salesAdapter);
-            takeMoney = savedInstanceState.getDouble("takemoney");
-            k30empty = savedInstanceState.getInt("k30e");
-            k50empty = savedInstanceState.getInt("k50e");
+            takeMoney = savedInstanceState.getFloat("takemoney");
+            k30empty = savedInstanceState.getFloat("k30e");
+            k50empty = savedInstanceState.getFloat("k50e");
             showAtherInfo(salesDay);
             Date date = new Date();
             try {
@@ -231,18 +233,18 @@ public class DaySaleActivity extends AppCompatActivity {
 
                         for (int i = 0; i < response.length() - 2; i++) {
                             String dasaxeleba = response.getJSONObject(i).getString("dasaxeleba");
-                            Double pr = response.getJSONObject(i).getDouble("pr");
+                            float pr = (float) response.getJSONObject(i).getDouble("pr");
                             int lt = response.getJSONObject(i).getInt("lt");
-                            int k30 = response.getJSONObject(i).getInt("k30");
-                            int k50 = response.getJSONObject(i).getInt("k50");
+                            float k30 = (float) response.getJSONObject(i).getDouble("k30");
+                            float k50 = (float) response.getJSONObject(i).getDouble("k50");
 
                             salesDay.add(new SaleInfo(dasaxeleba, pr, lt, k30, k50));
                         }
 
-                        takeMoney = response.getJSONObject(response.length() - 2).getDouble("money");
+                        takeMoney = (float) response.getJSONObject(response.length() - 2).getDouble("money");
 
-                        k30empty = response.getJSONObject(response.length() - 1).getInt("k30");
-                        k50empty = response.getJSONObject(response.length() - 1).getInt("k50");
+                        k30empty = (float) response.getJSONObject(response.length() - 1).getDouble("k30");
+                        k50empty = (float) response.getJSONObject(response.length() - 1).getDouble("k50");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -283,19 +285,19 @@ public class DaySaleActivity extends AppCompatActivity {
     }
 
     private void showAtherInfo(ArrayList<SaleInfo> salesDay) {
-        int k3 = 0, k5 = 0;
-        double pr = 0;
+        float k3 = 0, k5 = 0;
+        float pr = 0;
         for (int i = 0; i < salesDay.size(); i++) {
             k3 += salesDay.get(i).getK30();
             k5 += salesDay.get(i).getK50();
             pr += salesDay.get(i).getPr();
         }
 
-        t_k30count.setText(String.format("%s\n%s", k3, k30empty));
-        t_k50count.setText(String.format("%s\n%s", k5, k50empty));
+        t_k30count.setText(String.format("%s\n%s", MyUtil.floatToSmartStr(k3), MyUtil.floatToSmartStr(k30empty)));
+        t_k50count.setText(String.format("%s\n%s", MyUtil.floatToSmartStr(k5), MyUtil.floatToSmartStr(k50empty)));
+        DecimalFormat df_pr = new DecimalFormat("#0");
+        t_laricount.setText(df_pr.format(pr));
         DecimalFormat df = new DecimalFormat("#0.00");
-        t_laricount.setText(df.format(pr));
-
         t_takeMoney.setText(df.format(takeMoney));
     }
 

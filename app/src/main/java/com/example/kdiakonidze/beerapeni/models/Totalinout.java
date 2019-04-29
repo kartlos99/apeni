@@ -8,9 +8,9 @@ import java.io.Serializable;
 
 public class Totalinout implements Serializable {
     private String ludi;
-    private int k30s, k50s, k30r, k50r;
+    private float k30s, k50s, k30r, k50r;
 
-    public Totalinout(String ludi, int k30s, int k50s, int k30r, int k50r) {
+    public Totalinout(String ludi, float k30s, float k50s, float k30r, float k50r) {
         this.ludi = ludi;
         this.k30s = k30s;
         this.k50s = k50s;
@@ -26,35 +26,35 @@ public class Totalinout implements Serializable {
         this.ludi = ludi;
     }
 
-    public int getK30s() {
+    public float getK30s() {
         return k30s;
     }
 
-    public void setK30s(int k30s) {
+    public void setK30s(float k30s) {
         this.k30s = k30s;
     }
 
-    public int getK50s() {
+    public float getK50s() {
         return k50s;
     }
 
-    public void setK50s(int k50s) {
+    public void setK50s(float k50s) {
         this.k50s = k50s;
     }
 
-    public int getK30r() {
+    public float getK30r() {
         return k30r;
     }
 
-    public void setK30r(int k30r) {
+    public void setK30r(float k30r) {
         this.k30r = k30r;
     }
 
-    public int getK50r() {
+    public float getK50r() {
         return k50r;
     }
 
-    public void setK50r(int k50r) {
+    public void setK50r(float k50r) {
         this.k50r = k50r;
     }
 }

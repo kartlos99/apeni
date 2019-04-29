@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.example.kdiakonidze.beerapeni.R;
 import com.example.kdiakonidze.beerapeni.models.SysClean;
 import com.example.kdiakonidze.beerapeni.models.Totalinout;
+import com.example.kdiakonidze.beerapeni.utils.MyUtil;
 
 import java.util.ArrayList;
 
@@ -60,8 +61,8 @@ public class SawyobiAdapter extends BaseAdapter {
 
         Totalinout curritem = (Totalinout) getItem(position);
         viewHolder.t_dasaxeleba.setText(curritem.getLudi());
-        viewHolder.t_30sawy.setText(String.valueOf(curritem.getK30s() - curritem.getK30r()));
-        viewHolder.t_50sawy.setText(String.valueOf(curritem.getK50s() - curritem.getK50r()));
+        viewHolder.t_30sawy.setText(MyUtil.floatToSmartStr(curritem.getK30s() - curritem.getK30r()));
+        viewHolder.t_50sawy.setText(MyUtil.floatToSmartStr(curritem.getK50s() - curritem.getK50r()));
 
         return listRowView;
     }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class PeerObjPrice {
     private Integer obj_id;
-    private ArrayList<Double> fasebi = new ArrayList<>();
+    private ArrayList<Float> fasebi = new ArrayList<>();
 
     public PeerObjPrice(Integer obj_id) {
         this.obj_id = obj_id;
@@ -22,11 +22,11 @@ public class PeerObjPrice {
         this.obj_id = obj_id;
     }
 
-    public ArrayList<Double> getFasebi() {
+    public ArrayList<Float> getFasebi() {
         return fasebi;
     }
 
-    public void setFasebi(ArrayList<Double> fasebi) {
+    public void setFasebi(ArrayList<Float> fasebi) {
         this.fasebi = fasebi;
     }
 }

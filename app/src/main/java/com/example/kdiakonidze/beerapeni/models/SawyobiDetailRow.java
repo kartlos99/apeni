@@ -8,13 +8,14 @@ import java.io.Serializable;
 
 public class SawyobiDetailRow implements Serializable {
     private String tarigi, distributor, ludi, comment, chek, id;
-    private int k30, k50, ludisID;
+    private int ludisID;
+    private float k30, k50;
 
     public String getId() {
         return id;
     }
 
-    public SawyobiDetailRow(String id, String tarigi, String distributor, String ludi, int ludisID, String comment, int k30, int k50, String chek) {
+    public SawyobiDetailRow(String id, String tarigi, String distributor, String ludi, int ludisID, String comment, float k30, float k50, String chek) {
         this.tarigi = tarigi;
         this.distributor = distributor;
         this.ludi = ludi;
@@ -46,11 +47,11 @@ public class SawyobiDetailRow implements Serializable {
         return comment;
     }
 
-    public int getK30() {
+    public float getK30() {
         return k30;
     }
 
-    public int getK50() {
+    public float getK50() {
         return k50;
     }
 

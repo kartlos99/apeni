@@ -7,9 +7,9 @@ import java.io.Serializable;
  */
 
 public class Amonaweri implements Serializable {
-    String tarigi, comment;
-    double price, pay, balance;
-    int k_in, k_out, k_balance, id;
+    private String tarigi, comment;
+    private float k_in, k_out, k_balance, price, pay, balance;
+    private int id;
 
     @Override
     public String toString() {
@@ -49,51 +49,51 @@ public class Amonaweri implements Serializable {
         this.tarigi = tarigi;
     }
 
-    public double getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
-    public double getPay() {
+    public float getPay() {
         return pay;
     }
 
-    public void setPay(double pay) {
+    public void setPay(float pay) {
         this.pay = pay;
     }
 
-    public double getBalance() {
+    public float getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(float balance) {
         this.balance = balance;
     }
 
-    public int getK_in() {
+    public float getK_in() {
         return k_in;
     }
 
-    public void setK_in(int k_in) {
+    public void setK_in(float k_in) {
         this.k_in = k_in;
     }
 
-    public int getK_out() {
+    public float getK_out() {
         return k_out;
     }
 
-    public void setK_out(int k_out) {
+    public void setK_out(float k_out) {
         this.k_out = k_out;
     }
 
-    public int getK_balance() {
+    public float getK_balance() {
         return k_balance;
     }
 
-    public void setK_balance(int k_balance) {
+    public void setK_balance(float k_balance) {
         this.k_balance = k_balance;
     }
 }
