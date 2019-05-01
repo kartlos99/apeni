@@ -1,94 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/linear_order_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/img_beer_color"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/right_left_gradient"
+        android:contentDescription="ludis feri"
+        app:layout_constraintBottom_toBottomOf="@id/t_ludi_orderlist"
+        app:layout_constraintEnd_toStartOf="@id/guideline1"
+        app:layout_constraintStart_toEndOf="@id/guideline5"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/img_comment"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="4dp"
+        android:contentDescription="comment indicator"
+        android:src="@drawable/ic_comment_icon"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/t_ludi_orderlist"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/t_obieqti_orderlist"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="40"
-        android:orientation="vertical">
+        android:layout_marginStart="6dp"
+        android:textColor="@color/colorForText"
+        app:layout_constraintEnd_toStartOf="@id/guideline1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/t_obieqti_orderlist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:textColor="@color/colorForText" />
-
-        <TextView
-            android:id="@+id/t_shek_list_distrib"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:textColor="#1122ee"
-            android:visibility="invisible" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_weight="20"
-        android:layout_width="0dp"
-        android:background="@color/color_orderCol"
-        android:layout_height="match_parent">
     <TextView
         android:id="@+id/t_ludi_orderlist"
-        android:textAlignment="center"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:textColor="@color/colorForText" />
-    </LinearLayout>
+        android:layout_marginEnd="4dp"
+        android:textAlignment="center"
+        android:textColor="@color/colorForText"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@+id/t_obieqti_orderlist" />
+
+    <TextView
+        android:id="@+id/t_shek_list_distrib"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:textColor="#5A5A9C"
+        android:textSize="@dimen/textsize_2"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/t_ludi_orderlist"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:layout_weight="20"-->
+    <!--android:background="@color/color_orderCol">-->
+
 
     <TextView
         android:id="@+id/t_k30wont_orderlist"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="9"
-        android:textAlignment="center"
-        android:textColor="@color/colorForText" />
+        android:layout_height="0dp"
+        android:background="@color/color_orderCol"
+        android:gravity="center_vertical|center_horizontal"
+        android:textAlignment="gravity"
+        android:textColor="@color/colorForText"
+        app:layout_constraintBottom_toBottomOf="@id/t_ludi_orderlist"
+        app:layout_constraintEnd_toStartOf="@id/guideline2"
+        app:layout_constraintStart_toEndOf="@id/guideline1"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/t_k50wont_orderlist"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="9"
-        android:background="@color/color_orderCol"
+        android:layout_height="0dp"
+        android:gravity="center_vertical|center_horizontal"
         android:textAlignment="center"
-        android:textColor="@color/colorForText" />
+        android:textColor="@color/colorForText"
+        app:layout_constraintBottom_toBottomOf="@id/t_ludi_orderlist"
+        app:layout_constraintEnd_toStartOf="@id/guideline3"
+        app:layout_constraintStart_toEndOf="@id/guideline2"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/t_k30in_orderlist"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="9"
+        android:layout_height="0dp"
+        android:background="@color/color_orderCol"
+        android:gravity="center_vertical|center_horizontal"
         android:textAlignment="center"
-        android:textColor="@color/colorForText" />
+        android:textColor="@color/colorForText"
+        app:layout_constraintBottom_toBottomOf="@id/t_ludi_orderlist"
+        app:layout_constraintEnd_toStartOf="@id/guideline4"
+        app:layout_constraintStart_toEndOf="@id/guideline3"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/t_k50in_orderlist"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="9"
-        android:background="@color/color_orderCol"
+        android:layout_height="0dp"
+        android:gravity="center_vertical|center_horizontal"
         android:textAlignment="center"
-        android:textColor="@color/colorForText" />
+        android:textColor="@color/colorForText"
+        app:layout_constraintBottom_toBottomOf="@id/t_ludi_orderlist"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline4"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
 
     <TextView
         android:id="@+id/t_orderlist_row_comment"
-        android:textColor="@color/colorForText"
-        android:layout_marginBottom="4dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        android:text="@string/comment"
+        android:textColor="@color/colorForText"
         android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        app:layout_constraintTop_toBottomOf="@id/t_ludi_orderlist" />
 
-</LinearLayout>
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="4dp"
+        android:layout_height="wrap_content"
+        android:background="#228899"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.52" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.64" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.76" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.88" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.30" />
+
+</android.support.constraint.ConstraintLayout>

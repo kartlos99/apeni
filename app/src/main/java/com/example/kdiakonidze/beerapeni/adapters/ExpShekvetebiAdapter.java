@@ -1,12 +1,16 @@
 package com.example.kdiakonidze.beerapeni.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.os.Build;
+import android.support.constraint.ConstraintLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -118,6 +122,8 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
             viewHolder.t_distributor = listRowView.findViewById(R.id.t_shek_list_distrib);
             viewHolder.t_comment = listRowView.findViewById(R.id.t_orderlist_row_comment);
             viewHolder.ln_row = listRowView.findViewById(R.id.linear_order_row);
+            viewHolder.img_BeerColor = listRowView.findViewById(R.id.img_beer_color);
+            viewHolder.img_comment = listRowView.findViewById(R.id.img_comment);
 
             listRowView.setTag(viewHolder);
         } else {
@@ -127,6 +133,12 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
 
         Shekvetebi shekveta = (Shekvetebi) getChild(i, i1);
         ShekvetebiGR gr = (ShekvetebiGR) getGroup(i);
+
+        if (shekveta.getComment().isEmpty()) {
+            viewHolder.img_comment.setVisibility(View.GONE);
+        } else {
+            viewHolder.img_comment.setVisibility(View.VISIBLE);
+        }
 
         if (grouped) {
             viewHolder.t_distributor.setVisibility(View.GONE);
@@ -153,7 +165,7 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
         viewHolder.t_k50in.setTextColor(shekveta.getK50in() == 0 ? context.getResources().getColor(R.color.not_imp_color) : Color.BLACK);
 
         if (grouped) {
-            if (Float.compare(shekveta.getK30in() + shekveta.getK50in() , shekveta.getK30wont() + shekveta.getK50wont()) < 0 ) {
+            if (Float.compare(shekveta.getK30in() + shekveta.getK50in(), shekveta.getK30wont() + shekveta.getK50wont()) < 0) {
                 viewHolder.ln_row.setBackgroundColor(context.getResources().getColor(R.color.color_orderRed));
             } else {
                 viewHolder.ln_row.setBackgroundColor(Color.TRANSPARENT);
@@ -167,27 +179,22 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
                 viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
                 viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
-            viewHolder.t_ludi.setBackgroundColor(Color.parseColor(shekveta.getColor()));
 
+            viewHolder.img_BeerColor.setVisibility(View.VISIBLE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                viewHolder.img_BeerColor.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(shekveta.getColor())));
+            } else {
+                viewHolder.img_BeerColor.setBackgroundColor(Color.parseColor(shekveta.getColor()));
+            }
         } else {
+            viewHolder.img_BeerColor.setVisibility(View.INVISIBLE);
             viewHolder.t_ludi.setBackgroundColor(Color.TRANSPARENT);
             viewHolder.ln_row.setBackgroundColor(Color.TRANSPARENT);
             if (shekveta.getChk().equals("1")) {
-//                viewHolder.t_obieqti.setBackgroundColor(context.getResources().getColor(R.color.colorCardview_2));
-
-//                Drawable drawable = context.getResources().getDrawable(R.drawable.ic_order_circle);
-//                Drawable dr = new ScaleDrawable(drawable,0,8,8).getDrawable();
-//                dr.setBounds(0,0,8,8);
                 viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(R.drawable.circle, 0, 0, 0);
             } else {
                 viewHolder.t_obieqti.setBackgroundColor(Color.TRANSPARENT);
                 viewHolder.t_obieqti.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            }
-
-            if (!shekveta.getComment().isEmpty()) {
-                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_comment_icon, 0, 0, 0);
-            } else {
-                viewHolder.t_distributor.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             }
             listRowView.setBackgroundColor(Color.parseColor(shekveta.getColor()));
         }
@@ -209,6 +216,7 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
 
     private class ViewHolder {
         TextView t_obieqti, t_ludi, t_k30in, t_k50in, t_k30wont, t_k50wont, t_distributor, t_comment;
-        LinearLayout ln_row;
+        ConstraintLayout ln_row;
+        ImageView img_BeerColor, img_comment;
     }
 }

@@ -165,7 +165,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
         listView_shekvetebi.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
-                if (!chBox_orderGroup.isChecked()) {
+//                if (!chBox_orderGroup.isChecked()) {
                     //  Toast.makeText(getApplicationContext(), "მოხსენით დაჯგუფება", Toast.LENGTH_SHORT).show();
                     TextView t_comment = view.findViewById(R.id.t_orderlist_row_comment);
                     Shekvetebi shekvetebi = (Shekvetebi) shekvetebiAdapter.getChild(i, i1);
@@ -176,7 +176,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                             t_comment.setVisibility(View.VISIBLE);
                         }
                     }
-                }
+//                }
                 return true;
             }
         });
@@ -185,6 +185,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
     private ArrayList<Shekvetebi> groupOrders(ArrayList<Shekvetebi> gadmocemuliShekvetebi) {
         ArrayList<Shekvetebi> groupedOrderList = new ArrayList<>();
         String objName = "", beerName = "", dName = "", beerBeckgroundColor = String.format("#%02X%02X%02X", Color.red(Color.WHITE), Color.green(Color.WHITE), Color.blue(Color.WHITE));
+        StringBuilder comment = new StringBuilder();
         float k30w = 0, k50w = 0, k30in = 0, k50in = 0;
         boolean chek = false;
 
@@ -200,31 +201,39 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
         }
 
         for (int i = 0; i < shekvetebiList.size(); i++) {
-            if (shekvetebiList.get(i).getObieqti().equals(objName) && shekvetebiList.get(i).getLudi().equals(beerName)) {
-                k30w += shekvetebiList.get(i).getK30wont();
-                k50w += shekvetebiList.get(i).getK50wont();
-                k30in += shekvetebiList.get(i).getK30in();
-                k50in += shekvetebiList.get(i).getK50in();
-            } else {
+            if (!(shekvetebiList.get(i).getObieqti().equals(objName) && shekvetebiList.get(i).getLudi().equals(beerName))) {
+                // sheicvala obieqti an ludi - vamatebt mimdinares da vqmnit axal GrOrder-s
                 Shekvetebi newGrOrder = new Shekvetebi(objName, beerName, k30in, k50in, k30w, k50w);
-                if (chek) {
-                    newGrOrder.setChk("1");
-                } else {
-                    newGrOrder.setChk("0");
-                }
-                chek = false;
+                newGrOrder.setChk(chek ? "1" : "0");
                 newGrOrder.setDistrib_Name(dName);
                 newGrOrder.setColor(beerBeckgroundColor);
+                newGrOrder.setComment(comment.toString());
                 groupedOrderList.add(newGrOrder);
+
+                chek = false;
+                comment.setLength(0);
                 Shekvetebi shekveta = shekvetebiList.get(i);
                 objName = shekveta.getObieqti();
                 beerName = shekveta.getLudi();
                 dName = shekveta.getDistrib_Name();
                 beerBeckgroundColor = shekveta.getColor();
-                k30w = shekvetebiList.get(i).getK30wont();
-                k50w = shekvetebiList.get(i).getK50wont();
-                k30in = shekvetebiList.get(i).getK30in();
-                k50in = shekvetebiList.get(i).getK50in();
+
+                k30w = 0;
+                k50w = 0;
+                k30in = 0;
+                k50in = 0;
+            }
+
+            k30w += shekvetebiList.get(i).getK30wont();
+            k50w += shekvetebiList.get(i).getK50wont();
+            k30in += shekvetebiList.get(i).getK30in();
+            k50in += shekvetebiList.get(i).getK50in();
+
+            if (!shekvetebiList.get(i).getComment().isEmpty()){
+                if (!comment.toString().isEmpty()) {
+                    comment.append("\n");
+                }
+                comment.append(shekvetebiList.get(i).getComment());
             }
             if (shekvetebiList.get(i).getChk().equals("1")) {
                 chek = true;
@@ -233,14 +242,10 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
 
         if (!objName.equals("")) {
             Shekvetebi newGrOrder = new Shekvetebi(objName, beerName, k30in, k50in, k30w, k50w);
-            if (chek) {
-                newGrOrder.setChk("1");
-            } else {
-                newGrOrder.setChk("0");
-            }
-            //chek = false;
+            newGrOrder.setChk(chek ? "1" : "0");
             newGrOrder.setDistrib_Name(dName);
             newGrOrder.setColor(beerBeckgroundColor);
+            newGrOrder.setComment(comment.toString());
             groupedOrderList.add(newGrOrder);
         }
 
