@@ -326,7 +326,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                         intent_editOrder = new Intent(getApplicationContext(), AddDeliveryActivity.class);
                         intent_editOrder.putExtra("id", currOrder.getOrder_id());
                         intent_editOrder.putExtra("operacia", Constantebi.MITANA);
-                        intent_editOrder.putExtra("tarigi", archeuli_dge);
+                        intent_editOrder.putExtra("tarigi", currOrder.getTarigi());
                         intent_editOrder.putExtra(Constantebi.REASON, Constantebi.EDIT);
                         startActivity(intent_editOrder);
                     }
@@ -441,6 +441,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                             shekveta.setOrder_id(response.getJSONObject(i).getInt("order_id"));
                             shekveta.setComment(response.getJSONObject(i).getString("comment"));
                             shekveta.setColor(response.getJSONObject(i).getString("color"));
+                            shekveta.setTarigi(response.getJSONObject(i).getString("tarigi_hhmm"));
 
                             shekvetebiArrayList.add(shekveta);
 
@@ -574,8 +575,6 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                     }
                     exists = false;
                 }
-
-
             }
 
             for (int i = 0; i < shekvetebiArListGR.size(); i++) {
