@@ -100,10 +100,6 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         super.onSaveInstanceState(outState);
     }
 
-    public void showtext(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
-    }
-
     @SuppressLint("SimpleDateFormat")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

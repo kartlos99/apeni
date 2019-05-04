@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public class Shekvetebi implements Serializable {
     private String obieqti, ludi, tarigi, chk, distrib_Name, comment, color;
-    private int order_id, distrib_id;
+    private int order_id, distrib_id, beer_id;
     private float k30in, k50in, k30wont, k50wont;
 
     public Shekvetebi(String obieqti, String ludi, float k30in, float k50in, float k30wont, float k50wont) {
@@ -18,6 +18,14 @@ public class Shekvetebi implements Serializable {
         this.k50in = k50in;
         this.k30wont = k30wont;
         this.k50wont = k50wont;
+    }
+
+    public int getBeer_id() {
+        return beer_id;
+    }
+
+    public void setBeer_id(int beer_id) {
+        this.beer_id = beer_id;
     }
 
     public String getComment() {
