@@ -1,6 +1,10 @@
 package com.example.kdiakonidze.beerapeni.utils;
 
+import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
+
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MyUtil {
 
@@ -29,6 +33,27 @@ public class MyUtil {
             return String.valueOf(intNumb);
         }
         return df.format(number);
+    }
+
+    public static ArrayList<Shekvetebi> objToOrderList(Object listObj) {
+        ArrayList<Shekvetebi> list = new ArrayList<>();
+        if (listObj instanceof List) {
+            for (int i = 0; i < ((List) listObj).size(); i++) {
+                Object item = ((List) listObj).get(i);
+                if (item instanceof Shekvetebi) {
+                    list.add((Shekvetebi) item);
+                }
+            }
+        }
+        return list;
+    }
+
+    public static float tempListPrice(ArrayList<Shekvetebi> tempList){
+        float n = 0;
+        for (Shekvetebi tempItem : tempList){
+            n += (tempItem.getK30in()*30 + tempItem.getK50in()*50) * Float.valueOf(tempItem.getComment());
+        }
+        return n;
     }
 
 }

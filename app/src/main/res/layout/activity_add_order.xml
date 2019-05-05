@@ -1,295 +1,307 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.kdiakonidze.beerapeni.AddOrderActivity">
 
-    <include android:id="@+id/toolbar_addorder"
-        layout="@layout/tool_bar"/>
+    <include
+        app:layout_constraintTop_toTopOf="parent"
+        android:id="@+id/toolbar_addorder"
+        layout="@layout/tool_bar" />
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/cardView_add_Order"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        app:cardBackgroundColor="@color/colorCardview"
-        app:cardCornerRadius="@dimen/cardCornerRadius"
-        app:cardElevation="@dimen/lowElevation"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/t_orderInfo"
-        app:layout_constraintVertical_bias="0.0"
-        app:layout_constraintHorizontal_bias="0.0">
-
-
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_addorder">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/constraint_add_Order"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/btn_beerleft"
-                android:layout_width="@dimen/miniBtnWideSize"
-                android:layout_height="@dimen/miniBtnSize"
-                android:background="@android:color/transparent"
-                android:drawableStart="@drawable/ic_arrow_left"
-                android:textSize="@dimen/plius_minus_TextSize"
-                app:layout_constraintTop_toTopOf="@+id/t_ludisDasaxeleba"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="0dp" />
-
-            <Button
-                android:id="@+id/btn_beerright"
-                android:layout_width="@dimen/miniBtnWideSize"
-                android:layout_height="@dimen/miniBtnSize"
-                android:background="@android:color/transparent"
-                android:drawableEnd="@drawable/ic_arrow_right"
-                android:textSize="@dimen/plius_minus_TextSize"
-                app:layout_constraintTop_toTopOf="@+id/t_ludisDasaxeleba"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintRight_toRightOf="parent" />
-
-
-            <TextView
-                android:id="@+id/t_ludisDasaxeleba"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:textAlignment="center"
-                android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintRight_toLeftOf="@+id/btn_beerright"
-                app:layout_constraintLeft_toRightOf="@+id/btn_beerleft"
-                android:layout_marginTop="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp" />
-
-
-            <TextView
-                android:id="@+id/t_k30"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/_30litri"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/guideline4"
-                android:layout_margin="8dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btn_beerleft" />
-
-            <Button
-                android:id="@+id/btn_k30_dec"
-                android:layout_width="@dimen/miniBtnWideSize"
-                android:layout_height="@dimen/miniBtnSize"
-                android:background="@android:color/transparent"
-                android:text="@string/minusi"
-                android:textSize="@dimen/plius_minus_TextSize"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/t_k30"
-                app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginStart="0dp" />
-
-            <EditText
-                android:id="@+id/edit_K30Count"
+            <android.support.v7.widget.CardView
+                android:id="@+id/cardView_add_Order"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:inputType="numberDecimal"
-                android:hint="@string/default_0"
-                android:textAlignment="center"
-                app:layout_constraintLeft_toRightOf="@+id/btn_k30_dec"
-                app:layout_constraintRight_toLeftOf="@+id/btn_k30_inc"
-                app:layout_constraintHorizontal_chainStyle="spread"
-                app:layout_constraintTop_toTopOf="@+id/btn_k30_dec"
-                android:layout_marginTop="0dp"
-                android:autofillHints="@string/default_0"
-                tools:ignore="UnusedAttribute" />
-
-            <Button
-                android:id="@+id/btn_k30_inc"
-                android:layout_width="@dimen/miniBtnWideSize"
-                android:layout_height="@dimen/miniBtnSize"
-                android:layout_marginEnd="8dp"
-                android:background="@android:color/transparent"
-                android:text="@string/pliusi"
-                android:textSize="@dimen/plius_minus_TextSize"
-                android:layout_marginTop="0dp"
-                app:layout_constraintRight_toLeftOf="@+id/guideline4"
                 android:layout_marginStart="8dp"
-                app:layout_constraintTop_toTopOf="@+id/btn_k30_dec" />
-
-
-            <!--me-2 xazi-->
-            <TextView
-                android:id="@+id/t_k50"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="@string/_50litri"
-                android:layout_margin="8dp"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="@+id/guideline4"
-                app:layout_constraintTop_toBottomOf="@+id/btn_beerleft" />
-
-            <Button
-                android:id="@+id/btn_k50_dec"
-                android:layout_width="@dimen/miniBtnWideSize"
-                android:layout_height="@dimen/miniBtnSize"
-                android:background="@android:color/transparent"
-                android:text="@string/minusi"
-                android:textSize="@dimen/plius_minus_TextSize"
                 android:layout_marginTop="8dp"
-                app:layout_constraintTop_toBottomOf="@+id/t_k50"
-                android:layout_marginStart="8dp"
-                app:layout_constraintLeft_toLeftOf="@+id/guideline4" />
-
-            <EditText
-                android:id="@+id/edit_K50Count"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:inputType="numberDecimal"
-                android:hint="@string/default_0"
-                app:layout_constraintTop_toTopOf="@+id/btn_k50_dec"
-                app:layout_constraintLeft_toRightOf="@+id/btn_k50_dec"
-                app:layout_constraintRight_toLeftOf="@+id/btn_k50_inc"
-                android:layout_marginTop="0dp"
-                android:layout_marginLeft="0dp"
-                android:layout_marginRight="0dp"
-                android:autofillHints="@string/default_0"
-                tools:ignore="UnusedAttribute" />
-
-            <Button
-                android:id="@+id/btn_k50_inc"
-                android:layout_width="@dimen/miniBtnWideSize"
-                android:layout_height="@dimen/miniBtnSize"
-                android:background="@android:color/transparent"
-                android:text="@string/pliusi"
-                android:textSize="@dimen/plius_minus_TextSize"
                 android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:cardBackgroundColor="@color/colorCardview"
+                app:cardCornerRadius="@dimen/cardCornerRadius"
+                app:cardElevation="@dimen/lowElevation"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/btn_k50_dec"
-                android:layout_marginTop="0dp"
-                tools:layout_editor_absoluteX="311dp" />
+                app:layout_constraintTop_toBottomOf="@+id/t_orderInfo"
+                app:layout_constraintVertical_bias="0.0">
 
-            <!-- -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline4"
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/constraint_add_Order"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/btn_beerleft"
+                        android:layout_width="@dimen/miniBtnWideSize"
+                        android:layout_height="@dimen/miniBtnSize"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="0dp"
+                        android:background="@android:color/transparent"
+                        android:drawableStart="@drawable/ic_arrow_left"
+                        android:textSize="@dimen/plius_minus_TextSize"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/t_ludisDasaxeleba" />
+
+                    <Button
+                        android:id="@+id/btn_beerright"
+                        android:layout_width="@dimen/miniBtnWideSize"
+                        android:layout_height="@dimen/miniBtnSize"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@android:color/transparent"
+                        android:drawableEnd="@drawable/ic_arrow_right"
+                        android:textSize="@dimen/plius_minus_TextSize"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/t_ludisDasaxeleba" />
+
+
+                    <TextView
+                        android:id="@+id/t_ludisDasaxeleba"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="8dp"
+                        android:textAlignment="center"
+                        android:textStyle="bold"
+                        app:layout_constraintLeft_toRightOf="@+id/btn_beerleft"
+                        app:layout_constraintRight_toLeftOf="@+id/btn_beerright"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <TextView
+                        android:id="@+id/t_k30"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:text="@string/_30litri"
+                        app:layout_constraintEnd_toStartOf="@id/guideline4"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_beerleft" />
+
+                    <Button
+                        android:id="@+id/btn_k30_dec"
+                        android:layout_width="@dimen/miniBtnWideSize"
+                        android:layout_height="@dimen/miniBtnSize"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@android:color/transparent"
+                        android:text="@string/minusi"
+                        android:textSize="@dimen/plius_minus_TextSize"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/t_k30" />
+
+                    <EditText
+                        android:id="@+id/edit_K30Count"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="0dp"
+                        android:autofillHints="@string/default_0"
+                        android:hint="@string/default_0"
+                        android:inputType="numberDecimal"
+                        android:textAlignment="center"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintLeft_toRightOf="@+id/btn_k30_dec"
+                        app:layout_constraintRight_toLeftOf="@+id/btn_k30_inc"
+                        app:layout_constraintTop_toTopOf="@+id/btn_k30_dec"
+                        tools:ignore="UnusedAttribute" />
+
+                    <Button
+                        android:id="@+id/btn_k30_inc"
+                        android:layout_width="@dimen/miniBtnWideSize"
+                        android:layout_height="@dimen/miniBtnSize"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@android:color/transparent"
+                        android:text="@string/pliusi"
+                        android:textSize="@dimen/plius_minus_TextSize"
+                        app:layout_constraintRight_toLeftOf="@+id/guideline4"
+                        app:layout_constraintTop_toTopOf="@+id/btn_k30_dec" />
+
+
+                    <!--me-2 xazi-->
+                    <TextView
+                        android:id="@+id/t_k50"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="8dp"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/_50litri"
+                        app:layout_constraintLeft_toLeftOf="@+id/guideline4"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/btn_beerleft" />
+
+                    <Button
+                        android:id="@+id/btn_k50_dec"
+                        android:layout_width="@dimen/miniBtnWideSize"
+                        android:layout_height="@dimen/miniBtnSize"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@android:color/transparent"
+                        android:text="@string/minusi"
+                        android:textSize="@dimen/plius_minus_TextSize"
+                        app:layout_constraintLeft_toLeftOf="@+id/guideline4"
+                        app:layout_constraintTop_toBottomOf="@+id/t_k50" />
+
+                    <EditText
+                        android:id="@+id/edit_K50Count"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginRight="0dp"
+                        android:autofillHints="@string/default_0"
+                        android:hint="@string/default_0"
+                        android:inputType="numberDecimal"
+                        android:textAlignment="center"
+                        app:layout_constraintLeft_toRightOf="@+id/btn_k50_dec"
+                        app:layout_constraintRight_toLeftOf="@+id/btn_k50_inc"
+                        app:layout_constraintTop_toTopOf="@+id/btn_k50_dec"
+                        tools:ignore="UnusedAttribute" />
+
+                    <Button
+                        android:id="@+id/btn_k50_inc"
+                        android:layout_width="@dimen/miniBtnWideSize"
+                        android:layout_height="@dimen/miniBtnSize"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@android:color/transparent"
+                        android:text="@string/pliusi"
+                        android:textSize="@dimen/plius_minus_TextSize"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/btn_k50_dec"
+                        tools:layout_editor_absoluteX="311dp" />
+
+                    <!-- -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
+                    <android.support.constraint.Guideline
+                        android:id="@+id/guideline4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintGuide_percent="0.5"
+                        tools:layout_editor_absoluteX="192dp"
+                        tools:layout_editor_absoluteY="89dp" />
+
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/btn_anotherBeer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:src="@drawable/ic_add_24dp"
+                app:backgroundTintMode="src_over"
+                android:backgroundTint="@color/fab_addbeer_color"
+                app:fabSize="mini"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cardView_add_Order" />
+
+            <CheckBox
+                android:id="@+id/checkbox_orderchek"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:checked="true"
+                app:layout_constraintStart_toStartOf="@+id/cardView_add_Order"
+                app:layout_constraintTop_toBottomOf="@+id/cardView_add_Order" />
+
+            <LinearLayout
+                android:id="@+id/linear_conteiner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.5"
-                tools:layout_editor_absoluteY="89dp"
-                tools:layout_editor_absoluteX="192dp" />
+                android:background="@drawable/temp_beer_cont_rect"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/checkbox_orderchek">
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btn_orderDone"
+                android:layout_width="129dp"
+                android:layout_height="61dp"
+                android:layout_margin="30dp"
+                android:layout_marginTop="44dp"
+                android:text="@string/dadastureba"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/e_order_comment"
+                tools:layout_editor_absoluteX="107dp" />
+
+            <TextView
+                android:id="@+id/t_orderInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="@dimen/plius_minus_TextSize"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/t_order_todistr"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="13dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/vis"
+                android:textAlignment="gravity"
+
+                app:layout_constraintBottom_toBottomOf="@+id/sp_order_carrying"
+                app:layout_constraintEnd_toStartOf="@+id/sp_order_carrying"
+                app:layout_constraintTop_toTopOf="@+id/sp_order_carrying" />
+
+            <Spinner
+                android:id="@+id/sp_order_carrying"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linear_conteiner" />
+
+            <EditText
+                android:id="@+id/e_order_comment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:autofillHints="@string/comment"
+                android:hint="@string/comment"
+                android:inputType="text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sp_order_carrying"
+                tools:ignore="UnusedAttribute"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_editor_absoluteY="310dp" />
 
         </android.support.constraint.ConstraintLayout>
-    </android.support.v7.widget.CardView>
 
-    <!--<ImageButton-->
-        <!--android:id="@+id/btn_anotherBeer"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_margin="6dp"-->
-        <!--android:src="@drawable/ic_action_add" />-->
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btn_anotherBeer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp"
-        android:src="@drawable/ic_add_24dp"
-        app:backgroundTintMode="src_over"
-        app:fabSize="mini"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView_add_Order" />
-
-    <CheckBox
-        android:id="@+id/checkbox_orderchek"
-        app:layout_constraintTop_toBottomOf="@+id/cardView_add_Order"
-        app:layout_constraintStart_toStartOf="@+id/cardView_add_Order"
-        android:layout_marginTop="8dp"
-        android:checked="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <LinearLayout
-        android:id="@+id/linear_conteiner"
-        android:orientation="vertical"
-        android:padding="4dp"
-        app:layout_constraintTop_toBottomOf="@id/checkbox_orderchek"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_orderDone"
-        android:text="@string/dadastureba"
-        android:layout_margin="30dp"
-        app:layout_constraintTop_toBottomOf="@+id/e_order_comment"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_width="129dp"
-        android:layout_height="61dp"
-        tools:layout_editor_absoluteX="107dp"
-        android:layout_marginTop="44dp" />
-
-    <TextView
-        android:id="@+id/t_orderInfo"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_addorder"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:textSize="@dimen/plius_minus_TextSize"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/t_order_todistr"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="13dp"
-        android:text="@string/vis"
-        android:textAlignment="gravity"
-
-        app:layout_constraintEnd_toStartOf="@+id/sp_order_carrying"
-        app:layout_constraintTop_toTopOf="@+id/sp_order_carrying"
-        app:layout_constraintBottom_toBottomOf="@+id/sp_order_carrying"/>
-
-    <Spinner
-        android:id="@+id/sp_order_carrying"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        app:layout_constraintTop_toBottomOf="@+id/linear_conteiner"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <EditText
-        android:id="@+id/e_order_comment"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sp_order_carrying"
-        android:hint="@string/comment"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteY="310dp"
-        tools:layout_editor_absoluteX="0dp"
-        android:autofillHints="@string/comment"
-        tools:ignore="UnusedAttribute"
-        android:inputType="text" />
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

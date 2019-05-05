@@ -12,5 +12,6 @@
     <color name="color_ForChek">#FF7115</color>
     <color name="important_info_color">#f95588</color>
     <color name="not_imp_color">#999999</color>
+    <color name="fab_addbeer_color">#009688</color>
 
 </resources>

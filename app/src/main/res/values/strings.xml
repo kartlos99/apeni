@@ -96,4 +96,6 @@
     <string name="litri">ლიტრი</string>
     <string name="fields_request2">ორივე ველი აუცილებელია</string>
     <string name="feel_empty_fields">შეავსეთ ცარიელი ველები!</string>
+    <string name="no_val_to_save">შეიყვანეთ მონაცემები</string>
+    <string name="alredy_in_list">ეს ლუდის სახეობა უკვე დამატებულია სიაში!</string>
 </resources>

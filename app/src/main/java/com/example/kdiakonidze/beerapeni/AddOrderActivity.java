@@ -67,6 +67,7 @@ public class AddOrderActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putInt("beer", beertype);
+        outState.putSerializable("tempOrders", tempOrdersList);
         super.onSaveInstanceState(outState);
     }
 
@@ -110,6 +111,12 @@ public class AddOrderActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(getApplicationContext(), "restart the app!", Toast.LENGTH_LONG).show();
             }
+            tempOrdersList = MyUtil.objToOrderList(savedInstanceState.getSerializable("tempOrders"));
+            for (Shekvetebi item : tempOrdersList) {
+                BeerTempRow beerTempRow = new BeerTempRow(mContext, item, linear_BeerConteiner, tempOrdersList);
+                linear_BeerConteiner.addView(beerTempRow);
+            }
+
         }
 
         Intent intent = getIntent();
@@ -121,16 +128,7 @@ public class AddOrderActivity extends AppCompatActivity {
                 if (currObieqti != null) {
                     t_OrderInfo.setText(currObieqti.getDasaxeleba());
                 }
-                shekvetebiArrayList.clear();
-                Object ordListObj = importedBundle.getSerializable("orderArray");
-                if (ordListObj instanceof List) {
-                    for (int i = 0; i < ((List) ordListObj).size(); i++) {
-                        Object item = ((List) ordListObj).get(i);
-                        if (item instanceof Shekvetebi) {
-                            shekvetebiArrayList.add((Shekvetebi) item);
-                        }
-                    }
-                }
+                shekvetebiArrayList = MyUtil.objToOrderList(importedBundle.getSerializable("orderArray"));
             }
             t_beerType.setText(Constantebi.ludiList.get(beertype).getDasaxeleba());
             beerId = Constantebi.ludiList.get(beertype).getId();
@@ -200,17 +198,16 @@ public class AddOrderActivity extends AppCompatActivity {
         btn_newOrderDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (tempOrdersList.size() > 0 && reason.equals(Constantebi.NEW_ORDER)) {
+                if (reason.equals(Constantebi.EDIT)) {
                     sendDataToDB();
                     btn_newOrderDone.setEnabled(false);
                 } else {
-                    Toast.makeText(getApplicationContext(), "nothing to save", Toast.LENGTH_LONG).show();
-                }
-
-                if (reason.equals(Constantebi.EDIT)){
-                    sendDataToDB();
-                    btn_newOrderDone.setEnabled(false);
+                    if (tempOrdersList.size() > 0) {
+                        sendDataToDB();
+                        btn_newOrderDone.setEnabled(false);
+                    } else {
+                        Toast.makeText(getApplicationContext(), R.string.no_val_to_save, Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -228,7 +225,7 @@ public class AddOrderActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 if (chekForOrderExists(currObieqti.getDasaxeleba(), Constantebi.ludiList.get(beertype).getDasaxeleba())) {
-                    Toast.makeText(getApplicationContext(), R.string.msg_orderAlreadyExist, Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), R.string.msg_orderAlreadyExist, Toast.LENGTH_SHORT).show();
 //                    onBackPressed();
                 } else {
                     if ((eK30Count.getText().toString().equals("0") || eK30Count.getText().toString().isEmpty())
@@ -237,24 +234,31 @@ public class AddOrderActivity extends AppCompatActivity {
                     } else {
                         Shekvetebi newOrder = new Shekvetebi("",
                                 Constantebi.ludiList.get(beertype).getDasaxeleba(), 0, 0,
-                                Float.valueOf(eK30Count.getText().toString().isEmpty()? "0" : eK30Count.getText().toString()),
-                                Float.valueOf(eK50Count.getText().toString().isEmpty()? "0" : eK50Count.getText().toString())
+                                Float.valueOf(eK30Count.getText().toString().isEmpty() ? "0" : eK30Count.getText().toString()),
+                                Float.valueOf(eK50Count.getText().toString().isEmpty() ? "0" : eK50Count.getText().toString())
                         );
                         newOrder.setColor(Constantebi.ludiList.get(beertype).getDisplayColor());
                         newOrder.setBeer_id(Constantebi.ludiList.get(beertype).getId());
 
                         BeerTempRow beerTempRow = new BeerTempRow(mContext, newOrder, linear_BeerConteiner, tempOrdersList);
                         tempOrdersList.add(newOrder);
-
                         linear_BeerConteiner.addView(beerTempRow);
+
                         eK30Count.setText("");
                         eK50Count.setText("");
+                        btn_newOrderDone.setEnabled(true);
                     }
                 }
 
             }
         });
 
+        if (reason.equals(Constantebi.NEW_ORDER) && tempOrdersList.size() == 0) {
+            btn_newOrderDone.setEnabled(false);
+        }
+        if (reason.equals(Constantebi.EDIT)){
+            fab_addBeer.setVisibility(View.GONE);
+        }
     }
 
     boolean chekForOrderExists(String obieqti, String ludi) {
@@ -265,8 +269,8 @@ public class AddOrderActivity extends AppCompatActivity {
                 }
             }
         }
-        for(Shekvetebi currorder : tempOrdersList ){
-            if (currorder.getLudi().equals(ludi)){
+        for (Shekvetebi currorder : tempOrdersList) {
+            if (currorder.getLudi().equals(ludi)) {
                 return true;
             }
         }
@@ -337,9 +341,18 @@ public class AddOrderActivity extends AppCompatActivity {
                 } else {
                     params.put("obieqtis_id", String.valueOf(currObieqti.getId()));
                 }
-                params.put("k30", eK30Count.getText().toString());
-                params.put("k50", eK50Count.getText().toString());
-                params.put("beer_type", String.valueOf(beerId));
+                if (reason.equals(Constantebi.EDIT)) {
+                    params.put("k30", eK30Count.getText().toString());
+                    params.put("k50", eK50Count.getText().toString());
+                    params.put("beer_id", String.valueOf(beerId));
+                }
+                if (reason.equals(Constantebi.NEW_ORDER)) {
+                    for (int i = 0; i < tempOrdersList.size(); i++) {
+                        params.put("k30[" + i + "]", MyUtil.floatToSmartStr(tempOrdersList.get(i).getK30wont()));
+                        params.put("k50[" + i + "]", MyUtil.floatToSmartStr(tempOrdersList.get(i).getK50wont()));
+                        params.put("beer_id[" + i + "]", String.valueOf(tempOrdersList.get(i).getBeer_id()));
+                    }
+                }
                 params.put("comment", e_comment.getText().toString());
                 params.put("distributor_id", String.valueOf(Constantebi.USERsLIST.get(sp_order_distrib.getSelectedItemPosition()).getId()));
                 params.put("chek", (chBox_orderChek.isChecked() ? "1" : "0"));

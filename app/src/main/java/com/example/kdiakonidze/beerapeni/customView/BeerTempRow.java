@@ -20,17 +20,9 @@ import java.util.ArrayList;
 public class BeerTempRow extends ConstraintLayout {
 
     private Context mContext;
-    private LinearLayout beerRowsConteiner;
-    private ConstraintLayout thisRootView;
-    private ImageButton btn_itemRemove;
-    private ImageView imgBeerColor;
-    private TextView tBeerInfo;
-
-    private Shekvetebi order;
-    private ArrayList<Shekvetebi> tempOrdersList = new ArrayList<>();
-
     private static final String TAG = "BeerTempRowTAG";
-
+    private ImageButton btn_itemRemove;
+    private Shekvetebi order;
 
     public BeerTempRow(Context context) {
         super(context);
@@ -40,31 +32,42 @@ public class BeerTempRow extends ConstraintLayout {
         super(context);
         mContext = context;
         this.order = order;
-        this.beerRowsConteiner = beerRowsConteiner;
-        this.tempOrdersList = tempOrdersList;
-
         initView();
 
         btn_itemRemove.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                beerRowsConteiner.removeView(getView());
                 tempOrdersList.remove(order);
+                beerRowsConteiner.removeView(getView());
+            }
+        });
+    }
+
+    public BeerTempRow(Context context, final Shekvetebi order, final LinearLayout beerRowsConteiner, final ArrayList<Shekvetebi> tempOrdersList, final TextView tShowPrice) {
+        super(context);
+        mContext = context;
+        this.order = order;
+        initView();
+
+        btn_itemRemove.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tempOrdersList.remove(order);
+                beerRowsConteiner.removeView(getView());
+                tShowPrice.setText(String.format("%s (%s \u20BE )", getResources().getString(R.string.ludis_shetana), MyUtil.floatToSmartStr(MyUtil.tempListPrice(tempOrdersList))));
             }
         });
     }
 
     private void initView() {
-        Log.d(TAG, " initView - myListItem");
-        thisRootView = (ConstraintLayout) LayoutInflater.from(mContext).inflate(R.layout.beer_temp_row, this, true);
+        ConstraintLayout thisRootView = (ConstraintLayout) LayoutInflater.from(mContext).inflate(R.layout.beer_temp_row, this, true);
 
-        imgBeerColor = thisRootView.findViewById(R.id.img_beercolor);
-        tBeerInfo = thisRootView.findViewById(R.id.t_beerinfo);
+        ImageView imgBeerColor = thisRootView.findViewById(R.id.img_beercolor);
+        TextView tBeerInfo = thisRootView.findViewById(R.id.t_beerinfo);
         btn_itemRemove = thisRootView.findViewById(R.id.btn_beerremove);
 
         imgBeerColor.setBackgroundColor(Color.parseColor(order.getColor()));
-        tBeerInfo.setText(String.format("%s: %s(x30)  %s(x50)", order.getLudi(), MyUtil.floatToSmartStr(order.getK30wont()), MyUtil.floatToSmartStr(order.getK50wont())));
-
+        tBeerInfo.setText(String.format("%s: %sx30  %sx50", order.getLudi(), MyUtil.floatToSmartStr(order.getK30wont() + order.getK30in()), MyUtil.floatToSmartStr(order.getK50wont()+ order.getK50in())));
     }
 
     public View getView() {

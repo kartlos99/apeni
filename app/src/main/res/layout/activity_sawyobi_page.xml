@@ -69,6 +69,29 @@
                 layout="@layout/ludi_input_form" />
         </LinearLayout>
 
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/btn_anotherBeer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:src="@drawable/ic_add_24dp"
+            android:backgroundTint="@color/fab_addbeer_color"
+            app:backgroundTintMode="src_over"
+            app:fabSize="mini"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/chamotana_box" />
+
+        <LinearLayout
+            android:id="@+id/linear_conteiner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="8dp"
+            android:background="@drawable/temp_beer_cont_rect"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_anotherBeer"/>
+
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constr_carieli_box"
             android:layout_width="0dp"
@@ -76,7 +99,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/chamotana_box"
+            app:layout_constraintTop_toBottomOf="@+id/linear_conteiner"
             tools:layout_editor_absoluteX="0dp">
 
 
