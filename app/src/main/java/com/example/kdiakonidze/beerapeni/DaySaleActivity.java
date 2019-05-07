@@ -26,7 +26,9 @@ import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.adapters.DaySalesAdapter;
 import com.example.kdiakonidze.beerapeni.models.SaleInfo;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 import com.example.kdiakonidze.beerapeni.utils.MyUtil;
+import com.example.kdiakonidze.beerapeni.utils.XarjebiDialog;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DaySaleActivity extends AppCompatActivity {
+public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.xarjListener {
 
     private int screenDefOrientation;
     private float k30empty = 0.0f, k50empty = 0.0f;
@@ -58,6 +60,7 @@ public class DaySaleActivity extends AppCompatActivity {
     private RequestQueue queue;
     private Boolean requestInProgres = false, requestNeeded = true;
     private NonScrollListView nonScrolSaleslistView;
+    private TextView tXarjiSum, tXelze;
 
     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @RequiresApi(api = Build.VERSION_CODES.N)
@@ -103,6 +106,8 @@ public class DaySaleActivity extends AppCompatActivity {
         t_takeMoney = findViewById(R.id.t_agebuli_tanxa);
         sp_distr = findViewById(R.id.sp_distributori);
         nonScrolSaleslistView = findViewById(R.id.sales_list1);
+        tXarjiSum = findViewById(R.id.t_xarj_sum);
+        tXelze = findViewById(R.id.t_xelze);
 
         salesDay = new ArrayList<>();
 
@@ -218,6 +223,19 @@ public class DaySaleActivity extends AppCompatActivity {
         btn_back.setOnClickListener(btnBackFF);
         btn_fwd.setOnClickListener(btnBackFF);
 
+        Button btn_xarjebi = findViewById(R.id.btn_xarjebi);
+        btn_xarjebi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialog();
+            }
+        });
+
+    }
+
+    private void openDialog() {
+        XarjebiDialog xarjebiDialog = new XarjebiDialog();
+        xarjebiDialog.show(getSupportFragmentManager(), "xarjDialog");
     }
 
     private void getsales(String tarigi, String distrid) {
@@ -301,4 +319,12 @@ public class DaySaleActivity extends AppCompatActivity {
         t_takeMoney.setText(df.format(takeMoney));
     }
 
+    @Override
+    public void applayChanges(String comment, Float amount) {
+        tXarjiSum.setText(MyUtil.floatToSmartStr(amount));
+        tXelze.setText(comment);
+
+        GlobalServise globalServise = new GlobalServise(getApplicationContext());
+        globalServise.insertXarjebi(Constantebi.USER_ID, amount, comment);
+    }
 }

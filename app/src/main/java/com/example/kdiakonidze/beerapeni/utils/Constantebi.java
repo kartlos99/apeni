@@ -47,6 +47,7 @@ public class Constantebi {
     public static String URL_GET_NASHTI =   HOST + "get_nashtebi.php";
     public static String URL_INS_SAWYOBI =  HOST + "sawyobi.php";
     public static String URL_GET_SAWY_DETAIL = HOST + "sawyobi_detail_list.php";
+    public static String URL_INSERT_XARJI = HOST + "insert_xarji.php";
 
     public static String USER_USERNAME = "";
     public static String USER_NAME = "";

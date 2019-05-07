@@ -99,4 +99,5 @@
     <string name="no_val_to_save">შეიყვანეთ მონაცემები</string>
     <string name="alredy_in_list">ეს ლუდის სახეობა უკვე დამატებულია სიაში!</string>
     <string name="no_edit_access">არაგაქვთ რედაქტირების უფლება!</string>
+    <string name="xarjebi">ხარჯები</string>
 </resources>

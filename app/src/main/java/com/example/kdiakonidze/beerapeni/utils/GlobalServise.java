@@ -2,6 +2,7 @@ package com.example.kdiakonidze.beerapeni.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -290,6 +291,7 @@ public class GlobalServise {
                 params.put("distributor_id", String.valueOf(distID));
 
                 params.put("chek", order.getChk());
+                params.put("user_type", Constantebi.USER_TYPE);
 
                 return params;
             }
@@ -298,6 +300,39 @@ public class GlobalServise {
 //        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 //        request.setRetryPolicy(mRetryPolicy);
         queue.add(request_orderEdit);
+    }
+
+    public void insertXarjebi(final String distrID, final float amount, final String comment){
+
+        StringRequest request = new StringRequest(Request.Method.POST, Constantebi.URL_INSERT_XARJI, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(context, response , Toast.LENGTH_SHORT).show();
+
+                Log.d("sql", response);
+//                if (!response.equals("0")) {
+//
+//                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+
+                params.put("distrid", distrID);
+                params.put("amount", String.valueOf(amount));
+                params.put("comment", comment);
+
+                return params;
+            }
+        };
+
+        queue.add(request);
     }
 
     private Integer findBeerId(String ludi) {
