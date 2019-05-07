@@ -570,6 +570,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         btnBeerRight = findViewById(R.id.btn_beerright);
         btn_Done = findViewById(R.id.btn_beerInputDone);
         btn_changeDate = findViewById(R.id.btn_change_date);
+        if (Constantebi.USER_TYPE.equals(Constantebi.USER_TYPE_user))
+            btn_changeDate.setEnabled(false);
 
         btnK30dec = findViewById(R.id.btn_k30_dec);
         btnK30inc = findViewById(R.id.btn_k30_inc);

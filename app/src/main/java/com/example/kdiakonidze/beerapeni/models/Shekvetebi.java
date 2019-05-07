@@ -20,6 +20,26 @@ public class Shekvetebi implements Serializable {
         this.k50wont = k50wont;
     }
 
+    @Override
+    public String toString() {
+        return "Shekvetebi{" +
+                "obieqti='" + obieqti + '\'' +
+                ", ludi='" + ludi + '\'' +
+                ", tarigi='" + tarigi + '\'' +
+                ", chk='" + chk + '\'' +
+                ", distrib_Name='" + distrib_Name + '\'' +
+                ", comment='" + comment + '\'' +
+                ", color='" + color + '\'' +
+                ", order_id=" + order_id +
+                ", distrib_id=" + distrib_id +
+                ", beer_id=" + beer_id +
+                ", k30in=" + k30in +
+                ", k50in=" + k50in +
+                ", k30wont=" + k30wont +
+                ", k50wont=" + k50wont +
+                '}';
+    }
+
     public int getBeer_id() {
         return beer_id;
     }

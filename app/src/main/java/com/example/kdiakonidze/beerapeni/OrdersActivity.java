@@ -44,6 +44,7 @@ import org.json.JSONException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -166,16 +167,16 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i1, long l) {
 //                if (!chBox_orderGroup.isChecked()) {
-                    //  Toast.makeText(getApplicationContext(), "მოხსენით დაჯგუფება", Toast.LENGTH_SHORT).show();
-                    TextView t_comment = view.findViewById(R.id.t_orderlist_row_comment);
-                    Shekvetebi shekvetebi = (Shekvetebi) shekvetebiAdapter.getChild(i, i1);
-                    if (!shekvetebi.getComment().isEmpty()) {
-                        if (t_comment.getVisibility() == View.VISIBLE) {
-                            t_comment.setVisibility(View.GONE);
-                        } else {
-                            t_comment.setVisibility(View.VISIBLE);
-                        }
+                //  Toast.makeText(getApplicationContext(), "მოხსენით დაჯგუფება", Toast.LENGTH_SHORT).show();
+                TextView t_comment = view.findViewById(R.id.t_orderlist_row_comment);
+                Shekvetebi shekvetebi = (Shekvetebi) shekvetebiAdapter.getChild(i, i1);
+                if (!shekvetebi.getComment().isEmpty()) {
+                    if (t_comment.getVisibility() == View.VISIBLE) {
+                        t_comment.setVisibility(View.GONE);
+                    } else {
+                        t_comment.setVisibility(View.VISIBLE);
                     }
+                }
 //                }
                 return true;
             }
@@ -229,7 +230,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
             k30in += shekvetebiList.get(i).getK30in();
             k50in += shekvetebiList.get(i).getK50in();
 
-            if (!shekvetebiList.get(i).getComment().isEmpty()){
+            if (!shekvetebiList.get(i).getComment().isEmpty()) {
                 if (!comment.toString().isEmpty()) {
                     comment.append("\n");
                 }
@@ -274,30 +275,33 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
             if (chBox_orderGroup.isChecked()) {
                 Toast.makeText(getApplicationContext(), "მოხსენით დაჯგუფება", Toast.LENGTH_SHORT).show();
             } else {
-                final Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getChild(group, child);
-                this.getMenuInflater().inflate(R.menu.context_menu_order, menu);
-                menu.setHeaderTitle(currOrder.getComment());
+                // shekvetis redaqtireba admins yoveltvis da users mxolod im dges
+                if (Constantebi.USER_TYPE.equals(Constantebi.USER_TYPE_admin) || archeuli_dge.equals(dateFormat.format(new Date()))) {
+                    final Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getChild(group, child);
+                    this.getMenuInflater().inflate(R.menu.context_menu_order, menu);
+                    menu.setHeaderTitle(currOrder.getComment());
 
-                MenuItem.OnMenuItemClickListener itemLisener = new MenuItem.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
+                    MenuItem.OnMenuItemClickListener itemLisener = new MenuItem.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
-
-                        GlobalServise gServise = new GlobalServise(OrdersActivity.this);
-                        gServise.setChangeListener(OrdersActivity.this);
-                        gServise.editOrder(currOrder, item.getItemId());
-
-                        return true;
+                            GlobalServise gServise = new GlobalServise(OrdersActivity.this);
+                            gServise.setChangeListener(OrdersActivity.this);
+                            gServise.editOrder(currOrder, item.getItemId());
+                            return true;
+                        }
+                    };
+                    if ((currOrder.getK30wont() > 0) || (currOrder.getK50wont() > 0)) { // shekvetis chanawerze menius vamatebt gadamisamartebis item-ebs
+                        for (int i = 0; i < Constantebi.USERsLIST.size(); i++) {
+                            if (Constantebi.USERsLIST.get(i).getId() != currOrder.getDistrib_id()) {
+                                menu.add(1, Constantebi.USERsLIST.get(i).getId(), i, "--> " + Constantebi.USERsLIST.get(i).getUsername()).setOnMenuItemClickListener(itemLisener);
+                            }
+                        }
                     }
-                };
-
-                for (int i = 0; i < Constantebi.USERsLIST.size(); i++) {
-                    if (Constantebi.USERsLIST.get(i).getId() != currOrder.getDistrib_id()) {
-                        menu.add(1, Constantebi.USERsLIST.get(i).getId(), i, "--> " + Constantebi.USERsLIST.get(i).getUsername()).setOnMenuItemClickListener(itemLisener);
-                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), R.string.no_edit_access, Toast.LENGTH_SHORT).show();
                 }
-
             }
         }
     }
@@ -430,10 +434,10 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                             Shekvetebi shekveta = new Shekvetebi(
                                     response.getJSONObject(i).getString("obieqti"),
                                     response.getJSONObject(i).getString("dasaxeleba"),
-                                    (float)response.getJSONObject(i).getDouble("in_30"),
-                                    (float)response.getJSONObject(i).getDouble("in_50"),
-                                    (float)response.getJSONObject(i).getDouble("wont_30"),
-                                    (float)response.getJSONObject(i).getDouble("wont_50")
+                                    (float) response.getJSONObject(i).getDouble("in_30"),
+                                    (float) response.getJSONObject(i).getDouble("in_50"),
+                                    (float) response.getJSONObject(i).getDouble("wont_30"),
+                                    (float) response.getJSONObject(i).getDouble("wont_50")
                             );
                             shekveta.setChk(response.getJSONObject(i).getString("chk"));
                             shekveta.setDistrib_Name(response.getJSONObject(i).getString("name"));

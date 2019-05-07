@@ -1,12 +1,9 @@
 package com.example.kdiakonidze.beerapeni.utils;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -15,7 +12,6 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.MainActivity;
-import com.example.kdiakonidze.beerapeni.OrdersActivity;
 import com.example.kdiakonidze.beerapeni.models.BeerModel;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
@@ -33,9 +29,8 @@ import java.util.Map;
  */
 
 public class GlobalServise {
-    Context context;
-    ProgressDialog progressDialog;
-    RequestQueue queue;
+    private Context context;
+    private RequestQueue queue;
 
     public GlobalServise(Context context) {
         this.context = context;
@@ -146,7 +141,7 @@ public class GlobalServise {
             public void onResponse(JSONArray response) {
 //                Toast.makeText(context, "fasebi ok", Toast.LENGTH_LONG).show();
                 Constantebi.FASEBI.clear();
-                Integer objid = 0;
+                int objid;
                 if (response.length() > 0) {
                     try {
                         objid = response.getJSONObject(0).getInt("obj_id");
@@ -281,7 +276,7 @@ public class GlobalServise {
             }
         }) {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
 
                 params.put("moqmedeba", Constantebi.EDIT);
@@ -290,13 +285,12 @@ public class GlobalServise {
 
                 params.put("k30", String.valueOf(order.getK30wont()));
                 params.put("k50", String.valueOf(order.getK50wont()));
-                params.put("beer_type", String.valueOf(findBeerId(order.getLudi())));
+                params.put("beer_id", String.valueOf(findBeerId(order.getLudi())));
                 params.put("comment", order.getComment());
                 params.put("distributor_id", String.valueOf(distID));
 
                 params.put("chek", order.getChk());
 
-                params.toString();
                 return params;
             }
         };

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -154,17 +155,35 @@ public class AmonaweriPageFr extends Fragment {
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
 
-        if(AmonaweriActivity.grouped){
+        if (AmonaweriActivity.grouped) {
             Toast.makeText(getContext(), "მოხსენით დაჯგუფება!", Toast.LENGTH_SHORT).show();
-        }else {
-            if (location == 0) {
-                getActivity().getMenuInflater().inflate(R.menu.context_menu_amonaw_m, menu);
-                menu.setHeaderTitle("--  თანხები  --");
+        } else {
+
+            final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            Amonaweri amonaweriRow = (Amonaweri) amonaweriAdapter.getItem(info.position);
+
+            Date adate = null;
+            try {
+                adate = new SimpleDateFormat(getString(R.string.patern_datetime)).parse(amonaweriRow.getTarigi());
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
-            if (location == 1) {
-                getActivity().getMenuInflater().inflate(R.menu.context_menu_amonaw_k, menu);
-                menu.setHeaderTitle("--  კასრები  --");
+
+            if (adate != null) {
+                if (Constantebi.USER_TYPE.equals(Constantebi.USER_TYPE_admin) || dateFormat.format(adate).equals(dateFormat.format(new Date()))) {
+                    if (location == 0) {
+                        getActivity().getMenuInflater().inflate(R.menu.context_menu_amonaw_m, menu);
+                        menu.setHeaderTitle("--  თანხები  --");
+                    }
+                    if (location == 1) {
+                        getActivity().getMenuInflater().inflate(R.menu.context_menu_amonaw_k, menu);
+                        menu.setHeaderTitle("--  კასრები  --");
+                    }
+                } else {
+                    Toast.makeText(getContext(), R.string.no_edit_access, Toast.LENGTH_SHORT).show();
+                }
             }
+
         }
         super.onCreateContextMenu(menu, v, menuInfo);
     }
@@ -357,13 +376,13 @@ public class AmonaweriPageFr extends Fragment {
                             Amonaweri amonaweri = new Amonaweri();
                             amonaweri.setTarigi(response.getJSONObject(i).getString("dt"));
                             if (location == 0) {
-                                amonaweri.setPrice( (float) response.getJSONObject(i).getDouble("pr"));
-                                amonaweri.setPay( (float) response.getJSONObject(i).getDouble("pay"));
-                                amonaweri.setBalance( (float) response.getJSONObject(i).getDouble("bal"));
+                                amonaweri.setPrice((float) response.getJSONObject(i).getDouble("pr"));
+                                amonaweri.setPay((float) response.getJSONObject(i).getDouble("pay"));
+                                amonaweri.setBalance((float) response.getJSONObject(i).getDouble("bal"));
                             } else {
-                                amonaweri.setK_in( (float) response.getJSONObject(i).getDouble("k_in"));
-                                amonaweri.setK_out( (float) response.getJSONObject(i).getDouble("k_out"));
-                                amonaweri.setK_balance( (float) response.getJSONObject(i).getDouble("bal"));
+                                amonaweri.setK_in((float) response.getJSONObject(i).getDouble("k_in"));
+                                amonaweri.setK_out((float) response.getJSONObject(i).getDouble("k_out"));
+                                amonaweri.setK_balance((float) response.getJSONObject(i).getDouble("bal"));
                             }
                             amonaweri.setId(response.getJSONObject(i).getInt("id"));
                             amonaweri.setComment(response.getJSONObject(i).getString("comment"));
