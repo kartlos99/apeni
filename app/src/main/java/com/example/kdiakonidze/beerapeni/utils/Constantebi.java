@@ -8,6 +8,7 @@ import com.example.kdiakonidze.beerapeni.models.BeerModel;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
 import com.example.kdiakonidze.beerapeni.models.Useri;
+import com.example.kdiakonidze.beerapeni.models.Xarji;
 
 import java.util.ArrayList;
 
@@ -78,6 +79,8 @@ public class Constantebi {
     public static ArrayList<Obieqti> OBIEQTEBI = new ArrayList<>();
     public static ArrayList<PeerObjPrice> FASEBI = new ArrayList<>();
     public static ArrayList<Useri> USERsLIST = new ArrayList<>();
+
+    public static ArrayList<Xarji> XARJI_LIST = new ArrayList<>();
 
     public static Integer MDEBAREOBA_SHEKVETA = 1;
     public static Integer MDEBAREOBA_MITANA = 2;

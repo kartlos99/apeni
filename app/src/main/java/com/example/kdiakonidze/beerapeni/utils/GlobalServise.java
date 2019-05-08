@@ -18,6 +18,7 @@ import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.Useri;
+import com.example.kdiakonidze.beerapeni.models.Xarji;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -308,11 +309,11 @@ public class GlobalServise {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(context, response , Toast.LENGTH_SHORT).show();
-
-                Log.d("sql", response);
-//                if (!response.equals("0")) {
-//
-//                }
+//                Log.d("sql", response);
+                if (!response.equals("0")) {
+                    Constantebi.XARJI_LIST.add(new Xarji(comment, amount));
+                    l.onChange();
+                }
             }
         }, new Response.ErrorListener() {
             @Override

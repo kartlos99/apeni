@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,6 +26,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.adapters.DaySalesAdapter;
 import com.example.kdiakonidze.beerapeni.models.SaleInfo;
+import com.example.kdiakonidze.beerapeni.models.Xarji;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 import com.example.kdiakonidze.beerapeni.utils.MyUtil;
@@ -41,7 +43,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.xarjListener {
+public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.xarjListener, GlobalServise.vListener {
 
     private int screenDefOrientation;
     private float k30empty = 0.0f, k50empty = 0.0f;
@@ -238,18 +240,18 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
         xarjebiDialog.show(getSupportFragmentManager(), "xarjDialog");
     }
 
-    private void getsales(String tarigi, String distrid) {
+    private void getsales(final String tarigi, final String distrid) {
 
 
         JsonArrayRequest request_fasebi = new JsonArrayRequest(Constantebi.URL_GET_SALEDAY + "?tarigi=" + tarigi + "&distrid=" + distrid, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 salesDay.clear();
-
+                Log.d("pp", tarigi + " " + distrid);
                 if (response.length() > 0) {
                     try {
 
-                        for (int i = 0; i < response.length() - 2; i++) {
+                        for (int i = 0; i < response.length() - 3; i++) {
                             String dasaxeleba = response.getJSONObject(i).getString("dasaxeleba");
                             float pr = (float) response.getJSONObject(i).getDouble("pr");
                             int lt = response.getJSONObject(i).getInt("lt");
@@ -259,10 +261,19 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
                             salesDay.add(new SaleInfo(dasaxeleba, pr, lt, k30, k50));
                         }
 
-                        takeMoney = (float) response.getJSONObject(response.length() - 2).getDouble("money");
+                        takeMoney = (float) response.getJSONObject(response.length() - 3).getDouble("money");
 
-                        k30empty = (float) response.getJSONObject(response.length() - 1).getDouble("k30");
-                        k50empty = (float) response.getJSONObject(response.length() - 1).getDouble("k50");
+                        k30empty = (float) response.getJSONObject(response.length() - 2).getDouble("k30");
+                        k50empty = (float) response.getJSONObject(response.length() - 2).getDouble("k50");
+
+                        JSONArray jXarjArray = response.getJSONArray(response.length() - 1);
+                        Log.d("js", ""+jXarjArray.length() + response.length() + response.toString());
+                        Constantebi.XARJI_LIST.clear();
+                        for (int i = 0; i < jXarjArray.length(); i++){
+                            String comm = jXarjArray.getJSONObject(i).getString("comment");
+                            float am = (float) jXarjArray.getJSONObject(i).getDouble("tanxa");
+                            Constantebi.XARJI_LIST.add(new Xarji(comm, am));
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -273,6 +284,8 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
 
                 salesAdapter = new DaySalesAdapter(getApplicationContext(), salesDay);
                 nonScrolSaleslistView.setAdapter(salesAdapter);
+
+                showXarji();
 
                 if (!(progressDialog == null)) {
                     if (progressDialog.isShowing()) {
@@ -321,10 +334,28 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
 
     @Override
     public void applayChanges(String comment, Float amount) {
-        tXarjiSum.setText(MyUtil.floatToSmartStr(amount));
-        tXelze.setText(comment);
+//        tXarjiSum.setText(MyUtil.floatToSmartStr(amount));
+//        tXelze.setText(comment);
 
         GlobalServise globalServise = new GlobalServise(getApplicationContext());
+        globalServise.setChangeListener(this);
         globalServise.insertXarjebi(Constantebi.USER_ID, amount, comment);
+    }
+
+    @Override
+    public void onChange() {
+        showXarji();
+    }
+
+    void showXarji(){
+        Log.d("a", ""+Constantebi.XARJI_LIST.size());
+        float sum = 0;
+        for (Xarji xarji : Constantebi.XARJI_LIST){
+            Log.d("xarj", xarji.toString());
+            sum += xarji.getAmount();
+        }
+        DecimalFormat df = new DecimalFormat("#0.00");
+        tXarjiSum.setText(MyUtil.floatToSmartStr(sum));
+        tXelze.setText(df.format(takeMoney - sum));
     }
 }
