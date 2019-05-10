@@ -1,6 +1,7 @@
 package com.example.kdiakonidze.beerapeni.utils;
 
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
+import com.example.kdiakonidze.beerapeni.models.Useri;
 import com.example.kdiakonidze.beerapeni.models.Xarji;
 
 import java.text.DecimalFormat;
@@ -49,19 +50,28 @@ public class MyUtil {
         return list;
     }
 
-    public static float tempListPrice(ArrayList<Shekvetebi> tempList){
+    public static float tempListPrice(ArrayList<Shekvetebi> tempList) {
         float n = 0;
-        for (Shekvetebi tempItem : tempList){
-            n += (tempItem.getK30in()*30 + tempItem.getK50in()*50) * Float.valueOf(tempItem.getComment());
+        for (Shekvetebi tempItem : tempList) {
+            n += (tempItem.getK30in() * 30 + tempItem.getK50in() * 50) * Float.valueOf(tempItem.getComment());
         }
         return n;
     }
 
-    public static float totalXarji(ArrayList<Xarji> xarjebi){
+    public static float totalXarji(ArrayList<Xarji> xarjebi) {
         float n = 0;
-        for (Xarji xarji: xarjebi){
+        for (Xarji xarji : xarjebi) {
             n += xarji.getAmount();
         }
         return n;
+    }
+
+    public static String getUserName(int id) {
+        for (Useri user : Constantebi.USERsLIST) {
+            if (user.getId() == id){
+                return user.getUsername();
+            }
+        }
+        return "";
     }
 }

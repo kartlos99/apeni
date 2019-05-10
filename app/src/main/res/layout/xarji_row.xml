@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/xarji_row_layer"
-    android:padding="8dp"
+    android:padding="4dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -23,7 +23,7 @@
         app:layout_constraintEnd_toStartOf="@id/t_xarj_row_amount"
         android:layout_marginEnd="8dp"
         android:text="dsfdfsd"
-        android:textColor="#555"
+        android:textColor="#b44"
         android:textAlignment="gravity"
         android:gravity="end"
         android:textStyle="italic"
@@ -35,8 +35,8 @@
         app:layout_constraintEnd_toStartOf="@id/btn_xarj_remove"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_margin="8dp"
-        android:textSize="@dimen/textsize_4"
+        android:layout_marginStart="4dp"
+        android:textSize="@dimen/textsize_3"
         android:text="33"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -49,6 +49,7 @@
         android:background="@android:color/transparent"
         android:src="@drawable/ic_remove_circle_24dp"
         android:contentDescription="@string/minusi"
+        android:padding="6dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

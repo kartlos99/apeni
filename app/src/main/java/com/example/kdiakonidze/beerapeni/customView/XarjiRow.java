@@ -13,48 +13,42 @@ import android.widget.TextView;
 import com.example.kdiakonidze.beerapeni.R;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.Xarji;
+import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 import com.example.kdiakonidze.beerapeni.utils.MyUtil;
 
 import java.util.ArrayList;
 
-public class XarjiRow extends ConstraintLayout {
+public class XarjiRow extends ConstraintLayout implements GlobalServise.vListener {
 
     private Context mContext;
     private static final String TAG = "XarjiRowTAG";
     private ImageButton btn_itemRemove;
     private Xarji xarji;
+    private ArrayList<Xarji> xarjebi;
+    private LinearLayout linearConteiner;
+    private TextView tShowSum;
+    private Boolean canDel;
 
     public XarjiRow(Context context) {
         super(context);
     }
 
-    public XarjiRow(Context context, final Xarji xarji, final LinearLayout linearConteiner, final ArrayList<Xarji> xarjebi) {
+    public XarjiRow(Context context, final Xarji xarji, final LinearLayout linearConteiner, final ArrayList<Xarji> xarjebi, final TextView tShowSum, Boolean canDel) {
         super(context);
         mContext = context;
         this.xarji = xarji;
+        this.linearConteiner = linearConteiner;
+        this.xarjebi = xarjebi;
+        this.tShowSum = tShowSum;
+        this.canDel = canDel;
         initView();
 
         btn_itemRemove.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-//                tempOrdersList.remove(order);
-//                beerRowsConteiner.removeView(getView());
-            }
-        });
-    }
-
-    public XarjiRow(Context context, final Xarji xarji, final LinearLayout linearConteiner, final ArrayList<Xarji> xarjebi, final TextView tShowSum) {
-        super(context);
-        mContext = context;
-        this.xarji = xarji;
-        initView();
-
-        btn_itemRemove.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                xarjebi.remove(xarji);
-                linearConteiner.removeView(getView());
-                tShowSum.setText(MyUtil.floatToSmartStr(MyUtil.totalXarji(xarjebi)));
+                GlobalServise globalServise = new GlobalServise(mContext);
+                globalServise.setChangeListener(XarjiRow.this);
+                globalServise.delXarjebi(xarji.getId());
             }
         });
     }
@@ -66,13 +60,22 @@ public class XarjiRow extends ConstraintLayout {
         TextView tDistr = thisRootView.findViewById(R.id.t_xarj_user);
         TextView tAmount = thisRootView.findViewById(R.id.t_xarj_row_amount);
         btn_itemRemove = thisRootView.findViewById(R.id.btn_xarj_remove);
+        if (!canDel)
+            btn_itemRemove.setVisibility(INVISIBLE);
 
         tComment.setText(xarji.getComment());
         tAmount.setText(MyUtil.floatToSmartStr(xarji.getAmount()) + mContext.getString(R.string.lari));
-        tDistr.setText(xarji.getDistrID());
+        tDistr.setText(MyUtil.getUserName(Integer.parseInt(xarji.getDistrID())));
     }
 
     public View getView() {
         return this;
+    }
+
+    @Override
+    public void onChange() {
+        xarjebi.remove(xarji);
+        linearConteiner.removeView(getView());
+        tShowSum.setText(MyUtil.floatToSmartStr(MyUtil.totalXarji(xarjebi)) + mContext.getString(R.string.lari));
     }
 }

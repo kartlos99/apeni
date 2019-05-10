@@ -3,17 +3,22 @@ package com.example.kdiakonidze.beerapeni;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -25,6 +30,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.adapters.DaySalesAdapter;
+import com.example.kdiakonidze.beerapeni.customView.XarjiRow;
 import com.example.kdiakonidze.beerapeni.models.SaleInfo;
 import com.example.kdiakonidze.beerapeni.models.Xarji;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
@@ -47,20 +53,25 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
 
     private int screenDefOrientation;
     private float k30empty = 0.0f, k50empty = 0.0f;
-    private ArrayList<SaleInfo> salesDay;
     private float takeMoney = 0.0f;
+    private String archeuli_dge;
+    private String distr_id = "0";
+    private Boolean requestInProgres = false, requestNeeded = true;
+    private Boolean xarjListExpanded = false;
+
+    private ArrayList<SaleInfo> salesDay;
     private Calendar calendar;
     private SimpleDateFormat dateFormat;
-    private String archeuli_dge;
-    private Button btn_setDate;
-    private TextView t_k30count, t_k50count, t_laricount, t_takeMoney;
-    //    private ListView saleslistView;
     private DaySalesAdapter salesAdapter;
     private ProgressDialog progressDialog;
-    private Spinner sp_distr;
-    private String distr_id = "0";
     private RequestQueue queue;
-    private Boolean requestInProgres = false, requestNeeded = true;
+    private Context mContext;
+
+    private Button btn_setDate;
+    private TextView t_k30count, t_k50count, t_laricount, t_takeMoney;
+    private ImageButton btnExpXarj;
+    private LinearLayout linearXarjConteiner;
+    private Spinner sp_distr;
     private NonScrollListView nonScrolSaleslistView;
     private TextView tXarjiSum, tXelze;
 
@@ -73,6 +84,7 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
             btn_setDate.setText(archeuli_dge);
             getsales(archeuli_dge, distr_id);
 //            tTarigi.setText("დღიური რეალიზაცია\nთარიღი " + archeuli_dge);
+            startPos();
         }
     };
 
@@ -97,7 +109,8 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
         dateFormat = new SimpleDateFormat(getString(R.string.patern_date));
         screenDefOrientation = getRequestedOrientation();
 
-        queue = Volley.newRequestQueue(this);
+        mContext = this;
+        queue = Volley.newRequestQueue(mContext);
 
         btn_setDate = findViewById(R.id.btn_tarigi);
         Button btn_back = findViewById(R.id.btn_day_back);
@@ -110,6 +123,8 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
         nonScrolSaleslistView = findViewById(R.id.sales_list1);
         tXarjiSum = findViewById(R.id.t_xarj_sum);
         tXelze = findViewById(R.id.t_xelze);
+        linearXarjConteiner = findViewById(R.id.linear_xarjebi);
+        btnExpXarj = findViewById(R.id.btn_xarj_expand);
 
         salesDay = new ArrayList<>();
 
@@ -167,6 +182,7 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
             }
 
             calendar.setTime(date);
+            showXarji();
         } else {
             archeuli_dge = dateFormat.format(calendar.getTime());
             getsales(archeuli_dge, distr_id);
@@ -187,6 +203,7 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
                     distr_id = "0";
                 }
                 getsales(archeuli_dge, distr_id);
+                startPos();
             }
 
             @Override
@@ -219,6 +236,7 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
                 archeuli_dge = dateFormat.format(calendar.getTime());
                 btn_setDate.setText(archeuli_dge);
                 getsales(archeuli_dge, distr_id);
+                startPos();
             }
         };
 
@@ -233,6 +251,45 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
             }
         });
 
+        btnExpXarj.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                xarjListExpanded = !xarjListExpanded;
+                showXarjList(xarjListExpanded);
+                btnExpXarj.setImageDrawable(getDrawable(xarjListExpanded ? R.drawable.ic_arrow_up_24dp : R.drawable.ic_arrow_down_24dp));
+            }
+        });
+
+        tXarjiSum.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                showXelze(MyUtil.totalXarji(Constantebi.XARJI_LIST));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+    }
+
+    private void showXarjList(Boolean expanded) {
+        linearXarjConteiner.removeAllViews();
+        Boolean canDel = false;
+        if (Constantebi.USER_TYPE.equals(Constantebi.USER_TYPE_admin) || archeuli_dge.equals(dateFormat.format(new Date()))) {
+            canDel = true;
+        }
+        if (expanded) {
+            for (Xarji xarji : Constantebi.XARJI_LIST) {
+                XarjiRow row = new XarjiRow(mContext, xarji, linearXarjConteiner, Constantebi.XARJI_LIST, tXarjiSum, canDel);
+                linearXarjConteiner.addView(row);
+            }
+        }
     }
 
     private void openDialog() {
@@ -267,13 +324,14 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
                         k50empty = (float) response.getJSONObject(response.length() - 2).getDouble("k50");
 
                         JSONArray jXarjArray = response.getJSONArray(response.length() - 1);
-                        Log.d("js", ""+jXarjArray.length() + response.length() + response.toString());
+                        Log.d("js", "" + jXarjArray.length() + response.length() + response.toString());
                         Constantebi.XARJI_LIST.clear();
-                        for (int i = 0; i < jXarjArray.length(); i++){
+                        for (int i = 0; i < jXarjArray.length(); i++) {
                             String comm = jXarjArray.getJSONObject(i).getString("comment");
                             float am = (float) jXarjArray.getJSONObject(i).getDouble("tanxa");
                             String distrID = jXarjArray.getJSONObject(i).getString("distributor_id");
-                            Constantebi.XARJI_LIST.add(new Xarji(comm, distrID, am));
+                            String id = jXarjArray.getJSONObject(i).getString("id");
+                            Constantebi.XARJI_LIST.add(new Xarji(comm, distrID, id, am));
                         }
 
                     } catch (JSONException e) {
@@ -346,17 +404,24 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
     @Override
     public void onChange() {
         showXarji();
+        startPos();
     }
 
-    void showXarji(){
-        Log.d("a", ""+Constantebi.XARJI_LIST.size());
-        float sum = 0;
-        for (Xarji xarji : Constantebi.XARJI_LIST){
-            Log.d("xarj", xarji.toString());
-            sum += xarji.getAmount();
-        }
-        DecimalFormat df = new DecimalFormat("#0.00");
-        tXarjiSum.setText(MyUtil.floatToSmartStr(sum));
-        tXelze.setText(df.format(takeMoney - sum));
+    void showXarji() {
+        Log.d("a", "" + Constantebi.XARJI_LIST.size());
+        float sum = MyUtil.totalXarji(Constantebi.XARJI_LIST);
+
+        tXarjiSum.setText(MyUtil.floatToSmartStr(sum) + mContext.getString(R.string.lari));
+        showXelze(sum);
+    }
+
+    void showXelze(float xarji) {
+        tXelze.setText(MyUtil.floatToSmartStr(takeMoney - xarji) + mContext.getString(R.string.lari));
+    }
+
+    void startPos() {
+        xarjListExpanded = false;
+        showXarjList(xarjListExpanded);
+        btnExpXarj.setImageDrawable(getDrawable(R.drawable.ic_arrow_down_24dp));
     }
 }

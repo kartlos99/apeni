@@ -25,7 +25,7 @@ public class XarjebiDialog extends AppCompatDialogFragment {
         View view = inflater.inflate(R.layout.xarjebi_dialog, null);
 
         builder.setView(view)
-                .setTitle("xarjebi")
+                .setTitle(getString(R.string.add_xarji))
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

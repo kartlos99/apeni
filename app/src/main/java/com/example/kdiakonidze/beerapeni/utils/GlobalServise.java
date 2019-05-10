@@ -309,9 +309,9 @@ public class GlobalServise {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(context, response , Toast.LENGTH_SHORT).show();
-//                Log.d("sql", response);
+                Log.d("INS_id", response);
                 if (!response.equals("0")) {
-                    Constantebi.XARJI_LIST.add(new Xarji(comment, amount));
+                    Constantebi.XARJI_LIST.add(new Xarji(comment, distrID, response, amount));
                     l.onChange();
                 }
             }
@@ -335,6 +335,42 @@ public class GlobalServise {
 
         queue.add(request);
     }
+
+    public void delXarjebi(final String id){
+
+        StringRequest request = new StringRequest(Request.Method.POST, Constantebi.URL_DEL_RECORD, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+//                Toast.makeText(context, response , Toast.LENGTH_SHORT).show();
+                Log.d("INS_id", response);
+                if (response.equals("Removed!")) {
+//                    Constantebi.XARJI_LIST.add(new Xarji(comment, distrID, response, amount));
+                    l.onChange();
+                }else {
+                    Toast.makeText(context, "can't delete : "+response , Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+
+                params.put("id", id);
+                params.put("table", "xarjebi");
+                params.put("userid", Constantebi.USER_ID);
+
+                return params;
+            }
+        };
+
+        queue.add(request);
+    }
+
 
     private Integer findBeerId(String ludi) {
         for (int i = 0; i < Constantebi.ludiList.size(); i++) {

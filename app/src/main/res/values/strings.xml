@@ -100,4 +100,7 @@
     <string name="alredy_in_list">ეს ლუდის სახეობა უკვე დამატებულია სიაში!</string>
     <string name="no_edit_access">არაგაქვთ რედაქტირების უფლება!</string>
     <string name="xarjebi">ხარჯები</string>
+    <string name="xelze_tanxa">ხელზე თანხა</string>
+    <string name="odenoba">ოდენობა</string>
+    <string name="add_xarji">ხარჯის დამატება</string>
 </resources>
