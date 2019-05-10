@@ -3,7 +3,6 @@ package com.example.kdiakonidze.beerapeni.customView;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;

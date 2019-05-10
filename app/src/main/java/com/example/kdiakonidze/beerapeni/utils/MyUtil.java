@@ -1,6 +1,7 @@
 package com.example.kdiakonidze.beerapeni.utils;
 
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
+import com.example.kdiakonidze.beerapeni.models.Xarji;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -56,4 +57,11 @@ public class MyUtil {
         return n;
     }
 
+    public static float totalXarji(ArrayList<Xarji> xarjebi){
+        float n = 0;
+        for (Xarji xarji: xarjebi){
+            n += xarji.getAmount();
+        }
+        return n;
+    }
 }

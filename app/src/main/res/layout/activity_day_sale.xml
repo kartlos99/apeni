@@ -412,11 +412,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <ImageButton
+            android:id="@+id/btn_xarj_expand"
+            app:layout_constraintTop_toTopOf="@id/btn_xarjebi"
+            app:layout_constraintStart_toEndOf="@id/btn_xarjebi"
+            android:src="@drawable/ic_arrow_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <TextView
             android:id="@+id/t_xarj_sum"
             app:layout_constraintTop_toBottomOf="@id/cardView_shemosavali_p3"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="8dp"
+            android:padding="6dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:text="0"
@@ -430,6 +439,7 @@
             app:layout_constraintTop_toBottomOf="@id/t_xarj_sum"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="8dp"
+            android:padding="6dp"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:text="xelze: 0"

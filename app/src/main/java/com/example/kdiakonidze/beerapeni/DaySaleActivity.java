@@ -272,7 +272,8 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
                         for (int i = 0; i < jXarjArray.length(); i++){
                             String comm = jXarjArray.getJSONObject(i).getString("comment");
                             float am = (float) jXarjArray.getJSONObject(i).getDouble("tanxa");
-                            Constantebi.XARJI_LIST.add(new Xarji(comm, am));
+                            String distrID = jXarjArray.getJSONObject(i).getString("distributor_id");
+                            Constantebi.XARJI_LIST.add(new Xarji(comm, distrID, am));
                         }
 
                     } catch (JSONException e) {
