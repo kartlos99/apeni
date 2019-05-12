@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -289,6 +290,13 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
                 XarjiRow row = new XarjiRow(mContext, xarji, linearXarjConteiner, Constantebi.XARJI_LIST, tXarjiSum, canDel);
                 linearXarjConteiner.addView(row);
             }
+            final ScrollView scrolMain = findViewById(R.id.scroll_main);
+            scrolMain.post(new Runnable() {
+                @Override
+                public void run() {
+                    scrolMain.smoothScrollTo(0, scrolMain.getBottom());
+                }
+            });
         }
     }
 

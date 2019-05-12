@@ -1,8 +1,10 @@
 package com.example.kdiakonidze.beerapeni.customView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 import com.example.kdiakonidze.beerapeni.R;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.Xarji;
+import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 import com.example.kdiakonidze.beerapeni.utils.MyUtil;
 
@@ -33,7 +36,7 @@ public class XarjiRow extends ConstraintLayout implements GlobalServise.vListene
         super(context);
     }
 
-    public XarjiRow(Context context, final Xarji xarji, final LinearLayout linearConteiner, final ArrayList<Xarji> xarjebi, final TextView tShowSum, Boolean canDel) {
+    public XarjiRow(final Context context, final Xarji xarji, final LinearLayout linearConteiner, final ArrayList<Xarji> xarjebi, final TextView tShowSum, Boolean canDel) {
         super(context);
         mContext = context;
         this.xarji = xarji;
@@ -46,9 +49,24 @@ public class XarjiRow extends ConstraintLayout implements GlobalServise.vListene
         btn_itemRemove.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                GlobalServise globalServise = new GlobalServise(mContext);
-                globalServise.setChangeListener(XarjiRow.this);
-                globalServise.delXarjebi(xarji.getId());
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setCancelable(true);
+                builder.setMessage(Constantebi.MSG_DEL);
+                builder.setPositiveButton("დიახ", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        GlobalServise globalServise = new GlobalServise(mContext);
+                        globalServise.setChangeListener(XarjiRow.this);
+                        globalServise.delXarjebi(xarji.getId());
+                    }
+                }).setNegativeButton("არა", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
     }

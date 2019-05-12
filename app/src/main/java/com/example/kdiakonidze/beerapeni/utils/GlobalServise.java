@@ -308,7 +308,6 @@ public class GlobalServise {
         StringRequest request = new StringRequest(Request.Method.POST, Constantebi.URL_INSERT_XARJI, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Toast.makeText(context, response , Toast.LENGTH_SHORT).show();
                 Log.d("INS_id", response);
                 if (!response.equals("0")) {
                     Constantebi.XARJI_LIST.add(new Xarji(comment, distrID, response, amount));
