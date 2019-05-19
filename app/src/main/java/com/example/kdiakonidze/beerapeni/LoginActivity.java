@@ -1,8 +1,11 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,7 +18,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.kdiakonidze.beerapeni.services.NotificationService;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.PrivateKey;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.internal.api.FirebaseNoSignedInUserException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,6 +50,10 @@ public class LoginActivity extends AppCompatActivity {
     EditText e_username, e_password;
     CheckBox chk_remember;
 
+    public static final String TAG = "LoginActivity";
+
+    private FirebaseAuth mAuth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,8 +66,8 @@ public class LoginActivity extends AppCompatActivity {
         e_password = findViewById(R.id.e_input_password);
         chk_remember = findViewById(R.id.chk_damimaxsovre);
 
-        File file = new File(getFilesDir(),Constantebi.USER_FILENAME);
-        if(file.exists()){
+        File file = new File(getFilesDir(), Constantebi.USER_FILENAME);
+        if (file.exists()) {
             readFileAsString(Constantebi.USER_FILENAME);
         }
 
@@ -68,6 +86,7 @@ public class LoginActivity extends AppCompatActivity {
 //                onBackPressed();
             }
         });
+        mAuth = FirebaseAuth.getInstance();
     }
 
     private void avtorizacia() {
@@ -80,14 +99,14 @@ public class LoginActivity extends AppCompatActivity {
     private void chack_user(final String username, final String password) {
         RequestQueue queue = Volley.newRequestQueue(getApplicationContext());
         String url = Constantebi.URL_LOGIN;
-
+        Log.d(TAG, "chack_user");
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                btn_login.setEnabled(true);
 
                 if (response.equals("uaryofa")) {
                     Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
+                    btn_login.setEnabled(true);
                 } else {
                     try {
                         JSONObject json = (new JSONArray(response).getJSONObject(0));
@@ -100,7 +119,8 @@ public class LoginActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    Constantebi.loged_in = true;
+                    loginToFirebase(username);
+
                     if (chk_remember.isChecked()) {
                         try {
                             rememberUser(username, password);
@@ -108,7 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                    onBackPressed();
+
                     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
                 }
 
@@ -116,10 +136,11 @@ public class LoginActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "chack_user:Eror");
                 btn_login.setEnabled(true);
                 error.printStackTrace();
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                Toast.makeText(getApplicationContext(), error.toString()+" შეცდომა login -ze" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), error.toString() + " შეცდომა login -ზე", Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override
@@ -133,6 +154,59 @@ public class LoginActivity extends AppCompatActivity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         queue.add(request);
+    }
+
+    private void registerInFirebase(final String username) {
+
+        mAuth.createUserWithEmailAndPassword(username, PrivateKey.FIREBASE_PASS)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success");
+//                            FirebaseUser user = mAuth.getCurrentUser();
+                            onLoginSucsses();
+                        } else {
+                            Log.d(TAG, username);
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Registration failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+    }
+
+    private void loginToFirebase(String name) {
+
+        final String username = name + "@apeni.ge";
+
+        mAuth.signInWithEmailAndPassword(username, PrivateKey.FIREBASE_PASS).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+                if (!task.isSuccessful()) {
+                    if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                        registerInFirebase(username);
+                        Log.d(TAG, "exp_MEssage: " + task.getException().getMessage());
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "SignIN:success");
+                    onLoginSucsses();
+                }
+            }
+        });
+    }
+
+    private void onLoginSucsses(){
+        Constantebi.loged_in = true;
+        btn_login.setEnabled(true);
+        startService(new Intent(getBaseContext(), NotificationService.class));
+        onBackPressed();
     }
 
     private void rememberUser(String username, String password) throws IOException {

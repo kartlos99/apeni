@@ -1,5 +1,9 @@
 package com.example.kdiakonidze.beerapeni.utils;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.util.Log;
+
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.Useri;
 import com.example.kdiakonidze.beerapeni.models.Xarji;
@@ -10,7 +14,15 @@ import java.util.List;
 
 public class MyUtil {
 
+    private static final String SHARED_PREF = "my_pref";
+    private static final String DATA_KEY = "datakey";
+    private Context mContext;
+
+    public MyUtil(Context context) {
+        mContext = context;
+    }
     private static DecimalFormat df = new DecimalFormat("#0.00");
+
 
     public static String pliusMinusText(String stringNumber, String oper) {
         // oper   (true = +) (false = -)
@@ -73,5 +85,18 @@ public class MyUtil {
             }
         }
         return "";
+    }
+
+
+    public void saveLastValue(String data){
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(DATA_KEY, data);
+        editor.apply();
+    }
+
+    public String loadLastValue(){
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
+        return sharedPreferences.getString(DATA_KEY, "");
     }
 }

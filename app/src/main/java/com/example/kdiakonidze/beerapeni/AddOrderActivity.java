@@ -32,6 +32,9 @@ import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import com.example.kdiakonidze.beerapeni.utils.MyUtil;
+import com.example.kdiakonidze.beerapeni.utils.PrivateKey;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -317,6 +320,9 @@ public class AddOrderActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                 if (response.equals("ჩაწერილია!") || response.equals("შეკვეთა დაკორექტირდა!")) {
+                    if (!e_comment.getText().toString().isEmpty()){
+                        notifyFirebase();
+                    }
                     OrdersActivity.chamosatvirtia = true;
                     onBackPressed();
                 }
@@ -363,6 +369,16 @@ public class AddOrderActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         request.setRetryPolicy(mRetryPolicy);
         queue.add(request);
+    }
+
+    private void notifyFirebase() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myMsgRef = database.getReference(PrivateKey.FIREBASE_DB_TREE);
+        Date date = new Date();
+        myMsgRef.setValue(date.toString());
+
+        MyUtil util = new MyUtil(getApplicationContext());
+        util.saveLastValue(date.toString());
     }
 
     @Override

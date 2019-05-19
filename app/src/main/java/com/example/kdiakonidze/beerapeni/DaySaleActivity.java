@@ -281,7 +281,7 @@ public class DaySaleActivity extends AppCompatActivity implements XarjebiDialog.
 
     private void showXarjList(Boolean expanded) {
         linearXarjConteiner.removeAllViews();
-        Boolean canDel = false;
+        boolean canDel = false;
         if (Constantebi.USER_TYPE.equals(Constantebi.USER_TYPE_admin) || archeuli_dge.equals(dateFormat.format(new Date()))) {
             canDel = true;
         }

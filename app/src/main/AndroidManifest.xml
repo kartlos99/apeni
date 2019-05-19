@@ -37,6 +37,9 @@
         <activity android:name=".SysClearActivity" />
         <activity android:name=".SawyobiPage" />
         <activity android:name=".SawyobiList" />
+
+        <service android:name=".services.NotificationService"
+            android:enabled="true"/>
     </application>
 
 </manifest>
