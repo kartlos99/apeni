@@ -15,6 +15,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.kdiakonidze.beerapeni.MainActivity;
 import com.example.kdiakonidze.beerapeni.models.BeerModel;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
+import com.example.kdiakonidze.beerapeni.models.OrderCommentRowModel;
 import com.example.kdiakonidze.beerapeni.models.PeerObjPrice;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.Useri;
@@ -23,6 +24,7 @@ import com.example.kdiakonidze.beerapeni.models.Xarji;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -255,6 +257,7 @@ public class GlobalServise {
     private void activityOrientationNormal() {
         Activity activity = (Activity) context;
         activity.setRequestedOrientation(Constantebi.screenDefOrientation);
+        getOrderComments();
     }
 
     public void editOrder(final Shekvetebi order, final int distID) {
@@ -368,6 +371,38 @@ public class GlobalServise {
         };
 
         queue.add(request);
+    }
+
+    public void getOrderComments(){
+        JsonArrayRequest request_comments = new JsonArrayRequest(Constantebi.URL_GET_ORDER_COMMENTS, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                Constantebi.ORDER_COMMENTS = new ArrayList<>();
+                if (response.length() > 0) {
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            OrderCommentRowModel rowModel = new OrderCommentRowModel(
+                                    response.getJSONObject(i).getString("dasaxeleba"),
+                                    response.getJSONObject(i).getString("comment"),
+                                    response.getJSONObject(i).getString("op")
+                            );
+                            Constantebi.ORDER_COMMENTS.add(rowModel);
+                        } catch (JSONException excep) {
+                            excep.printStackTrace();
+                        }
+                    }
+                }
+                l.onChange();
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, error.toString() + " | error load Order Comments", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        queue.add(request_comments);
     }
 
 

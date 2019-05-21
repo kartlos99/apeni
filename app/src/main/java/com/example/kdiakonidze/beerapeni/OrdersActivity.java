@@ -473,6 +473,9 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                 chamosatvirtia = false;
                 progressDialog.dismiss();
                 setRequestedOrientation(screenDefOrientation);
+                MainActivity.NEED_COMENTS_UPDATE = true;
+                Constantebi.oCount++;
+                Toast.makeText(OrdersActivity.this, "req.Count: " + Constantebi.oCount, Toast.LENGTH_LONG).show();
 //                expAdapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {

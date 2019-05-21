@@ -321,7 +321,8 @@ public class AddOrderActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                 if (response.equals("ჩაწერილია!") || response.equals("შეკვეთა დაკორექტირდა!")) {
                     if (!e_comment.getText().toString().isEmpty()){
-                        notifyFirebase();
+                        MyUtil util = new MyUtil(getApplicationContext());
+                        util.notifyFirebase();
                     }
                     OrdersActivity.chamosatvirtia = true;
                     onBackPressed();
@@ -369,16 +370,6 @@ public class AddOrderActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         request.setRetryPolicy(mRetryPolicy);
         queue.add(request);
-    }
-
-    private void notifyFirebase() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myMsgRef = database.getReference(PrivateKey.FIREBASE_DB_TREE);
-        Date date = new Date();
-        myMsgRef.setValue(date.toString());
-
-        MyUtil util = new MyUtil(getApplicationContext());
-        util.saveLastValue(date.toString());
     }
 
     @Override

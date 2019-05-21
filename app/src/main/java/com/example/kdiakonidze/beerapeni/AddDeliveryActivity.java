@@ -658,6 +658,9 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 Log.d("resp", response);
                 if (!sawyobi) {
                     OrdersActivity.chamosatvirtia = true; // mitanas rom davakreqtirebt, amit mixvdebarom ganaaxlos shekvetebis gverdi
+                    MyUtil util = new MyUtil(getApplicationContext());
+                    util.notifyFirebase();
+                    MainActivity.NEED_COMENTS_UPDATE = true;
                 } else {
                     SawyobiList.chamosatvirtia = true;
                 }

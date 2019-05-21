@@ -10,4 +10,5 @@
     <dimen name="textsize_4">24sp</dimen>
     <dimen name="header_hiegth">172dp</dimen>
     <dimen name="buttonMargin">4sp</dimen>
+    <dimen name="main_btn_hor_margin">12dp</dimen>
 </resources>

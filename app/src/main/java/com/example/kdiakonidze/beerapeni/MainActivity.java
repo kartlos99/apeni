@@ -1,9 +1,12 @@
 package com.example.kdiakonidze.beerapeni;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -12,10 +15,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,19 +30,32 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.kdiakonidze.beerapeni.adapters.OrderCommAdapter;
+import com.example.kdiakonidze.beerapeni.models.OrderCommentRowModel;
+import com.example.kdiakonidze.beerapeni.services.NotificationService;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, GlobalServise.vListener {
 
+    private static final String TAG = "MainActivity";
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ActionBarDrawerToggle toggle;
+//    private ListView listViewComments;
+
+    public Context mContext;
+    GlobalServise globalServise;
     public static int requestCount = 0;
+    public static Boolean ACTIVE = false;
+
+    private OrderCommAdapter adapter;
+    public static boolean NEED_COMENTS_UPDATE = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +63,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         Constantebi.screenDefOrientation = getRequestedOrientation();
+        mContext = this;
+
+        Constantebi.nSinterface = new NotificationService.NSinterface() {
+            @Override
+            public void doNow() {
+                Log.d(TAG, "doNow");
+                globalServise.getOrderComments();
+
+            }
+        };
 
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navig_view);
         Toolbar toolbar = findViewById(R.id.tool_bar);
+//        listViewComments = findViewById(R.id.list_for_comments);
 
         Button btn_shekvetebi = findViewById(R.id.btn_shekvetebi);
         Button btn_mitana = findViewById(R.id.btn_mitana);
@@ -60,18 +89,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_dayRealiz.setOnClickListener(MainActivity.this);
         btn_objRealiz.setOnClickListener(MainActivity.this);
 
-        Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/bpg-glaho-web-caps-webfont.ttf");
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/bpg-glaho-web-caps-webfont.ttf");
         btn_mitana.setTypeface(typeface);
         btn_objRealiz.setTypeface(typeface);
         btn_shekvetebi.setTypeface(typeface);
         btn_dayRealiz.setTypeface(typeface);
 
-        Typeface typeface_title = Typeface.createFromAsset(getAssets(),"fonts/alk-life-webfont.ttf");
-        TextView textView = findViewById(R.id.textView);
-        textView.setTypeface(typeface_title);
-
+        toolbar.setTitle(Constantebi.APP_DISLOCATION);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(R.string.app_name);
 
 
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close) {
@@ -147,7 +172,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Constantebi.loged_in = false;
                         File file = new File(getFilesDir(), Constantebi.USER_FILENAME);
                         if (file.exists()) {
-                            if (!file.delete()){
+                            if (!file.delete()) {
                                 Toast.makeText(getApplicationContext(), R.string.msg_cantDelUserFile, Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -162,16 +187,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        globalServise = new GlobalServise(mContext);
+        globalServise.setChangeListener(this);
 
-        if (Constantebi.OBIEQTEBI.size() == 0) {
+        if (Constantebi.USERsLIST.size() == 0) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
             requestCount = 0;
-            GlobalServise globalServise = new GlobalServise(this);
             globalServise.get_Obieqts();
             globalServise.get_BeerList();
             globalServise.get_Prises();
             globalServise.get_Users();
         }
+//        adapter = new OrderCommAdapter(mContext, Constantebi.ORDER_COMMENTS);
+//        listViewComments.setAdapter(adapter);
     }
 
     private void change_pass_dialog() {
@@ -179,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final View chPassView = getLayoutInflater().inflate(R.layout.change_pass_dialog, null);
         builder
                 .setView(chPassView)
-                .setTitle("პაროლის შეცვლა\nმომხმარებელი: "+Constantebi.USER_USERNAME)
+                .setTitle("პაროლის შეცვლა\nმომხმარებელი: " + Constantebi.USER_USERNAME)
                 .setPositiveButton("შეცვლა", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -196,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final AlertDialog dialog = builder.create();
         dialog.setCancelable(false);
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE ).setOnClickListener(new View.OnClickListener() {
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -228,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), response + " +", Toast.LENGTH_SHORT).show();
-                if (response.equals("sheicvala!") ) {
+                if (response.equals("sheicvala!")) {
                     Constantebi.USER_PASS = newPass;
                 }
             }
@@ -255,8 +283,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!Constantebi.loged_in) {
             Intent loginpage = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(loginpage);
+        } else {
+            if (Constantebi.USERsLIST.size() != 0 && NEED_COMENTS_UPDATE) {
+                globalServise.getOrderComments();
+            }else {
+                showComments();
+            }
+            ACTIVE = true;
         }
         super.onStart();
+    }
+
+    @Override
+    protected void onPause() {
+        ACTIVE = false;
+        super.onPause();
     }
 
     @Override
@@ -295,5 +336,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
                 Toast.makeText(this, "uups", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onChange() {
+        Log.d("TAG", "Main ON change");
+        showComments();
+    }
+
+    public void showComments() {
+        ArrayList<OrderCommentRowModel> data = new ArrayList<>(Constantebi.ORDER_COMMENTS);
+        OrderCommAdapter myAdapter = new OrderCommAdapter(mContext, data);
+
+        ListView listViewComments = findViewById(R.id.list_for_comments);
+        listViewComments.setAdapter(myAdapter);
+        myAdapter.notifyDataSetChanged();
+
+        NEED_COMENTS_UPDATE = false;
     }
 }

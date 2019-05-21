@@ -7,9 +7,12 @@ import android.util.Log;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.Useri;
 import com.example.kdiakonidze.beerapeni.models.Xarji;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MyUtil {
@@ -87,6 +90,14 @@ public class MyUtil {
         return "";
     }
 
+    public void notifyFirebase() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myMsgRef = database.getReference(PrivateKey.FIREBASE_DB_TREE);
+        Date date = new Date();
+        myMsgRef.setValue(date.toString());
+
+        saveLastValue(date.toString());
+    }
 
     public void saveLastValue(String data){
         SharedPreferences sharedPreferences = mContext.getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
