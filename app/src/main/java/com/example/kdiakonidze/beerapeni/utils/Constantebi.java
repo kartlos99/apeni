@@ -98,5 +98,4 @@ public class Constantebi {
     public static Boolean loged_in = false;
     public static Float ACCURACY = 0.001f;
     public static NotificationService.NSinterface nSinterface;
-    public static int oCount = 0;
 }

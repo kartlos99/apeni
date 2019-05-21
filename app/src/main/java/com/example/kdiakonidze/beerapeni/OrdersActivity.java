@@ -24,9 +24,11 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
@@ -77,6 +79,11 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
             shekvetebis_chamotvirtva(archeuli_dge);
         }
     };
+
+    private RetryPolicy mRetryPolicy = new DefaultRetryPolicy(
+            0,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -474,19 +481,17 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                 progressDialog.dismiss();
                 setRequestedOrientation(screenDefOrientation);
                 MainActivity.NEED_COMENTS_UPDATE = true;
-                Constantebi.oCount++;
-                Toast.makeText(OrdersActivity.this, "req.Count: " + Constantebi.oCount, Toast.LENGTH_LONG).show();
-//                expAdapter.notifyDataSetChanged();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(OrdersActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(OrdersActivity.this, "ConnError: " + error.toString(), Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
                 setRequestedOrientation(screenDefOrientation);
             }
         });
 
+        requestObieqtebi.setRetryPolicy(mRetryPolicy);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
         queue.add(requestObieqtebi);
 
