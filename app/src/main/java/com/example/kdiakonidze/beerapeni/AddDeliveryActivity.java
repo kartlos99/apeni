@@ -77,6 +77,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
     private int editingId = 0;
     private Integer beerIndex = 0, beerId = 0;
     private String reason, operacia;
+    private String initialComment = "";
 
     @Override
     protected void onResume() {
@@ -193,7 +194,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 cardView_mitana.setVisibility(View.GONE);
                 cardView_kout.setVisibility(View.GONE);
                 chk_sachuqari.setVisibility(View.INVISIBLE);
-                eTakeMoney.setText(String.valueOf(i.getDoubleExtra("tanxa", 0.0)));
+                eTakeMoney.setText(String.valueOf(i.getFloatExtra("tanxa", 0.0f)));
                 findObject(i.getIntExtra("objid", 0));
             }
 
@@ -439,8 +440,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
 
                             eK30Count.setText(MyUtil.floatToSmartStr(Float.valueOf(response.getJSONObject(0).getString("kasri30"))));
                             eK50Count.setText(MyUtil.floatToSmartStr(Float.valueOf(response.getJSONObject(0).getString("kasri50"))));
-                            if (t_comment.getEditText() != null)
-                                t_comment.getEditText().setText(response.getJSONObject(0).getString("comment"));
+                            initialComment = response.getJSONObject(0).getString("comment");
                             beerId = response.getJSONObject(0).getInt("ludis_id");
 
                             for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
@@ -470,7 +470,7 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                         try {
                             eK30Count_Kout.setText(MyUtil.floatToSmartStr(Float.valueOf(response.getJSONObject(0).getString("kasri30"))));
                             eK50Count_Kout.setText(MyUtil.floatToSmartStr(Float.valueOf(response.getJSONObject(0).getString("kasri50"))));
-                            t_comment.getEditText().setText(response.getJSONObject(0).getString("comment"));
+                            initialComment = response.getJSONObject(0).getString("comment");
 
                             for (int i = 0; i < Constantebi.OBIEQTEBI.size(); i++) {
                                 if (Constantebi.OBIEQTEBI.get(i).getId() == response.getJSONObject(0).getInt("obieqtis_id")) {
@@ -483,7 +483,8 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                         }
                     }
 
-
+                    if (t_comment.getEditText() != null)
+                        t_comment.getEditText().setText(initialComment);
                     t_deliveryInfo.setText(currObieqti.getDasaxeleba());
 
                 } else {
@@ -658,9 +659,12 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 Log.d("resp", response);
                 if (!sawyobi) {
                     OrdersActivity.chamosatvirtia = true; // mitanas rom davakreqtirebt, amit mixvdebarom ganaaxlos shekvetebis gverdi
-                    MyUtil util = new MyUtil(getApplicationContext());
-                    util.notifyFirebase();
-                    MainActivity.NEED_COMENTS_UPDATE = true;
+                    if (t_comment.getEditText() != null)
+                    if (!t_comment.getEditText().getText().toString().equals(initialComment)) {
+                        MyUtil util = new MyUtil(getApplicationContext());
+                        util.notifyFirebase();
+                        MainActivity.NEED_COMENTS_UPDATE = true;
+                    }
                 } else {
                     SawyobiList.chamosatvirtia = true;
                 }

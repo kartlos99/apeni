@@ -257,7 +257,11 @@ public class GlobalServise {
     private void activityOrientationNormal() {
         Activity activity = (Activity) context;
         activity.setRequestedOrientation(Constantebi.screenDefOrientation);
-        getOrderComments();
+        if (MainActivity.ACTIVE){
+            getOrderComments();
+        }else {
+            MainActivity.NEED_COMENTS_UPDATE = true;
+        }
     }
 
     public void editOrder(final Shekvetebi order, final int distID) {

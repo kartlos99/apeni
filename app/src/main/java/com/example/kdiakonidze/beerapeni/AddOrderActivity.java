@@ -32,14 +32,9 @@ import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import com.example.kdiakonidze.beerapeni.utils.MyUtil;
-import com.example.kdiakonidze.beerapeni.utils.PrivateKey;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AddOrderActivity extends AppCompatActivity {
@@ -61,6 +56,7 @@ public class AddOrderActivity extends AppCompatActivity {
     private Shekvetebi shekveta;
     int defOrientation;
     private ArrayList<Shekvetebi> shekvetebiArrayList = new ArrayList<>();
+    private String initialComment = "";
 
     private RetryPolicy mRetryPolicy = new DefaultRetryPolicy(
             0,
@@ -281,6 +277,7 @@ public class AddOrderActivity extends AppCompatActivity {
     }
 
     private void shevseba(Shekvetebi shekveta) {
+        initialComment = shekveta.getComment();
         e_comment.setText(shekveta.getComment());
         eK30Count.setText(MyUtil.floatToSmartStr(shekveta.getK30wont()));
         eK50Count.setText(MyUtil.floatToSmartStr(shekveta.getK50wont()));
@@ -320,7 +317,8 @@ public class AddOrderActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                 if (response.equals("ჩაწერილია!") || response.equals("შეკვეთა დაკორექტირდა!")) {
-                    if (!e_comment.getText().toString().isEmpty()){
+                    // tu comentari sheicvala vavrcelebt shetyobinebas
+                    if (!e_comment.getText().toString().equals(initialComment)){
                         MyUtil util = new MyUtil(getApplicationContext());
                         util.notifyFirebase();
                     }

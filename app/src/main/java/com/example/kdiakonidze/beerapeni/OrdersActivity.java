@@ -3,6 +3,7 @@ package com.example.kdiakonidze.beerapeni;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -63,11 +64,14 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
     ArrayList<Shekvetebi> shekvetebiArrayList;
     ArrayList<ShekvetebiGR> shekvetebiArrayListGR;
     ExpShekvetebiAdapter shekvetebiAdapter;
+    SimpleDateFormat dateFormat;
     Calendar calendar;
     String archeuli_dge;
+
     static Boolean chamosatvirtia = false;
-    SimpleDateFormat dateFormat;
     private int screenDefOrientation;
+
+    private Context mContext;
 
     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
@@ -98,6 +102,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_orders);
         dateFormat = new SimpleDateFormat(getString(R.string.patern_date));
+        mContext = OrdersActivity.this;
 
         chBox_orderGroup = findViewById(R.id.checkbox_order_group);
         listView_shekvetebi = findViewById(R.id.list_shekvetebi);
@@ -293,7 +298,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                         public boolean onMenuItemClick(MenuItem item) {
                             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
-                            GlobalServise gServise = new GlobalServise(OrdersActivity.this);
+                            GlobalServise gServise = new GlobalServise(mContext);
                             gServise.setChangeListener(OrdersActivity.this);
                             gServise.editOrder(currOrder, item.getItemId());
                             return true;
@@ -422,7 +427,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
     }
 
     public void shekvetebis_chamotvirtva(String currentDay) {
-        progressDialog = ProgressDialog.show(this, "იტვირთება!", "loading!");
+        progressDialog = ProgressDialog.show(mContext, getString(R.string.loading_title), getString(R.string.loading_text));
 
         String url = Constantebi.URL_GET_ORDERLIST + "?tarigi=" + currentDay;
 
