@@ -56,10 +56,11 @@ public class NotificationService extends Service {
         messageRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String text = dataSnapshot.getValue().toString();
+
                 String lastValue = util.loadLastValue();
 
-                if (text != null) {
+                if (dataSnapshot.getValue() != null) {
+                    String text = dataSnapshot.getValue().toString();
                     if (!lastValue.equals(text) && !lastValue.isEmpty()) {
                         if (MainActivity.ACTIVE) {
                             if (iInstanse == null) {

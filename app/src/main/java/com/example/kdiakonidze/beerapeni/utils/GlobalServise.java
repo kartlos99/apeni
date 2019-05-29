@@ -154,13 +154,13 @@ public class GlobalServise {
 
                         for (int i = 0; i < response.length(); i++) {
                             if (objid == response.getJSONObject(i).getInt("obj_id")) {
-                                objPrice.getFasebi().add( Float.valueOf(response.getJSONObject(i).getString("fasi")) );
+                                objPrice.getFasebi().add(Float.valueOf(response.getJSONObject(i).getString("fasi")));
                             } else {
                                 Constantebi.FASEBI.add(objPrice);
 
                                 objid = response.getJSONObject(i).getInt("obj_id");
                                 objPrice = new PeerObjPrice(objid);
-                                objPrice.getFasebi().add( Float.valueOf(response.getJSONObject(i).getString("fasi")));
+                                objPrice.getFasebi().add(Float.valueOf(response.getJSONObject(i).getString("fasi")));
                             }
                         }
                         Constantebi.FASEBI.add(objPrice);
@@ -257,9 +257,9 @@ public class GlobalServise {
     private void activityOrientationNormal() {
         Activity activity = (Activity) context;
         activity.setRequestedOrientation(Constantebi.screenDefOrientation);
-        if (MainActivity.ACTIVE){
+        if (MainActivity.ACTIVE) {
             getOrderComments();
-        }else {
+        } else {
             MainActivity.NEED_COMENTS_UPDATE = true;
         }
     }
@@ -310,7 +310,7 @@ public class GlobalServise {
         queue.add(request_orderEdit);
     }
 
-    public void insertXarjebi(final String distrID, final float amount, final String comment){
+    public void insertXarjebi(final String distrID, final float amount, final String comment) {
 
         StringRequest request = new StringRequest(Request.Method.POST, Constantebi.URL_INSERT_XARJI, new Response.Listener<String>() {
             @Override
@@ -342,7 +342,7 @@ public class GlobalServise {
         queue.add(request);
     }
 
-    public void delXarjebi(final String id){
+    public void delXarjebi(final String id) {
 
         StringRequest request = new StringRequest(Request.Method.POST, Constantebi.URL_DEL_RECORD, new Response.Listener<String>() {
             @Override
@@ -352,8 +352,8 @@ public class GlobalServise {
                 if (response.equals("Removed!")) {
 //                    Constantebi.XARJI_LIST.add(new Xarji(comment, distrID, response, amount));
                     l.onChange();
-                }else {
-                    Toast.makeText(context, "can't delete : "+response , Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "can't delete : " + response, Toast.LENGTH_SHORT).show();
                 }
             }
         }, new Response.ErrorListener() {
@@ -377,7 +377,7 @@ public class GlobalServise {
         queue.add(request);
     }
 
-    public void getOrderComments(){
+    public void getOrderComments() {
         JsonArrayRequest request_comments = new JsonArrayRequest(Constantebi.URL_GET_ORDER_COMMENTS, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -396,8 +396,8 @@ public class GlobalServise {
                         }
                     }
                 }
-                l.onChange();
-
+                if (l != null)
+                    l.onChange();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -425,7 +425,7 @@ public class GlobalServise {
 
     private vListener l = null;
 
-    public void setChangeListener(vListener mListener){
+    public void setChangeListener(vListener mListener) {
         l = mListener;
     }
 }

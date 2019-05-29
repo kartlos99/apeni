@@ -133,9 +133,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 switch (item.getItemId()) {
                     case R.id.m_addobj:
-                        Intent intent = new Intent(getApplicationContext(), AddEditObject.class);
-                        intent.putExtra(Constantebi.REASON, Constantebi.CREATE);
-                        startActivity(intent);
+                        if (Constantebi.ludiList.size() > 0) {
+                            Intent intent = new Intent(getApplicationContext(), AddEditObject.class);
+                            intent.putExtra(Constantebi.REASON, Constantebi.CREATE);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(mContext, "შეავსეთ ლუდის სახეობა!", Toast.LENGTH_LONG).show();
+                        }
                         return true;
 
                     case R.id.m_adduser:
@@ -155,8 +159,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         return true;
 
                     case R.id.m_sawyobi:
-                        Intent sawyobi_page = new Intent(getApplicationContext(), SawyobiPage.class);
-                        startActivity(sawyobi_page);
+                        if (Constantebi.ludiList.size() > 0) {
+                            Intent sawyobi_page = new Intent(getApplicationContext(), SawyobiPage.class);
+                            startActivity(sawyobi_page);
+                        } else {
+                            Toast.makeText(mContext, "შეავსეთ ლუდის სახეობა!", Toast.LENGTH_LONG).show();
+                        }
                         return true;
 
                     case R.id.m_sys_clear:
@@ -285,8 +293,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(loginpage);
         } else {
             if (Constantebi.USERsLIST.size() != 0 && NEED_COMENTS_UPDATE) {
+                Log.d(TAG, "from onStrart");
                 globalServise.getOrderComments();
-            }else {
+            } else {
                 showComments();
             }
             ACTIVE = true;

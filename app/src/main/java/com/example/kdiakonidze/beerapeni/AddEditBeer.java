@@ -19,9 +19,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -44,6 +46,11 @@ public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.
     private BeerListAdapter beerListAdapter;
     private int beerID = 0;
     private int beerColor = Color.rgb(128, 128, 128);
+
+    private RetryPolicy mRetryPolicy = new DefaultRetryPolicy(
+            0,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +149,7 @@ public class AddEditBeer extends AppCompatActivity implements ChooseColorDialog.
             }
         };
 
+        request.setRetryPolicy(mRetryPolicy);
         queue.add(request);
     }
 

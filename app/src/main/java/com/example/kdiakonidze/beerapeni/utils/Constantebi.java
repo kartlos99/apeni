@@ -1,9 +1,6 @@
 package com.example.kdiakonidze.beerapeni.utils;
 
-import android.app.Application;
-import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.widget.Toast;
 
 import com.example.kdiakonidze.beerapeni.models.BeerModel;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
@@ -24,6 +21,7 @@ public class Constantebi {
 //    public static String APP_DISLOCATION = "კახეთი";
 
     private static String HOST = "http://apeni.ge/tbilisi/andr_app_links/";
+//    public static String HOST = "http://apeni.ge/kakheti/andr_app_links/";
 
     public static String URL_GET_OBIEQTS = HOST + "get_obieqts.php";
     public static String URL_GET_ORDERLIST = HOST + "get_shekvetebi.php";
@@ -34,24 +32,24 @@ public class Constantebi {
     public static String URL_INS_TAKEKASRI = HOST + "insert_kasrioutput.php";
     public static String URL_GET_DAVALIANEBA = HOST + "get_davalianeba.php";
     public static String URL_GET_FASEBI = HOST + "get_fasebi.php";
-    public static String URL_GET_SALEDAY =  HOST + "view_sale_day_v2.php";
+    public static String URL_GET_SALEDAY = HOST + "view_sale_day_v2.php";
     public static String URL_GET_AMONAWERI = HOST + "get_amonaweri_m.php";
     public static String URL_GET_AMONAWERI_K = HOST + "get_amonaweri_k.php";
     public static String URL_INS_AXALI_OBIEQTI = HOST + "insert_axali_obieqti.php";
-    public static String URL_LOGIN =        HOST + "login.php";
-    public static String URL_DEL_OBJ =      HOST + "del_obj.php";
+    public static String URL_LOGIN = HOST + "login.php";
+    public static String URL_DEL_OBJ = HOST + "del_obj.php";
     public static String URL_INS_AXALI_USERI = HOST + "insert_axali_momxmarebeli.php";
-    public static String URL_GET_USERS =    HOST + "get_users.php";
-    public static String URL_DEL_ORDER =    HOST + "del_order.php";
-    public static String URL_DEL_BEER =     HOST + "del_beer.php";
-    public static String URL_INS_BEER =     HOST + "insert_beer.php";
-    public static String URL_DEL_RECORD =   HOST + "del_record_v2.php";
-    public static String URL_GET_RECORD =   HOST + "get_record.php";
+    public static String URL_GET_USERS = HOST + "get_users.php";
+    public static String URL_DEL_ORDER = HOST + "del_order.php";
+    public static String URL_DEL_BEER = HOST + "del_beer.php";
+    public static String URL_INS_BEER = HOST + "insert_beer.php";
+    public static String URL_DEL_RECORD = HOST + "del_record_v2.php";
+    public static String URL_GET_RECORD = HOST + "get_record.php";
     public static String URL_GET_SYSCLEAN = HOST + "get_cleaning.php";
     public static String URL_INS_SYSCLEAN = HOST + "ins_cleaning.php";
-    public static String URL_CH_PASS =      HOST + "ch_pass.php";
-    public static String URL_GET_NASHTI =   HOST + "get_nashtebi.php";
-    public static String URL_INS_SAWYOBI =  HOST + "sawyobi.php";
+    public static String URL_CH_PASS = HOST + "ch_pass.php";
+    public static String URL_GET_NASHTI = HOST + "get_nashtebi.php";
+    public static String URL_INS_SAWYOBI = HOST + "sawyobi.php";
     public static String URL_GET_SAWY_DETAIL = HOST + "sawyobi_detail_list.php";
     public static String URL_INSERT_XARJI = HOST + "insert_xarji.php";
     public static String URL_GET_ORDER_COMMENTS = HOST + "get_order_comments.php";
