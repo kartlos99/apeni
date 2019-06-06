@@ -52,7 +52,7 @@ public class NotificationService extends Service {
 
         util = new MyUtil(getApplicationContext());
 
-        DatabaseReference messageRef = FirebaseDatabase.getInstance().getReference(PrivateKey.FIREBASE_DB_TREE);
+        DatabaseReference messageRef = FirebaseDatabase.getInstance().getReference(getString(R.string.location_en));
         messageRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

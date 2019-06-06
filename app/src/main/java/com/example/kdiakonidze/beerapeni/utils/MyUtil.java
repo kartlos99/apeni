@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.example.kdiakonidze.beerapeni.R;
 import com.example.kdiakonidze.beerapeni.models.Shekvetebi;
 import com.example.kdiakonidze.beerapeni.models.Useri;
 import com.example.kdiakonidze.beerapeni.models.Xarji;
@@ -92,7 +93,7 @@ public class MyUtil {
 
     public void notifyFirebase() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myMsgRef = database.getReference(PrivateKey.FIREBASE_DB_TREE);
+        DatabaseReference myMsgRef = database.getReference(mContext.getString(R.string.location_en));
         Date date = new Date();
         myMsgRef.setValue(date.toString());
 

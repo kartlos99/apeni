@@ -64,6 +64,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         Constantebi.screenDefOrientation = getRequestedOrientation();
         mContext = this;
+        if (Constantebi.HOST.isEmpty())
+            initUrlLinks();
 
         Constantebi.nSinterface = new NotificationService.NSinterface() {
             @Override
@@ -95,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btn_shekvetebi.setTypeface(typeface);
         btn_dayRealiz.setTypeface(typeface);
 
-        toolbar.setTitle(Constantebi.APP_DISLOCATION);
+        toolbar.setTitle(getString(R.string.location_ge));
         setSupportActionBar(toolbar);
 
 
@@ -363,4 +365,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         NEED_COMENTS_UPDATE = false;
     }
+
+    private void initUrlLinks() {
+//        String HOST = getString(R.string.location_en);
+        String host = "http://apeni.ge/" + getString(R.string.location_en) + "/andr_app_links/";
+        Constantebi.HOST = host;
+
+        Constantebi.URL_GET_OBIEQTS = host + "get_obieqts.php";
+        Constantebi.URL_GET_ORDERLIST = host + "get_shekvetebi.php";
+        Constantebi.URL_GET_LUDILIST = host + "get_ludi_list.php";
+        Constantebi.URL_INS_SHEKVETA = host + "insert_shekvetebi.php";
+        Constantebi.URL_INS_LUDISSHETANA = host + "insert_ludis_shetana_v2.php";
+        Constantebi.URL_INS_TAKEMONEY = host + "insert_moneyoutput.php";
+        Constantebi.URL_INS_TAKEKASRI = host + "insert_kasrioutput.php";
+        Constantebi.URL_GET_DAVALIANEBA = host + "get_davalianeba.php";
+        Constantebi.URL_GET_FASEBI = host + "get_fasebi.php";
+        Constantebi.URL_GET_SALEDAY = host + "view_sale_day_v2.php";
+        Constantebi.URL_GET_AMONAWERI = host + "get_amonaweri_m.php";
+        Constantebi.URL_GET_AMONAWERI_K = host + "get_amonaweri_k.php";
+        Constantebi.URL_INS_AXALI_OBIEQTI = host + "insert_axali_obieqti.php";
+        Constantebi.URL_LOGIN = host + "login.php";
+        Constantebi.URL_DEL_OBJ = host + "del_obj.php";
+        Constantebi.URL_INS_AXALI_USERI = host + "insert_axali_momxmarebeli.php";
+        Constantebi.URL_GET_USERS = host + "get_users.php";
+        Constantebi.URL_DEL_ORDER = host + "del_order.php";
+        Constantebi.URL_DEL_BEER = host + "del_beer.php";
+        Constantebi.URL_INS_BEER = host + "insert_beer.php";
+        Constantebi.URL_DEL_RECORD = host + "del_record_v2.php";
+        Constantebi.URL_GET_RECORD = host + "get_record.php";
+        Constantebi.URL_GET_SYSCLEAN = host + "get_cleaning.php";
+        Constantebi.URL_INS_SYSCLEAN = host + "ins_cleaning.php";
+        Constantebi.URL_CH_PASS = host + "ch_pass.php";
+        Constantebi.URL_GET_NASHTI = host + "get_nashtebi.php";
+        Constantebi.URL_INS_SAWYOBI = host + "sawyobi.php";
+        Constantebi.URL_GET_SAWY_DETAIL = host + "sawyobi_detail_list.php";
+        Constantebi.URL_INSERT_XARJI = host + "insert_xarji.php";
+        Constantebi.URL_GET_ORDER_COMMENTS = host + "get_order_comments.php";
+    }
+
 }

@@ -17,11 +17,8 @@ import java.util.ArrayList;
  */
 
 public class Constantebi {
-    public static String APP_DISLOCATION = "თბილისი";
-//    public static String APP_DISLOCATION = "კახეთი";
 
-    private static String HOST = "http://apeni.ge/tbilisi/andr_app_links/";
-//    public static String HOST = "http://apeni.ge/kakheti/andr_app_links/";
+    public static String HOST = "";
 
     public static String URL_GET_OBIEQTS = HOST + "get_obieqts.php";
     public static String URL_GET_ORDERLIST = HOST + "get_shekvetebi.php";

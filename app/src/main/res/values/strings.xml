@@ -64,7 +64,7 @@
     <string name="zveli_paroli">ძველი პაროლი</string>
     <string name="axali_paroli">ახალი პაროლი</string>
 
-    <string name="curr_version">v 1.12</string>
+    <string name="curr_version">1.3</string>
     <string name="back">უკან</string>
     <string name="forward">წინ</string>
     <string name="sachuqari">საჩუქარი</string>
@@ -109,4 +109,7 @@
     <string name="notif_title">ახალი კომენტარი</string>
     <string name="loading_title">იტვირთება!</string>
     <string name="loading_text">დაელოდეთ…</string>
+
+    <string name="location_en">tbilisi</string>
+    <string name="location_ge">თბილისი</string>
 </resources>
