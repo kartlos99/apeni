@@ -35,6 +35,7 @@ import com.example.kdiakonidze.beerapeni.adapters.MyPagesAdapter;
 import com.example.kdiakonidze.beerapeni.fragments.AmonaweriPageFr;
 import com.example.kdiakonidze.beerapeni.models.Obieqti;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
+import com.example.kdiakonidze.beerapeni.utils.MyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -236,18 +237,19 @@ public class AmonaweriActivity extends AppCompatActivity {
                 // aq modis davalianebis chamonaTvali yvela obieqtistvis
 
                 if (response.length() > 0) {
-                    Integer davalianebaM, davalianebaK;
+                    int davalianebaM;
+                    float davalianebaK;
 
                     for (int i = 0; i < response.length(); i++) {
                         try {
 
                             if (response.getJSONObject(i).getInt("obj_id") == currObieqti.getId()) {
                                 davalianebaM = response.getJSONObject(i).getInt("pr") - response.getJSONObject(i).getInt("pay");
-                                davalianebaK = response.getJSONObject(i).getInt("k30in") - response.getJSONObject(i).getInt("k30out")
-                                        + response.getJSONObject(i).getInt("k50in") - response.getJSONObject(i).getInt("k50out");
+                                davalianebaK = (float) response.getJSONObject(i).getDouble("k30in") - (float) response.getJSONObject(i).getDouble("k30out")
+                                        + (float) response.getJSONObject(i).getDouble("k50in") - (float) response.getJSONObject(i).getDouble("k50out");
 
-                                title_0 = "დავალიანება\n" + davalianebaM;
-                                title_1 = "კასრი\n" + davalianebaK;
+                                title_0 = "დავალიანება\n" + davalianebaM + " " + getString(R.string.lari);
+                                title_1 = "კასრი\n" + MyUtil.floatToSmartStr(davalianebaK);
                                 setTabsTitle(title_0, title_1);
 //                                tabLayout.getTabAt(0).setText(title_0);
 //                                tabLayout.getTabAt(1).setText(title_1);
@@ -301,7 +303,7 @@ public class AmonaweriActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == CALL_PERMISSION_REQUEST) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED ) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 dialTo(phoneNumber);
             }
         }

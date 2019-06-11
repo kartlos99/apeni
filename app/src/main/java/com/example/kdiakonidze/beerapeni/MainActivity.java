@@ -35,6 +35,7 @@ import com.example.kdiakonidze.beerapeni.models.OrderCommentRowModel;
 import com.example.kdiakonidze.beerapeni.services.NotificationService;
 import com.example.kdiakonidze.beerapeni.utils.Constantebi;
 import com.example.kdiakonidze.beerapeni.utils.GlobalServise;
+import com.example.kdiakonidze.beerapeni.utils.MyKeys;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -396,9 +397,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Constantebi.URL_GET_SYSCLEAN = host + "get_cleaning.php";
         Constantebi.URL_INS_SYSCLEAN = host + "ins_cleaning.php";
         Constantebi.URL_CH_PASS = host + "ch_pass.php";
-        Constantebi.URL_GET_NASHTI = host + "get_nashtebi.php";
         Constantebi.URL_INS_SAWYOBI = host + "sawyobi.php";
-        Constantebi.URL_GET_SAWY_DETAIL = host + "sawyobi_detail_list.php";
+        if (getString(R.string.location_en).equals(MyKeys.TBILISI)) {
+            Constantebi.URL_GET_NASHTI = host + "get_nashtebi_tb_from_kakh.php";
+            Constantebi.URL_GET_SAWY_DETAIL = host + "sawyobi_detail_list_tb_from_kakh.php";
+        } else {
+            Constantebi.URL_GET_NASHTI = host + "get_nashtebi.php";
+            Constantebi.URL_GET_SAWY_DETAIL = host + "sawyobi_detail_list.php";
+        }
         Constantebi.URL_INSERT_XARJI = host + "insert_xarji.php";
         Constantebi.URL_GET_ORDER_COMMENTS = host + "get_order_comments.php";
     }

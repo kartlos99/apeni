@@ -112,4 +112,5 @@
 
     <string name="location_en">tbilisi</string>
     <string name="location_ge">თბილისი</string>
+    <string name="msg_not_editable">კახეთის აპლიკაციაში დაფიქსირებულ მონაცემები თბილისიდან არ იცვლება</string>
 </resources>

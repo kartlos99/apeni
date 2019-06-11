@@ -1,12 +1,14 @@
 package com.example.kdiakonidze.beerapeni;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,19 +37,20 @@ import java.util.Map;
 
 public class SawyobiList extends AppCompatActivity {
 
-    static Boolean chamosatvirtia = false;
     private ListView listView;
+    private ProgressDialog progressDialog;
+
     private ArrayList<SawyobiDetailRow> sawyobiDetailData;
     private SawyobiDetailAdapter adapter;
-
-    private ProgressDialog progressDialog;
-//    private Boolean requestInProgres = false, requestNeeded = true;
     private RequestQueue queue;
+    Context mContext;
 
+    static Boolean chamosatvirtia = false;
     private String archeuli_tarigi, chek_state;
+//    private Boolean requestInProgres = false, requestNeeded = true;
 
     public void showtext(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -62,6 +65,7 @@ public class SawyobiList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sawyobi_list);
+        mContext = this;
 
         sawyobiDetailData = new ArrayList<>();
         queue = Volley.newRequestQueue(this);
@@ -123,7 +127,6 @@ public class SawyobiList extends AppCompatActivity {
                             } else {
                                 sawyobiDetailData.add(new SawyobiDetailRow(recID, tarigi, name, ludi, ludis_id, comment, k30, k50, chek));
                             }
-
                         }
 
                     } catch (JSONException e) {
@@ -184,44 +187,49 @@ public class SawyobiList extends AppCompatActivity {
 
             case R.id.cm_order_edit:
 
-                Intent intent_edit = new Intent(getApplicationContext(), AddDeliveryActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("edit_row", row);
-                intent_edit.putExtra("data", bundle);
-                intent_edit.putExtra(Constantebi.REASON, Constantebi.EDIT);
-                if (row.getLudi().equals("-")) {
-                    intent_edit.putExtra("operacia", Constantebi.SAWYOBIDAN_GATANA);
+                if (row.getId().equals("0")){
+                    showtext(getString(R.string.msg_not_editable));
                 } else {
-                    intent_edit.putExtra("operacia", Constantebi.SAWYOBSHI_SHETANA);
+                    Intent intent_edit = new Intent(getApplicationContext(), AddDeliveryActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("edit_row", row);
+                    intent_edit.putExtra("data", bundle);
+                    intent_edit.putExtra(Constantebi.REASON, Constantebi.EDIT);
+                    if (row.getLudi().equals("-")) {
+                        intent_edit.putExtra("operacia", Constantebi.SAWYOBIDAN_GATANA);
+                    } else {
+                        intent_edit.putExtra("operacia", Constantebi.SAWYOBSHI_SHETANA);
+                    }
+                    startActivity(intent_edit);
                 }
-
-                startActivity(intent_edit);
                 break;
             case R.id.cm_order_del:
-                //showtext(row.toString());
 
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setCancelable(true);
-                builder.setMessage(Constantebi.MSG_DEL).setTitle("** * * * * **");
-                builder.setPositiveButton("დიახ", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (row.getLudi().equals("-")) {
-                            removeRecord(row.getId(), Constantebi.TABLE_SAWY_OUT, info.position);
-                        } else {
-                            removeRecord(row.getId(), Constantebi.TABLE_SAWY_IN, info.position);
+                if (row.getId().equals("0")){
+                    showtext(getString(R.string.msg_not_editable));
+                } else {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setCancelable(true);
+                    builder.setMessage(Constantebi.MSG_DEL).setTitle("** * * * * **");
+                    builder.setPositiveButton("დიახ", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if (row.getLudi().equals("-")) {
+                                removeRecord(row.getId(), Constantebi.TABLE_SAWY_OUT, info.position);
+                            } else {
+                                removeRecord(row.getId(), Constantebi.TABLE_SAWY_IN, info.position);
+                            }
                         }
-                    }
-                }).setNegativeButton("არა", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }).setNegativeButton("არა", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
 
-                    }
-                });
+                        }
+                    });
 
-                AlertDialog dialog = builder.create();
-                dialog.show();
-
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
                 break;
         }
         return super.onContextItemSelected(item);
