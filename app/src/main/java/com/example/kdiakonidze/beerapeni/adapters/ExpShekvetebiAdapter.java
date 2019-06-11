@@ -91,13 +91,13 @@ public class ExpShekvetebiAdapter extends BaseExpandableListAdapter {
         for (int i = 0; i < shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().size(); i++) {
             sBuilder.append(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getLudi());
             sBuilder.append(" : ");
-            sBuilder.append(MyUtil.floatToSmartStr(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30wont()));
+            sBuilder.append(MyUtil.floatToSmartStr(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30wont() - shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30in()));
             sBuilder.append(" / ");
-            sBuilder.append(MyUtil.floatToSmartStr(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50wont()));
-            sBuilder.append(" | ");
-            sBuilder.append(MyUtil.floatToSmartStr(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30in()));
-            sBuilder.append(" / ");
-            sBuilder.append(MyUtil.floatToSmartStr(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50in()));
+            sBuilder.append(MyUtil.floatToSmartStr(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50wont() - shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50in()));
+//            sBuilder.append(" | ");
+//            sBuilder.append(MyUtil.floatToSmartStr(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK30in()));
+//            sBuilder.append(" / ");
+//            sBuilder.append(MyUtil.floatToSmartStr(shekvetebiArListGR.get(groupPosition).getGrHeadOrderSum().get(i).getK50in()));
             sBuilder.append("\n");
         }
         t_ksum.setText(sBuilder.toString());

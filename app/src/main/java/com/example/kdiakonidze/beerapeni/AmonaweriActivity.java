@@ -237,18 +237,17 @@ public class AmonaweriActivity extends AppCompatActivity {
                 // aq modis davalianebis chamonaTvali yvela obieqtistvis
 
                 if (response.length() > 0) {
-                    int davalianebaM;
-                    float davalianebaK;
+                    float davalianebaM, davalianebaK;
 
                     for (int i = 0; i < response.length(); i++) {
                         try {
 
                             if (response.getJSONObject(i).getInt("obj_id") == currObieqti.getId()) {
-                                davalianebaM = response.getJSONObject(i).getInt("pr") - response.getJSONObject(i).getInt("pay");
+                                davalianebaM = (float) response.getJSONObject(i).getDouble("pr") - (float) response.getJSONObject(i).getDouble("pay");
                                 davalianebaK = (float) response.getJSONObject(i).getDouble("k30in") - (float) response.getJSONObject(i).getDouble("k30out")
                                         + (float) response.getJSONObject(i).getDouble("k50in") - (float) response.getJSONObject(i).getDouble("k50out");
 
-                                title_0 = "დავალიანება\n" + davalianebaM + " " + getString(R.string.lari);
+                                title_0 = "დავალიანება\n" + MyUtil.floatToSmartStr(davalianebaM) + " " + getString(R.string.lari);
                                 title_1 = "კასრი\n" + MyUtil.floatToSmartStr(davalianebaK);
                                 setTabsTitle(title_0, title_1);
 //                                tabLayout.getTabAt(0).setText(title_0);

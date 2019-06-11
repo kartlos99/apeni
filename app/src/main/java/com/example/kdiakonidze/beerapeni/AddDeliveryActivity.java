@@ -533,19 +533,19 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 // aq modis davalianebis chamonaTvali yvela obieqtistvis
 
                 if (response.length() > 0) {
-                    int davalianebaM = 0, davalianebaK = 0;
+                    float davalianebaM = 0, davalianebaK = 0;
 
                     for (int i = 0; i < response.length(); i++) {
                         try {
 
                             if (response.getJSONObject(i).getInt("obj_id") == currObieqti.getId()) {
-                                davalianebaM = response.getJSONObject(i).getInt("pr") - response.getJSONObject(i).getInt("pay");
-                                davalianebaK = response.getJSONObject(i).getInt("k30in") - response.getJSONObject(i).getInt("k30out")
-                                        + response.getJSONObject(i).getInt("k50in") - response.getJSONObject(i).getInt("k50out");
+                                davalianebaM = (float) response.getJSONObject(i).getDouble("pr") - (float) response.getJSONObject(i).getDouble("pay");
+                                davalianebaK = (float) response.getJSONObject(i).getDouble("k30in") - (float) response.getJSONObject(i).getDouble("k30out")
+                                        + (float) response.getJSONObject(i).getDouble("k50in") - (float) response.getJSONObject(i).getDouble("k50out");
                             }
 
-                            t_davalanebaM.setText(String.format("%s%n%s", getString(R.string.davalianeba), davalianebaM));
-                            t_davalanebaK.setText(String.format("%s%n%s", getString(R.string.kasri), davalianebaK));
+                            t_davalanebaM.setText(String.format("%s%n%s %s", getString(R.string.davalianeba), MyUtil.floatToSmartStr(davalianebaM), getString(R.string.lari)));
+                            t_davalanebaK.setText(String.format("%s%n%s", getString(R.string.kasri), MyUtil.floatToSmartStr(davalianebaK)));
 
                         } catch (JSONException excep) {
                             excep.printStackTrace();
