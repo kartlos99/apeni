@@ -532,7 +532,46 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                     exists = false;
                 }
 
+                // dajgufebulze vitvlis vis ramdeni kasri aqvs kidev misatani!
+                for (int i = 0; i < shekvetebiArListGR.size(); i++) {
+                    shekvetebiArListGR.get(i).getGrHeadOrderSum().clear();
+
+                    for (int j = 0; j < shekvetebiArListGR.get(i).getChilds().size(); j++) {
+                        String ludi = shekvetebiArListGR.get(i).getChilds().get(j).getLudi();
+                        exists = false;
+
+                        if (shekvetebiArListGR.get(i).getChilds().get(j).getK30wont()
+                                + shekvetebiArListGR.get(i).getChilds().get(j).getK50wont()
+                                > shekvetebiArListGR.get(i).getChilds().get(j).getK30in()
+                                + shekvetebiArListGR.get(i).getChilds().get(j).getK50in()
+                                + Constantebi.ACCURACY
+                        ) {
+                            float gap30 = shekvetebiArListGR.get(i).getChilds().get(j).getK30wont() - shekvetebiArListGR.get(i).getChilds().get(j).getK30in();
+                            float gap50 = shekvetebiArListGR.get(i).getChilds().get(j).getK50wont() - shekvetebiArListGR.get(i).getChilds().get(j).getK50in();
+
+                            for (int k = 0; k < shekvetebiArListGR.get(i).getGrHeadOrderSum().size(); k++) {
+                                if (shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getLudi().equals(ludi)) {
+                                    shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).setK30wont(shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getK30wont() + gap30);
+                                    shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).setK50wont(shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getK50wont() + gap50);
+                                    exists = true;
+                                }
+                            }
+
+                            if (!exists) {
+                                ShekvetebiSum newbeerItem = new ShekvetebiSum();
+                                newbeerItem.setK30wont(gap30);
+                                newbeerItem.setK50wont(gap50);
+                                newbeerItem.setLudi(ludi);
+
+                                shekvetebiArListGR.get(i).getGrHeadOrderSum().add(newbeerItem);
+                            }
+                        }
+                    }
+                    Collections.sort(shekvetebiArListGR.get(i).getGrHeadOrderSum(), new SortByBeer());
+                }
+
             } else {
+                // dajgufebis gareshe
 
                 float order;
                 ArrayList<Shekvetebi> mitanebi = new ArrayList<>();
@@ -599,46 +638,10 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
                 }
             }
 
-            // dajgufebulze vitvlis vis ramdeni kasri aqvs kidev misatani!
-            if (chBox_orderGroup.isChecked()) {
-                for (int i = 0; i < shekvetebiArListGR.size(); i++) {
-                    shekvetebiArListGR.get(i).getGrHeadOrderSum().clear();
-
-                    for (int j = 0; j < shekvetebiArListGR.get(i).getChilds().size(); j++) {
-                        String ludi = shekvetebiArListGR.get(i).getChilds().get(j).getLudi();
-                        exists = false;
-
-                        if (shekvetebiArListGR.get(i).getChilds().get(j).getK30wont()
-                                + shekvetebiArListGR.get(i).getChilds().get(j).getK50wont()
-                                > shekvetebiArListGR.get(i).getChilds().get(j).getK30in()
-                                + shekvetebiArListGR.get(i).getChilds().get(j).getK50in()
-                                + Constantebi.ACCURACY
-                        ) {
-                            float gap30 = shekvetebiArListGR.get(i).getChilds().get(j).getK30wont() - shekvetebiArListGR.get(i).getChilds().get(j).getK30in();
-                            float gap50 = shekvetebiArListGR.get(i).getChilds().get(j).getK50wont() - shekvetebiArListGR.get(i).getChilds().get(j).getK50in();
-
-                            for (int k = 0; k < shekvetebiArListGR.get(i).getGrHeadOrderSum().size(); k++) {
-                                if (shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getLudi().equals(ludi)) {
-                                    shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).setK30wont(shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getK30wont() + gap30);
-                                    shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).setK50wont(shekvetebiArListGR.get(i).getGrHeadOrderSum().get(k).getK50wont() + gap50);
-                                    exists = true;
-                                }
-                            }
-
-                            if (!exists) {
-                                ShekvetebiSum newbeerItem = new ShekvetebiSum();
-                                newbeerItem.setK30wont(gap30);
-                                newbeerItem.setK50wont(gap50);
-                                newbeerItem.setLudi(ludi);
-
-                                shekvetebiArListGR.get(i).getGrHeadOrderSum().add(newbeerItem);
-                            }
-                        }
-                    }
-                    Collections.sort(shekvetebiArListGR.get(i).getGrHeadOrderSum(), new SortByBeer());
-                }
-//            } else {
+            for (int i = 0; i < shekvetebiArListGR.size(); i++) {
+                Collections.sort(shekvetebiArListGR.get(i).getChilds(), new SortByObjects());
             }
+
         }
         Collections.sort(shekvetebiArListGR, new SortByUser());
 
@@ -650,7 +653,7 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
         shekvetebis_chamotvirtva(archeuli_dge);
     }
 
-    class SortByUser implements Comparator<ShekvetebiGR>{
+    class SortByUser implements Comparator<ShekvetebiGR> {
 
         @Override
         public int compare(ShekvetebiGR shekvetebiGR_A, ShekvetebiGR shekvetebiGR_B) {
@@ -658,12 +661,19 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
         }
     }
 
-    class SortByBeer implements Comparator<ShekvetebiSum>{
+    class SortByBeer implements Comparator<ShekvetebiSum> {
 
         @Override
         public int compare(ShekvetebiSum ord1, ShekvetebiSum ord2) {
-            Log.d("SORT", ord1.getLudi());
             return ord1.getLudi().compareTo(ord2.getLudi());
+        }
+    }
+
+    class SortByObjects implements Comparator<Shekvetebi> {
+
+        @Override
+        public int compare(Shekvetebi obj1, Shekvetebi obj2) {
+            return obj1.getObieqti().compareTo(obj2.getObieqti());
         }
     }
 }

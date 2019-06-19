@@ -292,9 +292,15 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         btn_chawera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (tempBeerList.size() == 0 && !chekKasri()){
+                    addAnotherBeer();
+                }
+
                 if (chamotana().equals("1") || wageba().equals("1")) {
                     btn_chawera.setEnabled(false);
                     sendDataToDB(chamotana(), wageba(), chek_condition());
+                } else {
+                    Toast.makeText(mContext, getString(R.string.no_val_to_save), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -346,33 +352,42 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onClick(View view) {
 
-                if (chekForExists(Constantebi.ludiList.get(beerIndex).getDasaxeleba())) {
-                    Toast.makeText(getApplicationContext(), R.string.alredy_in_list, Toast.LENGTH_SHORT).show();
-                } else {
-                    if ((eK30Count.getText().toString().equals("0") || eK30Count.getText().toString().isEmpty())
-                            && (eK50Count.getText().toString().equals("0") || eK50Count.getText().toString().isEmpty())) {
-                        Toast.makeText(getApplicationContext(), R.string.msg_enterKasrQuantity, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Shekvetebi newInput = new Shekvetebi("",
-                                Constantebi.ludiList.get(beerIndex).getDasaxeleba(),
-                                Float.valueOf(eK30Count.getText().toString().isEmpty() ? "0" : eK30Count.getText().toString()),
-                                Float.valueOf(eK50Count.getText().toString().isEmpty() ? "0" : eK50Count.getText().toString()), 0, 0
-                        );
-                        newInput.setColor(Constantebi.ludiList.get(beerIndex).getDisplayColor());
-                        newInput.setBeer_id(Constantebi.ludiList.get(beerIndex).getId());
-
-                        BeerTempRow beerTempRow = new BeerTempRow(mContext, newInput, linear_BeerConteiner, tempBeerList);
-                        linear_BeerConteiner.addView(beerTempRow);
-                        tempBeerList.add(newInput);
-
-                        eK30Count.setText("");
-                        eK50Count.setText("");
-                    }
-                }
+                addAnotherBeer();
             }
         });
 
         get_davalianeba();
+    }
+
+    private boolean chekKasri() {
+        return (eK30Count.getText().toString().equals("0") || eK30Count.getText().toString().isEmpty())
+                && (eK50Count.getText().toString().equals("0") || eK50Count.getText().toString().isEmpty());
+    }
+
+    void addAnotherBeer() {
+        if (chekForExists(Constantebi.ludiList.get(beerIndex).getDasaxeleba())) {
+            Toast.makeText(getApplicationContext(), R.string.alredy_in_list, Toast.LENGTH_SHORT).show();
+        } else {
+            if ((eK30Count.getText().toString().equals("0") || eK30Count.getText().toString().isEmpty())
+                    && (eK50Count.getText().toString().equals("0") || eK50Count.getText().toString().isEmpty())) {
+                Toast.makeText(getApplicationContext(), R.string.msg_enterKasrQuantity, Toast.LENGTH_SHORT).show();
+            } else {
+                Shekvetebi newInput = new Shekvetebi("",
+                        Constantebi.ludiList.get(beerIndex).getDasaxeleba(),
+                        Float.valueOf(eK30Count.getText().toString().isEmpty() ? "0" : eK30Count.getText().toString()),
+                        Float.valueOf(eK50Count.getText().toString().isEmpty() ? "0" : eK50Count.getText().toString()), 0, 0
+                );
+                newInput.setColor(Constantebi.ludiList.get(beerIndex).getDisplayColor());
+                newInput.setBeer_id(Constantebi.ludiList.get(beerIndex).getId());
+
+                BeerTempRow beerTempRow = new BeerTempRow(mContext, newInput, linear_BeerConteiner, tempBeerList);
+                linear_BeerConteiner.addView(beerTempRow);
+                tempBeerList.add(newInput);
+
+                eK30Count.setText("");
+                eK50Count.setText("");
+            }
+        }
     }
 
     boolean chekForExists(String ludi) {

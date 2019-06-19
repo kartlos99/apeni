@@ -279,9 +279,15 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onClick(View view) {
                 if (reason.equals(Constantebi.CREATE)) {
+                    if (tempInputList.size() == 0 && chekMitanaFealds().equals("1")) {
+                        addAnotherBeer();
+                    }
+
                     if (chekMitana().equals("1") || chekKout().equals("1") || chekMout().equals("1")) {
                         btn_Done.setEnabled(false);
                         sendDataToDB(0, chekMitana(), chekKout(), chekMout(), false);
+                    } else {
+                        Toast.makeText(mContext, getString(R.string.no_val_to_save), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     if (operacia.equals(Constantebi.MITANA)) {
@@ -346,34 +352,37 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
         fab_addBeer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (chekForExists(Constantebi.ludiList.get(beerIndex).getDasaxeleba())) {
-                    Toast.makeText(getApplicationContext(), R.string.alredy_in_list, Toast.LENGTH_SHORT).show();
-                } else {
-                    if ((eK30Count.getText().toString().equals("0") || eK30Count.getText().toString().isEmpty())
-                            && (eK50Count.getText().toString().equals("0") || eK50Count.getText().toString().isEmpty())) {
-                        Toast.makeText(getApplicationContext(), R.string.msg_enterKasrQuantity, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Shekvetebi newInput = new Shekvetebi("",
-                                Constantebi.ludiList.get(beerIndex).getDasaxeleba(),
-                                Float.valueOf(eK30Count.getText().toString().isEmpty() ? "0" : eK30Count.getText().toString()),
-                                Float.valueOf(eK50Count.getText().toString().isEmpty() ? "0" : eK50Count.getText().toString()), 0, 0
-                        );
-                        newInput.setColor(Constantebi.ludiList.get(beerIndex).getDisplayColor());
-                        newInput.setBeer_id(Constantebi.ludiList.get(beerIndex).getId());
-                        newInput.setComment(currObieqti.getFasebi().get(beerIndex).toString()); // droebit aq vinaxavt fass
-
-                        BeerTempRow beerTempRow = new BeerTempRow(mContext, newInput, linear_BeerConteiner, tempInputList, t_ludi_in);
-                        linear_BeerConteiner.addView(beerTempRow);
-                        tempInputList.add(newInput);
-
-                        eK30Count.setText("");
-                        eK50Count.setText("");
-                        priceCalculation("", "");
-                    }
-                }
+                addAnotherBeer();
             }
         });
+    }
+
+    void addAnotherBeer() {
+        if (chekForExists(Constantebi.ludiList.get(beerIndex).getDasaxeleba())) {
+            Toast.makeText(getApplicationContext(), R.string.alredy_in_list, Toast.LENGTH_SHORT).show();
+        } else {
+            if ((eK30Count.getText().toString().equals("0") || eK30Count.getText().toString().isEmpty())
+                    && (eK50Count.getText().toString().equals("0") || eK50Count.getText().toString().isEmpty())) {
+                Toast.makeText(getApplicationContext(), R.string.msg_enterKasrQuantity, Toast.LENGTH_SHORT).show();
+            } else {
+                Shekvetebi newInput = new Shekvetebi("",
+                        Constantebi.ludiList.get(beerIndex).getDasaxeleba(),
+                        Float.valueOf(eK30Count.getText().toString().isEmpty() ? "0" : eK30Count.getText().toString()),
+                        Float.valueOf(eK50Count.getText().toString().isEmpty() ? "0" : eK50Count.getText().toString()), 0, 0
+                );
+                newInput.setColor(Constantebi.ludiList.get(beerIndex).getDisplayColor());
+                newInput.setBeer_id(Constantebi.ludiList.get(beerIndex).getId());
+                newInput.setComment(currObieqti.getFasebi().get(beerIndex).toString()); // droebit aq vinaxavt fass
+
+                BeerTempRow beerTempRow = new BeerTempRow(mContext, newInput, linear_BeerConteiner, tempInputList, t_ludi_in);
+                linear_BeerConteiner.addView(beerTempRow);
+                tempInputList.add(newInput);
+
+                eK30Count.setText("");
+                eK50Count.setText("");
+                priceCalculation("", "");
+            }
+        }
     }
 
     boolean chekForExists(String ludi) {
@@ -660,11 +669,11 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
                 if (!sawyobi) {
                     OrdersActivity.chamosatvirtia = true; // mitanas rom davakreqtirebt, amit mixvdebarom ganaaxlos shekvetebis gverdi
                     if (t_comment.getEditText() != null)
-                    if (!t_comment.getEditText().getText().toString().equals(initialComment)) {
-                        MyUtil util = new MyUtil(getApplicationContext());
-                        util.notifyFirebase();
-                        MainActivity.NEED_COMENTS_UPDATE = true;
-                    }
+                        if (!t_comment.getEditText().getText().toString().equals(initialComment)) {
+                            MyUtil util = new MyUtil(getApplicationContext());
+                            util.notifyFirebase();
+                            MainActivity.NEED_COMENTS_UPDATE = true;
+                        }
                 } else {
                     SawyobiList.chamosatvirtia = true;
                 }
@@ -771,5 +780,15 @@ public class AddDeliveryActivity extends AppCompatActivity implements View.OnCli
             }
             return (eK30Count.getText().toString().equals("") && eK50Count.getText().toString().equals("") ? "0" : "1");
         }
+    }
+
+    private String chekMitanaFealds() {
+        if (eK30Count.getText().toString().equals("0")) {
+            eK30Count.setText("");
+        }
+        if (eK50Count.getText().toString().equals("0")) {
+            eK50Count.setText("");
+        }
+        return (eK30Count.getText().toString().equals("") && eK50Count.getText().toString().equals("") ? "0" : "1");
     }
 }

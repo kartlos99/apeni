@@ -201,6 +201,10 @@ public class AddOrderActivity extends AppCompatActivity {
                     sendDataToDB();
                     btn_newOrderDone.setEnabled(false);
                 } else {
+                    if (tempOrdersList.size() == 0 && !chekKasri()) {
+                        addAnotherBeer();
+                    }
+
                     if (tempOrdersList.size() > 0) {
                         sendDataToDB();
                         btn_newOrderDone.setEnabled(false);
@@ -223,40 +227,49 @@ public class AddOrderActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (chekForOrderExists(currObieqti.getDasaxeleba(), Constantebi.ludiList.get(beertype).getDasaxeleba())) {
-                    Toast.makeText(getApplicationContext(), R.string.msg_orderAlreadyExist, Toast.LENGTH_SHORT).show();
-//                    onBackPressed();
-                } else {
-                    if ((eK30Count.getText().toString().equals("0") || eK30Count.getText().toString().isEmpty())
-                            && (eK50Count.getText().toString().equals("0") || eK50Count.getText().toString().isEmpty())) {
-                        Toast.makeText(getApplicationContext(), R.string.msg_enterKasrQuantity, Toast.LENGTH_LONG).show();
-                    } else {
-                        Shekvetebi newOrder = new Shekvetebi("",
-                                Constantebi.ludiList.get(beertype).getDasaxeleba(), 0, 0,
-                                Float.valueOf(eK30Count.getText().toString().isEmpty() ? "0" : eK30Count.getText().toString()),
-                                Float.valueOf(eK50Count.getText().toString().isEmpty() ? "0" : eK50Count.getText().toString())
-                        );
-                        newOrder.setColor(Constantebi.ludiList.get(beertype).getDisplayColor());
-                        newOrder.setBeer_id(Constantebi.ludiList.get(beertype).getId());
-
-                        BeerTempRow beerTempRow = new BeerTempRow(mContext, newOrder, linear_BeerConteiner, tempOrdersList);
-                        tempOrdersList.add(newOrder);
-                        linear_BeerConteiner.addView(beerTempRow);
-
-                        eK30Count.setText("");
-                        eK50Count.setText("");
-                        btn_newOrderDone.setEnabled(true);
-                    }
-                }
+                addAnotherBeer();
 
             }
         });
 
-        if (reason.equals(Constantebi.NEW_ORDER) && tempOrdersList.size() == 0) {
-            btn_newOrderDone.setEnabled(false);
-        }
+//        if (reason.equals(Constantebi.NEW_ORDER) && tempOrdersList.size() == 0) {
+//            btn_newOrderDone.setEnabled(false);
+//        }
         if (reason.equals(Constantebi.EDIT)){
             fab_addBeer.setVisibility(View.GONE);
+        }
+    }
+
+    private boolean chekKasri() {
+        return (eK30Count.getText().toString().equals("0") || eK30Count.getText().toString().isEmpty())
+                && (eK50Count.getText().toString().equals("0") || eK50Count.getText().toString().isEmpty());
+    }
+
+    void addAnotherBeer() {
+        if (chekForOrderExists(currObieqti.getDasaxeleba(), Constantebi.ludiList.get(beertype).getDasaxeleba())) {
+            Toast.makeText(getApplicationContext(), R.string.msg_orderAlreadyExist, Toast.LENGTH_SHORT).show();
+//                    onBackPressed();
+        } else {
+            if ((eK30Count.getText().toString().equals("0") || eK30Count.getText().toString().isEmpty())
+                    && (eK50Count.getText().toString().equals("0") || eK50Count.getText().toString().isEmpty())) {
+                Toast.makeText(getApplicationContext(), R.string.msg_enterKasrQuantity, Toast.LENGTH_LONG).show();
+            } else {
+                Shekvetebi newOrder = new Shekvetebi("",
+                        Constantebi.ludiList.get(beertype).getDasaxeleba(), 0, 0,
+                        Float.valueOf(eK30Count.getText().toString().isEmpty() ? "0" : eK30Count.getText().toString()),
+                        Float.valueOf(eK50Count.getText().toString().isEmpty() ? "0" : eK50Count.getText().toString())
+                );
+                newOrder.setColor(Constantebi.ludiList.get(beertype).getDisplayColor());
+                newOrder.setBeer_id(Constantebi.ludiList.get(beertype).getId());
+
+                BeerTempRow beerTempRow = new BeerTempRow(mContext, newOrder, linear_BeerConteiner, tempOrdersList);
+                tempOrdersList.add(newOrder);
+                linear_BeerConteiner.addView(beerTempRow);
+
+                eK30Count.setText("");
+                eK50Count.setText("");
+                btn_newOrderDone.setEnabled(true);
+            }
         }
     }
 
