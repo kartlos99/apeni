@@ -175,6 +175,12 @@ public class SawyobiPage extends AppCompatActivity implements View.OnClickListen
         dateFormat = new SimpleDateFormat(getString(R.string.patern_date));
         timeFormat = new SimpleDateFormat(getString(R.string.patern_datetime));
 
+        if (Constantebi.ludiList.size() == 0){
+            Intent intent = new Intent(mContext, MainActivity.class);
+            startActivity(intent);
+//            finish();
+        }
+
         initialization();
         mContext = this;
 
