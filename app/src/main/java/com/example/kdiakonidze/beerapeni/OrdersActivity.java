@@ -289,32 +289,36 @@ public class OrdersActivity extends AppCompatActivity implements GlobalServise.v
             if (chBox_orderGroup.isChecked()) {
                 Toast.makeText(getApplicationContext(), "მოხსენით დაჯგუფება", Toast.LENGTH_SHORT).show();
             } else {
-                // shekvetis redaqtireba admins yoveltvis da users mxolod im dges
-                if (Constantebi.USER_TYPE.equals(Constantebi.USER_TYPE_admin) || archeuli_dge.equals(dateFormat.format(new Date()))) {
-                    final Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getChild(group, child);
-                    this.getMenuInflater().inflate(R.menu.context_menu_order, menu);
-                    menu.setHeaderTitle(currOrder.getComment());
+                final Shekvetebi currOrder = (Shekvetebi) shekvetebiAdapter.getChild(group, child);
+                // shekveTebis gverdidan mitanis redaqtirebas aRar vakeTebT
+                if ((currOrder.getK30wont() > 0) || (currOrder.getK50wont() > 0)) {
+                    // shekvetis redaqtireba admins yoveltvis da users mxolod im dges
+                    if (Constantebi.USER_TYPE.equals(Constantebi.USER_TYPE_admin) || archeuli_dge.equals(dateFormat.format(new Date()))) {
 
-                    MenuItem.OnMenuItemClickListener itemLisener = new MenuItem.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+                        this.getMenuInflater().inflate(R.menu.context_menu_order, menu);
+                        menu.setHeaderTitle(currOrder.getComment());
 
-                            GlobalServise gServise = new GlobalServise(mContext);
-                            gServise.setChangeListener(OrdersActivity.this);
-                            gServise.editOrder(currOrder, item.getItemId());
-                            return true;
-                        }
-                    };
-                    if ((currOrder.getK30wont() > 0) || (currOrder.getK50wont() > 0)) { // shekvetis chanawerze menius vamatebt gadamisamartebis item-ebs
+                        MenuItem.OnMenuItemClickListener itemLisener = new MenuItem.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+
+                                GlobalServise gServise = new GlobalServise(mContext);
+                                gServise.setChangeListener(OrdersActivity.this);
+                                gServise.editOrder(currOrder, item.getItemId());
+                                return true;
+                            }
+                        };
+                        // shekvetis chanawerze menius vamatebt gadamisamartebis item-ebs
                         for (int i = 0; i < Constantebi.USERsLIST.size(); i++) {
                             if (Constantebi.USERsLIST.get(i).getId() != currOrder.getDistrib_id()) {
                                 menu.add(1, Constantebi.USERsLIST.get(i).getId(), i, "--> " + Constantebi.USERsLIST.get(i).getUsername()).setOnMenuItemClickListener(itemLisener);
                             }
                         }
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), R.string.no_edit_access, Toast.LENGTH_SHORT).show();
                     }
-                } else {
-                    Toast.makeText(getApplicationContext(), R.string.no_edit_access, Toast.LENGTH_SHORT).show();
                 }
             }
         }
